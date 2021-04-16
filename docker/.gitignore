@@ -1,0 +1,8 @@
+redis-data/
+postgres-data/
+mysql-data/
+certbot/
+dockerfiles/nginx_proxy/nginx.conf.bak
+.env
+.db_data
+db_data

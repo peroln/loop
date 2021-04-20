@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     build:
       context: ../
-      dockerfile: dockerfiles/nginx_proxy/Dockerfile
+      dockerfile: docker/nginx_proxy/Dockerfile
     ports:
       - "80:80"
       - "443:443"
@@ -26,6 +26,7 @@ services:
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     networks:
       - backend
+
 
 networks:
   backend:

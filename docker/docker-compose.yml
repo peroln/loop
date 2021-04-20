@@ -1,55 +1,11 @@
 version: '3.9'
 
 services:
-  nginx:
-    build:
-      context: ../
-      dockerfile: ./docker/dockerfiles/nginx/Dockerfile
-    restart: unless-stopped
-    working_dir: /application
-    volumes:
-      - ../:/application
-      - ../docker/dockerfiles/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./../public/assets:/var/www/public/assets
-      - ./../storage/app/public:/var/www/public/storage
-    ports:
-      - ${NGINX_PROXY_HTTP_PORT}:80
-    networks:
-      - backend
-
-  php-fpm:
-    build:
-      context: ../
-      dockerfile: docker/dockerfiles/php-fpm/Dockerfile
-    restart: unless-stopped
-    working_dir: /application
-    volumes:
-      - ../:/application
-      - ../docker/dockerfiles/php-fpm/php-ini-overrides.ini:/etc/php/8.0/fpm/conf.d/99-overrides.ini
-    networks:
-      - backend
-    links:
-      - postgres
-      - redis
-
-  redis:
-    image: redis:alpine
-    restart: unless-stopped
-    working_dir: /application
-    volumes:
-      - ./redis-data:/data
-    ports:
-      - ${REDIS_PORT}:6379
-    networks:
-      - backend
 
   postgres:
-    build:
-      context: ../
-      dockerfile: ./docker/dockerfiles/pgsql/Dockerfile
-    working_dir: /application
+    image: postgres:13.2
+    container_name: ${PROJECT_NAME}-postgres
     volumes:
-      - pgdata:/var/lib/postgresql/data
       - ../:/application
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -59,18 +15,81 @@ services:
     ports:
       - ${POSTGRES_PORT}:5432
     networks:
-      - backend
+      - loooop_platform
+
+  nginx:
+    build:
+      context: ../
+      dockerfile: docker/nginx/Dockerfile
+    container_name: ${PROJECT_NAME}-webserver
+    restart: unless-stopped
+    working_dir: /application
+    volumes:
+      - ../:/application
+      - ../docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - ${NGINX_PROXY_HTTP_PORT}:80
+    links:
+      - 'php-fpm'
+    networks:
+      - loooop_platform
+
+
+  php-fpm:
+    build:
+      context: ../
+      dockerfile: docker/php-fpm/Dockerfile
+    container_name: ${PROJECT_NAME}-php-fpm
+    restart: unless-stopped
+    working_dir: /application
+    volumes:
+      - ../:/application
+      - ../docker/php-fpm/php-ini-overrides.ini:/etc/php/8.0/fpm/conf.d/99-overrides.ini
+    networks:
+      - loooop_platform
+    links:
+      - postgres
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: ${PROJECT_NAME}-redis
+    restart: unless-stopped
+    working_dir: /application
+    volumes:
+      - ./redis-data:/data
+    ports:
+      - ${REDIS_PORT}:6379
+    networks:
+      - loooop_platform
+
+#  mysql:
+#    image: mysql:8.0.23
+#    container_name: ${PROJECT_NAME}-mysql
+#    working_dir: /application
+#    restart: unless-stopped
+#    volumes:
+#      - ./mysql-data:/var/lib/mysql
+#      - ../:/application
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+#      - MYSQL_DATABASE=${MYSQL_DATABASE}
+#      - MYSQL_USER=${MYSQL_USER}
+#      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+#    ports:
+#      - ${MYSQL_PORT}:3306
 
   cron:
     build:
       context: ../
-      dockerfile: ./docker/dockerfiles/php_cron/Dockerfile
+      dockerfile: docker/php_cron/Dockerfile
+    container_name: ${PROJECT_NAME}-cron
     working_dir: /application
     restart: unless-stopped
     volumes:
       - ../:/application
     networks:
-      - backend
+      - loooop_platform
     links:
       - postgres
       - redis
@@ -78,27 +97,25 @@ services:
   queue-worker:
     build:
       context: ../
-      dockerfile: ./docker/dockerfiles/php-fpm/Dockerfile
+      dockerfile: docker/php-fpm/Dockerfile
+    container_name: ${PROJECT_NAME}-queue-worker
     restart: unless-stopped
     working_dir: /application
     volumes:
       - ../:/application
-      - ../docker/dockerfiles/php_cli/php-ini-overrides.ini:/etc/php/8.0/cli/conf.d/99-overrides.ini
-    command: [ "php", "artisan", "queue:listen", "--delay=0", "--tries=3" ]
+      - ../docker/php_cli/php-ini-overrides.ini:/etc/php/8.0/cli/conf.d/99-overrides.ini
+    command: [ "php", "artisan", "queue:work", "--delay=0", "--tries=3" ]
     networks:
-      - backend
+      - loooop_platform
     links:
       - postgres
       - redis
 
 networks:
-  backend:
-    name: ${COMPOSE_PROJECT_NAME}_network
+  loooop_platform:
+    name: loooop_platform
     driver: bridge
 
 volumes:
-  pgdata:
-    external: true
-  pgadmin:
-  #  mysql:
+  postgres:
   redis:

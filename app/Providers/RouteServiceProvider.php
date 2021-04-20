@@ -50,10 +50,10 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::prefix('api')
                 ->middleware('api')
-                ->namespace($this->namespace)
                 ->group(function () {
 
                     Route::prefix('ping')
+                        ->namespace($this->namespace)
                         ->group($this->basePath . 'ping.php');
 
                     Route::prefix('user')

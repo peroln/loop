@@ -73,6 +73,5 @@ class Kernel extends HttpKernel
         //'check.totp'        => \App\Http\Middleware\Google2FA\CheckTOTP::class,
         'check.device'      => \App\Http\Middleware\Auth\CheckDevice::class,
         'throttle.request'  => \App\Http\Middleware\ThrottleRequestsInSeconds::class,
-
     ];
 }

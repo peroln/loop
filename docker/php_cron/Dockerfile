@@ -15,7 +15,7 @@ COPY ./ /application
 
 RUN rm -rf /application/docker && chmod -R 777 /application/bootstrap && chmod -R 777 /application/storage
 
-COPY ./docker/dockerfiles/php_cron/main-cron /etc/cron.d/main-cron
+COPY ./docker/php_cron/main-cron /etc/cron.d/main-cron
 
 RUN chmod 0644 /etc/cron.d/main-cron
 RUN crontab /etc/cron.d/main-cron

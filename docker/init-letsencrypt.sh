@@ -4,7 +4,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   echo 'Error: docker-compose is not installed.' >&2
   exit 1
 fi
-projectName=$PROJECT_NAME
+projectName=loooop_platform
 domains=5uhw14kedp3r.corp.merehead.xyz
 rsa_key_size=4096
 data_path="../docker/certbot"
@@ -48,7 +48,6 @@ docker-compose -f docker-compose.proxy.yml -p $projectName run --rm --entrypoint
   rm -Rf /etc/letsencrypt/archive/$domains && \
   rm -Rf /etc/letsencrypt/renewal/$domains.conf" certbot
 echo
-
 
 echo "### Requesting Let's Encrypt certificate for $domains ..."
 #Join $domains to -d args

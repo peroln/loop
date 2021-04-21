@@ -9,7 +9,7 @@ class PublicApiController extends Controller
 {
     public function address(): Response
     {
-        $address = '9sd8fh6sdfh8sd98hsd9fh8dsbfghlsdrgd8r';
+        $address = config('tron.contract_address');
         return response(['address' => $address], Response::HTTP_OK);
     }
 }

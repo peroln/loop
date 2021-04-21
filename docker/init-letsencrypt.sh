@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 projectName=$PROJECT_NAME
-domains=($DOMAIN_NAME)
+domains=5uhw14kedp3r.corp.merehead.xyz
 rsa_key_size=4096
 data_path="../docker/certbot"
 email="" # Adding a valid address is strongly recommended

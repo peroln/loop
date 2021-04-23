@@ -2,37 +2,23 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Enums\BaseAppEnum;
-use App\Enums\Tokens\TokenEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\Tokens\ListRequest;
-use App\Http\Resources\User\Auth\UserDataResource;
-use App\Services\UserService;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\User\UserResource;
+use App\Models\Users;
+use App\MultiplePaginate;
+use App\Http\Requests\User\GetAllUserRequest;
 
 class UserController extends Controller
 {
-    protected UserService $service;
+    use MultiplePaginate;
 
-    /**
-     * UserController constructor.
-     *
-     * @param UserService $service
-     */
-    public function __construct(UserService $service)
+    public function getAllUsers(GetAllUserRequest $request)
     {
-        $this->service = $service;
+        return UserResource::collection(Users::paginate($request->per_page));
     }
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request): Response
+    public function getUserById($id)
     {
-        return response(UserDataResource::make(Auth::user()), Response::HTTP_OK);
+        return UserResource::collection(Users::where('id', $id)->get());
     }
 }

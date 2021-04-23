@@ -19,7 +19,7 @@ trait ConvertDatesFromFormats
      */
     protected function baseSQLDateFormat(): string
     {
-        return 'Y-d-m';
+        return 'Y-m-d';
     }
 
     /**

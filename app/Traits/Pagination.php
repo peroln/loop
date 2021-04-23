@@ -69,4 +69,22 @@ trait Pagination
             });
         }
     }
+
+    /**
+     * @param array $resource
+     * @param string $name
+     * @return array
+     */
+    protected function prettyPaginatedData(array $resource, string $name): array
+    {
+        $data = [];
+
+        $data['total']        = $resource['total'] ?? 0;
+        $data['per_page']     = $resource['per_page'] ?? 0;
+        $data['last_page']    = $resource['last_page'] ?? 0;
+        $data['current_page'] = $resource['current_page'] ?? 0;
+        $data[$name]          = $resource['data'];
+
+        return $data;
+    }
 }

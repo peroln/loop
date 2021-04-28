@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
-use App\Models\Users;
+use App\Models\User;
 use Carbon\Carbon;
 
 class UsersTableSeeder extends Seeder

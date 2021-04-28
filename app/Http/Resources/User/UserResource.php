@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\User;
 
-use App\Models\Users;
-use App\Models\Wallets;
+use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Request;
 
@@ -27,7 +27,7 @@ class UserResource extends JsonResource
             'this_referral'    => $this->this_referral,
             'referrals_count'  => $this->getCountReferrals($this->id),
             'referral_link'    => $this->getReferralLink($this->id),
-            'wallet'           => $this->getUserWallet($this->id),
+            'wallet'           => new WalletResouce($this->wallet),
             'created_at'       => $this->created_at,
             'updated_at'       => $this->updated_at,
 
@@ -36,7 +36,7 @@ class UserResource extends JsonResource
 
     public function getCountReferrals(int $id): int
     {
-       return Users::where('this_referral', $id)->count();
+       return User::where('this_referral', $id)->count();
     }
 
     public function getReferralLink(int $id): string
@@ -44,8 +44,4 @@ class UserResource extends JsonResource
         return config('app.domain') . '/t/' . $id;
     }
 
-    public function getUserWallet(int $id)
-    {
-        return Wallets::where('user_id', $id)->first()->toArray();
-    }
 }

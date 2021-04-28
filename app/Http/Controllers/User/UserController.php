@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\GetUserByWalletRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\MultiplePaginate;
@@ -25,11 +26,12 @@ class UserController extends Controller
     }
 
     /**
-     * @param string $address
+     * @param GetUserByWalletRequest $query
      * @return JsonResource
      */
-    public function getUserByWallet(string $address): JsonResource
+    public function getUserByWallet(GetUserByWalletRequest $query): JsonResource
     {
+        $address = $query->input('address');
         return UserResource::collection(User::whereHas('wallet', function ($query) use ($address) {
             $query->where('address', $address);
         })->get());

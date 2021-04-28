@@ -3,7 +3,7 @@
 namespace App\Models;
 use App\Models\BaseModel;
 
-class Wallets extends BaseModel
+class Wallet extends BaseModel
 {
     protected $table = 'wallets';
 

@@ -32,9 +32,7 @@ class UserController extends Controller
     public function getUserByWallet(GetUserByWalletRequest $query): JsonResource
     {
         $address = $query->input('address');
-        return UserResource::collection(User::whereHas('wallet', function ($query) use ($address) {
-            $query->where('address', $address);
-        })->get());
+        return UserResource::collection(User::whereHas('wallet', fn ($query) => $query->where('address', $address))->get());
 
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\GetUserByIdRequest;
 use App\Http\Requests\User\GetUserByWalletRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
@@ -20,19 +21,23 @@ class UserController extends Controller
         return UserResource::collection(User::paginate($request->per_page));
     }
 
-    public function getUserById($id)
+    /**
+     * @param GetUserByIdRequest $request
+     * @return UserResource
+     */
+    public function getUserById(GetUserByIdRequest $request): UserResource
     {
-        return UserResource::collection(User::where('id', $id)->get());
+        return new UserResource(User::find($request->input('id')));
     }
 
     /**
      * @param GetUserByWalletRequest $query
-     * @return JsonResource
+     * @return UserResource
      */
-    public function getUserByWallet(GetUserByWalletRequest $query): JsonResource
+
+    public function getUserByWallet(GetUserByWalletRequest $query): UserResource
     {
         $address = $query->input('address');
-        return UserResource::collection(User::whereHas('wallet', fn ($query) => $query->where('address', $address))->get());
-
+        return new UserResource(User::whereHas('wallet', fn($query) => $query->where('address', $address))->first());
     }
 }

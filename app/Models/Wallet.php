@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Models;
-use App\Models\BaseModel;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Wallet extends BaseModel
+class Wallet extends Authenticatable implements JWTSubject
 {
-    protected $table = 'wallets';
+    use Notifiable;
 
     protected $fillable = [
         'id',
@@ -25,4 +27,14 @@ class Wallet extends BaseModel
         'created_at',
         'updated_at',
     ];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 }

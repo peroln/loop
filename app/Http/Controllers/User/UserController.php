@@ -9,12 +9,19 @@ use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\MultiplePaginate;
 use App\Http\Requests\User\GetAllUserRequest;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Repositories\UserRepository;
+
 
 class UserController extends Controller
 {
     use MultiplePaginate;
+
+    public UserRepository $userRepository;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
 
     public function getAllUsers(GetAllUserRequest $request)
     {
@@ -37,7 +44,6 @@ class UserController extends Controller
 
     public function getUserByWallet(GetUserByWalletRequest $query): UserResource
     {
-        $address = $query->input('address');
-        return new UserResource(User::whereHas('wallet', fn($query) => $query->where('address', $address))->first());
+        return $this->userRepository->getUserByWallet($query->input('address'));
     }
 }

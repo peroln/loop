@@ -14,7 +14,7 @@ return [
 	*/
 
 	'defaults' => [
-		'guard'     => 'user',
+		'guard'     => 'wallet',
 		'passwords' => 'users',
 	],
 
@@ -36,19 +36,15 @@ return [
 	*/
 
 	'guards' => [
-		'web' => [
-			'driver'   => 'session',
-			'provider' => 'users',
-		],
 
 		'api'   => [
 			'driver'   => 'jwt',
 			'provider' => 'users',
 			'hash'     => false,
 		],
-		'user'  => [
+		'wallet'  => [
 			'driver'   => 'jwt',
-			'provider' => 'users'
+			'provider' => 'wallets'
 		],
 		'admin' => [
 			'driver'    => 'jwt',
@@ -78,15 +74,11 @@ return [
 			'driver' => 'eloquent',
 			'model'  => App\Models\User::class,
 		],
-		'admins' => [
-			'driver' => 'eloquent',
-			'model'  => \App\Models\Admin::class,
-		],
-
-		// 'users' => [
-		//     'driver' => 'database',
-		//     'table' => 'users',
-		// ],
+		 'wallets' => [
+		     'driver' => 'eloquent',
+		     'table' => 'wallets',
+             'model'  => App\Models\Wallet::class,
+		 ],
 	],
 
 	/*

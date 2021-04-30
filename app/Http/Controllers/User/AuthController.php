@@ -45,7 +45,11 @@ class AuthController extends Controller
         $this->user = $user;
     }
 
-    public function authenticate(LoginRequest $request)
+    /**
+     * @param LoginRequest $request
+     * @return JsonResponse
+     */
+    public function authenticate(LoginRequest $request): JsonResponse
     {
         $address = $request->input('address');
         $wallet = Wallet::where('address', $address)->first();
@@ -55,7 +59,9 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
-        return response()->json(compact('token'), 200);
+        $user = $this->user->getUserByWallet(Auth::user()->address);
+
+        return response()->json(compact('token', 'user'), 200);
 
     }
 

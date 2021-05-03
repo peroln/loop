@@ -7,7 +7,7 @@ use  \App\Http\Controllers\User\AuthController;
 Route::group([
     'prefix' => 'auth'
 ], function () {
-    Route::post('login', [AuthController::class, 'authenticate']);
+    Route::post('login', [AuthController::class, 'login']);
     Route::post('registration', 'AuthController@registration');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');

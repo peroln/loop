@@ -21,6 +21,6 @@ class UserRepository extends Repository
      */
     public function getUserByWallet(string $address): UserResource
     {
-        return new UserResource(User::whereHas('wallet', fn($q) => $q->where('address', $address))->first());
+        return new UserResource($this->getModel()->whereHas('wallet', fn($q) => $q->where('address', $address))->first());
     }
 }

@@ -6,7 +6,9 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\LoginRequest;
-//use App\Models\Helpers\CryptoServiceInterface;
+
+use App\Http\Requests\User\RegistrationRequest;
+use App\Models\Helpers\CryptoServiceInterface;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Repositories\Base\RepositoryInterface;
@@ -35,17 +37,17 @@ class AuthController extends Controller
     /**
      * @var CryptoServiceInterface
      */
-//    private CryptoServiceInterface $cryptoService;
+    private CryptoServiceInterface $cryptoService;
 
     /**
      * AuthController constructor.
      * @param RepositoryInterface $user
-//     * @param CryptoServiceInterface $cryptoService
+     * @param CryptoServiceInterface $cryptoService
      */
-    public function __construct(RepositoryInterface $user/*, CryptoServiceInterface $cryptoService*/)
+    public function __construct(RepositoryInterface $user, CryptoServiceInterface $cryptoService)
     {
         $this->middleware('auth:wallet', ['except' => ['login', 'registration']]);
-//        $this->cryptoService = $cryptoService;
+        $this->cryptoService = $cryptoService;
         $this->user = $user;
     }
 
@@ -89,27 +91,13 @@ class AuthController extends Controller
         Auth::login($wallet);
     }
 
-    public function register(Request $request)
+    public function registration(RegistrationRequest $request)
     {
-//        return response()->json($this->cryptoService->confirmRegistration('ed45dd66da3198f2754e10233f50ae586d84a43dd1c679149e4a6e5b11519ba3'));
-        $validator = \Validator::make(
-            $request->all(),
-            [
-                'address' => 'required|string|max:255',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-
-        $user = User::create([
-//            'name' => $request->get('name'),
-//            'email' => $request->get('email'),
-//            'password' => Hash::make($request->get('password')),
-        ]);
-
-        $token = \JWTAuth::fromUser($user);
+        $data_event = response()->json($this->cryptoService->confirmRegistration($request->input('hex')));
+        // TODO create user, wallet, transaction
+        $user_data_params = [];
+        $user = $this->user->create($user_data_params);
+        $token = 'token'; //$token = \JWTAuth::fromUser($wallet);
 
         return response()->json(compact('user', 'token'), 201);
     }

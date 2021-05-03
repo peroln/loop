@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -27,6 +29,14 @@ class Wallet extends Authenticatable implements JWTSubject
         'created_at',
         'updated_at',
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function getJWTIdentifier()
     {

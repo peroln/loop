@@ -1,13 +1,12 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Database\Eloquent\Builder;
+
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class User extends BaseModel
+class User extends Model
 {
-    protected $table = 'users';
-
     protected $fillable = [
         'id',
         'user_name',
@@ -26,4 +25,5 @@ class User extends BaseModel
     {
         return $this->hasOne(Wallet::class);
     }
+
 }

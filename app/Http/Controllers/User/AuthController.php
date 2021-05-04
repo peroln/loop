@@ -14,6 +14,7 @@ use App\Models\Wallet;
 use App\Repositories\Base\RepositoryInterface;
 use App\Repositories\UserRepository;
 use App\Traits\FormatsErrorResponse;
+use Faker\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -93,11 +94,11 @@ class AuthController extends Controller
 
     public function registration(RegistrationRequest $request)
     {
-        $data_event = response()->json($this->cryptoService->confirmRegistration($request->input('hex')));
+        $data_event = $this->cryptoService->confirmRegistration($request->input('hex'));
         // TODO create user, wallet, transaction
-        $user_data_params = [];
-        $user = $this->user->create($user_data_params);
-        $token = 'token'; //$token = \JWTAuth::fromUser($wallet);
+
+        $params = array_merge($request->validated(), $data_event);
+        list($user, $token) = $this->user->createWithWallet($params);
 
         return response()->json(compact('user', 'token'), 201);
     }

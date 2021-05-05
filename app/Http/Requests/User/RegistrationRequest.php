@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RegistrationRequest extends FormRequest
 {
@@ -24,7 +25,8 @@ class RegistrationRequest extends FormRequest
     public function rules()
     {
         return [
-            'hex' => 'required|string|min:10'
+            'hex' => 'required|string|min:10',
+            'lang' => ['nullable', 'string', Rule::in(['en', 'es', 'ru'])]
         ];
     }
 }

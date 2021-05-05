@@ -59,8 +59,20 @@ class TronService implements CryptoServiceInterface
         $referrer_cache_address = Arr::get($registration_event, 'result.referrer');
         $contract_user_cache_address = Arr::get($registration_event, 'result.user');
         $transaction_id = Arr::get($registration_event, 'transaction_id');
+        $block_number =  Arr::get($registration_event, 'block_number');
+        $block_timestamp =  Arr::get($registration_event, 'block_timestamp');
+        $event_name =  Arr::get($registration_event, 'event_name');
 
-        return compact('referrer_id', 'contract_user_id', 'referrer_cache_address', 'contract_user_cache_address', 'transaction_id');
+        return compact(
+            'referrer_id',
+            'contract_user_id',
+            'referrer_cache_address',
+            'contract_user_cache_address',
+            'transaction_id',
+            'block_number',
+            'block_timestamp',
+            'event_name'
+        );
     }
 
     /**

@@ -79,7 +79,7 @@ class AuthController extends Controller
      */
     private function getExpiresTime(): int
     {
-        return auth()->factory()->getTTL() * 60;
+        return auth()->factory()->getTTL() * 60 * 1000;
     }
 
     /**
@@ -95,12 +95,13 @@ class AuthController extends Controller
     public function registration(RegistrationRequest $request)
     {
         $data_event = $this->cryptoService->confirmRegistration($request->input('hex'));
+
         // TODO create user, wallet, transaction
 
         $params = array_merge($request->validated(), $data_event);
         list($user, $token) = $this->user->createWithWallet($params);
-
-        return response()->json(compact('user', 'token'), 201);
+        $expires_in = $this->getExpiresTime();
+        return response()->json(compact('user', 'token', 'expires_in'), 201);
     }
 
     /**

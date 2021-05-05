@@ -37,9 +37,8 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['daily'],
+            'channels' => ['single','sentry'],
             'ignore_exceptions' => false,
-            'path' => storage_path('logs/laravel.log'),
         ],
 
         'single' => [
@@ -52,7 +51,7 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 1,
+            'days' => 14,
         ],
 
         'slack' => [
@@ -71,6 +70,12 @@ return [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
             ],
+
+         'sentry' => [
+             'driver' => 'sentry',
+             'level'  => 'debug',
+             'bubble' => true,
+         ]
         ],
 
         'stderr' => [

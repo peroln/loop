@@ -37,7 +37,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['single','sentry'],
             'ignore_exceptions' => false,
         ],
 
@@ -70,6 +70,12 @@ return [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
             ],
+
+         'sentry' => [
+             'driver' => 'sentry',
+             'level'  => 'debug',
+             'bubble' => true,
+         ]
         ],
 
         'stderr' => [

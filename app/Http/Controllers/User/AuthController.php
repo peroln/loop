@@ -6,17 +6,13 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\LoginRequest;
-
 use App\Http\Requests\User\RegistrationRequest;
 use App\Models\Helpers\CryptoServiceInterface;
-use App\Models\User;
 use App\Models\Wallet;
 use App\Repositories\Base\RepositoryInterface;
 use App\Repositories\UserRepository;
 use App\Traits\FormatsErrorResponse;
-use Faker\Factory;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -67,11 +63,8 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 502);
         }
-
-        $user = $this->user->getUserByWallet(auth()->user()->address);
         $expires_in = $this->getExpiresTime();
-
-        return response()->json(compact('token', 'expires_in', 'user'), 200);
+        return response()->json(compact('token', 'expires_in'), 200);
     }
 
     /**
@@ -95,13 +88,13 @@ class AuthController extends Controller
     public function registration(RegistrationRequest $request)
     {
         $data_event = $this->cryptoService->confirmRegistration($request->input('hex'));
-
-        // TODO create user, wallet, transaction
-
-        $params = array_merge($request->validated(), $data_event);
-        list($user, $token) = $this->user->createWithWallet($params);
+        if($data_event === false){
+            return response()->json('The hex param is invalid.', 400);
+        }
+        $params = array_merge($request->validated(), $data_event, ['model_service' => $this->cryptoService->getImplementClass()]);
+        $token = $this->user->createWithWallet($params);
         $expires_in = $this->getExpiresTime();
-        return response()->json(compact('user', 'token', 'expires_in'), 201);
+        return response()->json(compact('token', 'expires_in'), 201);
     }
 
     /**
@@ -110,6 +103,7 @@ class AuthController extends Controller
     public function getAuthenticatedUser(): JsonResponse
     {
         $user = $this->user->getUserByWallet(Auth::user()->address);
+        $user->load('wallet.transactions.transactionEvents');
         return response()->json(compact('user'));
     }
 

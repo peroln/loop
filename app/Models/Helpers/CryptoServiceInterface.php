@@ -11,4 +11,6 @@ interface CryptoServiceInterface
     function receiveDataTransaction(string|int $transaction_id);
 
     function receiveDataContractTransactions();
+
+    function getImplementClass();
 }

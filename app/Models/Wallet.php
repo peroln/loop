@@ -41,9 +41,9 @@ class Wallet extends Authenticatable implements JWTSubject
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function transactionEvents(): HasMany
+    public function transactions(): HasMany
     {
-        return $this->hasMany(TransactionEvents::class);
+        return $this->hasMany(Transaction::class);
     }
 
     public function getJWTIdentifier()

@@ -5,18 +5,21 @@ namespace App\Services;
 
 
 use App\Models\Helpers\CryptoServiceInterface;
+use App\Services\Blockchain\TronDecoder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 
 class TronService implements CryptoServiceInterface
 {
+    use  TronDecoder;
+
     public string $contract_address;
-    public string $api_host;
+    public string $api_tron_host;
 
     public function __construct()
     {
         $this->contract_address = config('tron.contract_address');
-        $this->api_host = config('tron.tron_host_api');
+        $this->api_tron_host = config('tron.tron_host_api');
     }
 
     /**
@@ -27,10 +30,9 @@ class TronService implements CryptoServiceInterface
     {
         $url = $this->formUrlRequest(\Str::of(__FUNCTION__)->snake('-'), compact('transaction_id' ));
         $response = Http::get($url);
-
         if ($response->successful() && count($response->json('data'))) {
             $collect_event_array = $response->collect('data');
-            $registration_event = $collect_event_array->where('event_name', 'Registration')->firstWhere('contract_address', 'TS2rKkV7m5U27ASTurX9YHVXaeC8DXvudT');
+            $registration_event = $collect_event_array->where('event_name', 'Registration')->firstWhere('contract_address', $this->contract_address);
             return $this->extractDataFromRegisterTransaction($registration_event);
         }
         return false;
@@ -44,7 +46,7 @@ class TronService implements CryptoServiceInterface
     private function formUrlRequest(string $method_slug, array $params): string
     {
         return match ($method_slug) {
-            'confirm-registration' => $this->api_host . "/transactions/" . $params['transaction_id'] . "/events"
+            'confirm-registration' => $this->api_tron_host . "/transactions/" . $params['transaction_id'] . "/events"
         };
     }
 
@@ -54,11 +56,12 @@ class TronService implements CryptoServiceInterface
      */
     private function extractDataFromRegisterTransaction(array $registration_event): bool|array
     {
+
         $referrer_id = Arr::get($registration_event, 'result.referrerId');
         $contract_user_id = Arr::get($registration_event, 'result.userId');
-        $referrer_cache_address = Arr::get($registration_event, 'result.referrer');
-        $contract_user_cache_address = Arr::get($registration_event, 'result.user');
-        $transaction_id = Arr::get($registration_event, 'transaction_id');
+        $referrer_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.referrer'));
+        $contract_user_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.user'));
+        $base58_id= $this->hexString2Base58(Arr::get($registration_event, 'transaction_id'));
         $block_number =  Arr::get($registration_event, 'block_number');
         $block_timestamp =  Arr::get($registration_event, 'block_timestamp');
         $event_name =  Arr::get($registration_event, 'event_name');
@@ -66,9 +69,9 @@ class TronService implements CryptoServiceInterface
         return compact(
             'referrer_id',
             'contract_user_id',
-            'referrer_cache_address',
-            'contract_user_cache_address',
-            'transaction_id',
+            'referrer_base58_address',
+            'contract_user_base58_address',
+            'base58_id',
             'block_number',
             'block_timestamp',
             'event_name'
@@ -90,6 +93,13 @@ class TronService implements CryptoServiceInterface
     function receiveDataContractTransactions()
     {
         // TODO: Implement receiveDataContractTransactions() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getImplementClass(){
+        return self::class;
     }
 
 }

@@ -15,15 +15,14 @@ class CreateTransactionEventsTable extends Migration
     {
         Schema::create('transaction_events', function (Blueprint $table) {
             $table->id();
-            $table->string("transaction_id");
-            $table->foreignId('wallet_id')
+            $table->foreignId('transaction_id')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string("referrer_id");
             $table->string("contract_user_id");
-            $table->string("referrer_cache_address");
-            $table->string("contract_user_cache_address");
+            $table->string("referrer_base58_address");
+            $table->string("contract_user_base58_address");
             $table->integer('block_number');
             $table->unsignedBigInteger('block_timestamp');
             $table->string('event_name');

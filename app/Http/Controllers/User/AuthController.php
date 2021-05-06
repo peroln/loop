@@ -6,14 +6,13 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\LoginRequest;
-//use App\Models\Helpers\CryptoServiceInterface;
-use App\Models\User;
+use App\Http\Requests\User\RegistrationRequest;
+use App\Models\Helpers\CryptoServiceInterface;
 use App\Models\Wallet;
 use App\Repositories\Base\RepositoryInterface;
 use App\Repositories\UserRepository;
 use App\Traits\FormatsErrorResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -35,17 +34,17 @@ class AuthController extends Controller
     /**
      * @var CryptoServiceInterface
      */
-//    private CryptoServiceInterface $cryptoService;
+    private CryptoServiceInterface $cryptoService;
 
     /**
      * AuthController constructor.
      * @param RepositoryInterface $user
-//     * @param CryptoServiceInterface $cryptoService
+     * @param CryptoServiceInterface $cryptoService
      */
-    public function __construct(RepositoryInterface $user/*, CryptoServiceInterface $cryptoService*/)
+    public function __construct(RepositoryInterface $user, CryptoServiceInterface $cryptoService)
     {
         $this->middleware('auth:wallet', ['except' => ['login', 'registration']]);
-//        $this->cryptoService = $cryptoService;
+        $this->cryptoService = $cryptoService;
         $this->user = $user;
     }
 
@@ -64,11 +63,8 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 502);
         }
-
-        $user = $this->user->getUserByWallet(auth()->user()->address);
         $expires_in = $this->getExpiresTime();
-
-        return response()->json(compact('token', 'expires_in', 'user'), 200);
+        return response()->json(compact('token', 'expires_in'), 200);
     }
 
     /**
@@ -76,7 +72,7 @@ class AuthController extends Controller
      */
     private function getExpiresTime(): int
     {
-        return auth()->factory()->getTTL() * 60;
+        return auth()->factory()->getTTL() * 60 * 1000;
     }
 
     /**
@@ -89,29 +85,16 @@ class AuthController extends Controller
         Auth::login($wallet);
     }
 
-    public function register(Request $request)
+    public function registration(RegistrationRequest $request)
     {
-//        return response()->json($this->cryptoService->confirmRegistration('ed45dd66da3198f2754e10233f50ae586d84a43dd1c679149e4a6e5b11519ba3'));
-        $validator = \Validator::make(
-            $request->all(),
-            [
-                'address' => 'required|string|max:255',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+        $data_event = $this->cryptoService->confirmRegistration($request->input('hex'));
+        if($data_event === false){
+            return response()->json('The hex param is invalid.', 400);
         }
-
-        $user = User::create([
-//            'name' => $request->get('name'),
-//            'email' => $request->get('email'),
-//            'password' => Hash::make($request->get('password')),
-        ]);
-
-        $token = \JWTAuth::fromUser($user);
-
-        return response()->json(compact('user', 'token'), 201);
+        $params = array_merge($request->validated(), $data_event, ['model_service' => $this->cryptoService->getImplementClass()]);
+        $token = $this->user->createWithWallet($params);
+        $expires_in = $this->getExpiresTime();
+        return response()->json(compact('token', 'expires_in'), 201);
     }
 
     /**
@@ -120,6 +103,7 @@ class AuthController extends Controller
     public function getAuthenticatedUser(): JsonResponse
     {
         $user = $this->user->getUserByWallet(Auth::user()->address);
+        $user->load('wallet.transactions.transactionEvents');
         return response()->json(compact('user'));
     }
 

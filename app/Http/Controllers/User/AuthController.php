@@ -92,6 +92,7 @@ class AuthController extends Controller
             return response()->json('The hex param is invalid.', 400);
         }
         $params = array_merge($request->validated(), $data_event, ['model_service' => $this->cryptoService->getImplementClass()]);
+
         $token = $this->user->createWithWallet($params);
         $expires_in = $this->getExpiresTime();
         return response()->json(compact('token', 'expires_in'), 201);

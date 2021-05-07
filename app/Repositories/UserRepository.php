@@ -62,7 +62,7 @@ class UserRepository extends Repository
     private function createUserDataParams(array $params): array
     {
         return [
-            'user_name' => $params['user_name'],
+            'user_name' => $params['user_name'] ?? 'Default User',
             'avatar' => '/some-image.jpg',
             'blocked_faq' => false,
             'lang' => $params['lang'] ?? 'en',

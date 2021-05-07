@@ -13,4 +13,6 @@ interface CryptoServiceInterface
     function receiveDataContractTransactions();
 
     function getImplementClass();
+
+    function extractRegisteredWallets();
 }

@@ -5,8 +5,6 @@ namespace App\Services;
 
 
 use App\Models\Helpers\CryptoServiceInterface;
-use App\Models\Transaction;
-use App\Repositories\UserRepository;
 use App\Services\Blockchain\TronDecoder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
@@ -45,7 +43,7 @@ class TronService implements CryptoServiceInterface
      * @param array|null $params
      * @return string
      */
-    private function formUrlRequest(string $method_slug, ?array $params): string
+    public function formUrlRequest(string $method_slug, ?array $params): string
     {
         return match ($method_slug) {
             'confirm-registration' => $this->api_tron_host . "/transactions/" . $params['transaction_id'] . "/events",
@@ -57,7 +55,7 @@ class TronService implements CryptoServiceInterface
      * @param array $registration_event
      * @return bool|array
      */
-    private function extractDataFromRegisterTransaction(array $registration_event): bool|array
+    public function extractDataFromRegisterTransaction(array $registration_event): bool|array
     {
         $referrer_id = Arr::get($registration_event, 'result.referrerId');
         $contract_user_id = Arr::get($registration_event, 'result.userId');
@@ -107,22 +105,5 @@ class TronService implements CryptoServiceInterface
         return self::class;
     }
 
-    public function extractRegisteredWallets()
-    {
-        $url = $this->formUrlRequest(\Str::of(__FUNCTION__)->snake('-'), null);
-        $response = Http::get($url, ['event_name' => 'Registration']);
-        if ($response->successful() && count($response->json('data'))) {
-            $collect_event_array = $response->collect('data');
-            $transaction_ids = Transaction::whereHas('transactionEvents', fn($q) => $q->where('event_name', 'Registration'))->pluck('hex');
-            $registration_events = $collect_event_array->whereNotIn("transaction_id", $transaction_ids)->all();
-            $repository_user = app()->make(UserRepository::class);
-            foreach ($registration_events as $event) {
-                $array_dada_events = $this->extractDataFromRegisterTransaction($event);
-                $params = array_merge($array_dada_events, ['model_service' => self::class, 'hex' => 'ed45dd66da3198f2754e10233f50ae586d84a43dd1c679149e4a6e5b11519ba3']);
-                $tokens[] = $repository_user->createWithWallet($params);
-            }
-
-        }
-    }
 
 }

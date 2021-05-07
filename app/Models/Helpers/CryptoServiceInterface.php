@@ -6,7 +6,7 @@ namespace App\Models\Helpers;
 
 interface CryptoServiceInterface
 {
-    function confirmRegistration(string $transaction_id): bool|array;
+//    function confirmRegistration(string $transaction_id): bool|array;
 
     function receiveDataTransaction(string|int $transaction_id);
 
@@ -14,5 +14,9 @@ interface CryptoServiceInterface
 
     function getImplementClass();
 
-    function extractRegisteredWallets();
+//    function extractRegisteredWallets();
+
+    function formUrlRequest(string $method_slug, ?array $params): string;
+
+//    function extractDataFromRegisterTransaction(array $data);
 }

@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Helpers\CryptoServiceInterface;
+use App\Services\CryptoHandlerService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class ExtractRegistration extends Command
 {
@@ -34,10 +36,15 @@ class ExtractRegistration extends Command
     /**
      * Execute the console command.
      *
-     * @return int
+     *
      */
-    public function handle(CryptoServiceInterface $service)
+    public function handle(CryptoHandlerService $service)
     {
-        return $service->extractRegisteredWallets();
+      /*  try{
+            $service->extractRegisteredWallets();
+        }catch(\Throwable $e){
+            Log::error($e->getMessage());
+        }*/
+
     }
 }

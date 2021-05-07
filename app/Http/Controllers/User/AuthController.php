@@ -7,10 +7,10 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\LoginRequest;
 use App\Http\Requests\User\RegistrationRequest;
-use App\Models\Helpers\CryptoServiceInterface;
 use App\Models\Wallet;
 use App\Repositories\Base\RepositoryInterface;
 use App\Repositories\UserRepository;
+use App\Services\CryptoHandlerService;
 use App\Traits\FormatsErrorResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -32,20 +32,21 @@ class AuthController extends Controller
      */
     private RepositoryInterface $user;
     /**
-     * @var CryptoServiceInterface
+     * @var CryptoHandlerService
      */
-    private CryptoServiceInterface $cryptoService;
+
+    private CryptoHandlerService $cryptoHandlerService;
 
     /**
      * AuthController constructor.
      * @param RepositoryInterface $user
-     * @param CryptoServiceInterface $cryptoService
+     * @param CryptoHandlerService $cryptoHandlerService
      */
-    public function __construct(RepositoryInterface $user, CryptoServiceInterface $cryptoService)
+    public function __construct(CryptoHandlerService $cryptoHandlerService, RepositoryInterface $user)
     {
         $this->middleware('auth:wallet', ['except' => ['login', 'registration']]);
-        $this->cryptoService = $cryptoService;
         $this->user = $user;
+        $this->cryptoHandlerService = $cryptoHandlerService;
     }
 
     /**
@@ -85,15 +86,18 @@ class AuthController extends Controller
         Auth::login($wallet);
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function registration(RegistrationRequest $request)
     {
-        $data_event = $this->cryptoService->confirmRegistration($request->input('hex'));
+        $data_event = $this->cryptoHandlerService->cryptoService->confirmRegistration($request->input('hex'));
         if($data_event === false){
             return response()->json('The hex param is invalid.', 400);
         }
-        $params = array_merge($request->validated(), $data_event, ['model_service' => $this->cryptoService->getImplementClass()]);
+        $params = array_merge($request->validated(), $data_event, ['model_service' => $this->cryptoHandlerService->cryptoService->getImplementClass()]);
 
-        $token = $this->user->createWithWallet($params);
+        $token = $this->cryptoHandlerService->createWithWallet($params);
         $expires_in = $this->getExpiresTime();
         return response()->json(compact('token', 'expires_in'), 201);
     }

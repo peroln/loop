@@ -7,13 +7,15 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\LoginRequest;
 use App\Http\Requests\User\RegistrationRequest;
-use App\Models\Wallet;
+use App\Http\Resources\User\UserResource;
 use App\Repositories\Base\RepositoryInterface;
 use App\Repositories\UserRepository;
+use App\Repositories\WalletRepository;
 use App\Services\CryptoHandlerService;
 use App\Traits\FormatsErrorResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 
@@ -28,25 +30,14 @@ class AuthController extends Controller
 
 
     /**
-     * @var UserRepository
-     */
-    private RepositoryInterface $user;
-    /**
-     * @var CryptoHandlerService
-     */
-
-    private CryptoHandlerService $cryptoHandlerService;
-
-    /**
      * AuthController constructor.
-     * @param RepositoryInterface $user
      * @param CryptoHandlerService $cryptoHandlerService
+     * @param RepositoryInterface $userRepository
      */
-    public function __construct(CryptoHandlerService $cryptoHandlerService, RepositoryInterface $user)
+    public function __construct(private CryptoHandlerService $cryptoHandlerService, private RepositoryInterface $userRepository)
     {
         $this->middleware('auth:wallet', ['except' => ['login', 'registration']]);
-        $this->user = $user;
-        $this->cryptoHandlerService = $cryptoHandlerService;
+
     }
 
     /**
@@ -55,7 +46,7 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $this->authenticate($request->validated());
+        app()->call([self::class, 'authenticate'], ['valid_request' => $request->validated()]);
         if (!auth()->check()) {
             response()->json(['error' => 'Authentication is failure'], 501);
         }
@@ -77,16 +68,23 @@ class AuthController extends Controller
     }
 
     /**
+     * @param WalletRepository $wallet_repository
      * @param array $valid_request
      */
-    private function authenticate(array $valid_request): void
+    public static function authenticate(WalletRepository $wallet_repository, array $valid_request): void
     {
         $address = $valid_request['address'];
-        $wallet = Wallet::where('address', $address)->firstOrFail();
-        Auth::login($wallet);
+        try{
+            $wallet = $wallet_repository->findByOrFail('address', $address);
+            Auth::login($wallet);
+        }catch(\Exception $e){
+            Log::info('Login is fail. The error is: ' . $e->getMessage());
+        }
     }
 
     /**
+     * @param RegistrationRequest $request
+     * @return JsonResponse
      * @throws \Throwable
      */
     public function registration(RegistrationRequest $request)
@@ -103,13 +101,12 @@ class AuthController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserResource
      */
-    public function getAuthenticatedUser(): JsonResponse
+    public function getAuthenticatedUser(): UserResource
     {
-        $user = $this->user->getUserByWallet(Auth::user()->address);
-        $user->load('wallet.transactions.transactionEvents');
-        return response()->json(compact('user'));
+        $user = $this->userRepository->getUserByWallet(Auth::user()->address);
+        return new UserResource($user);
     }
 
     /**
@@ -134,13 +131,10 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the token array structure.
-     *
      * @param string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    protected function respondWithToken($token): JsonResponse
+    protected function respondWithToken(string $token): JsonResponse
     {
         return response()->json([
             'access_token' => $token,

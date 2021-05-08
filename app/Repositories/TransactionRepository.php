@@ -17,6 +17,7 @@ class TransactionRepository extends Repository
     {
         return Transaction::class;
     }
+
     /**
      * @param array $params
      * @return array
@@ -29,6 +30,14 @@ class TransactionRepository extends Repository
             'blockNumber' => $params['block_number'],
             'model_service' => $params['model_service'] ?? ''
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function retrieveHexIdRegistration(): array
+    {
+        return $this->getModel()->whereHas('transactionEvents', fn($q) => $q->where('event_name', 'Registration'))->pluck('hex')->toArray();
     }
 
 }

@@ -5,7 +5,6 @@ namespace App\Services;
 
 
 use App\Models\Helpers\CryptoServiceInterface;
-use App\Models\Transaction;
 use App\Repositories\TransactionEventRepository;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
@@ -16,12 +15,6 @@ use Illuminate\Support\Str;
 use Throwable;
 class CryptoHandlerService
 {
-    public CryptoServiceInterface $cryptoService;
-    public UserRepository $userRepository;
-    private TransactionRepository $transactionRepository;
-    private TransactionEventRepository $transactionEventRepository;
-    private WalletRepository $walletRepository;
-
     /**
      * CryptoHandlerService constructor.
      * @param CryptoServiceInterface $cryptoService
@@ -31,18 +24,13 @@ class CryptoHandlerService
      * @param WalletRepository $walletRepository
      */
     public function __construct(
-        CryptoServiceInterface $cryptoService,
-        UserRepository $userRepository,
-        TransactionRepository $transactionRepository,
-        TransactionEventRepository $transactionEventRepository,
-        WalletRepository $walletRepository
+       public CryptoServiceInterface $cryptoService,
+       public UserRepository $userRepository,
+       private TransactionRepository $transactionRepository,
+       private TransactionEventRepository $transactionEventRepository,
+       private WalletRepository $walletRepository
     )
     {
-        $this->cryptoService = $cryptoService;
-        $this->userRepository = $userRepository;
-        $this->transactionRepository = $transactionRepository;
-        $this->transactionEventRepository = $transactionEventRepository;
-        $this->walletRepository = $walletRepository;
     }
 
     /**
@@ -54,7 +42,7 @@ class CryptoHandlerService
         $response = Http::get($url, ['event_name' => 'Registration']);
         if ($response->successful() && count($response->json('data'))) {
             $collect_event_array = $response->collect('data');
-            $transaction_ids = $this->transactionRepository->getModel()->whereHas('transactionEvents', fn($q) => $q->where('event_name', 'Registration'))->pluck('hex');
+            $transaction_ids = $this->transactionRepository->retrieveHexIdRegistration();
             $registration_events = $collect_event_array->whereNotIn("transaction_id", $transaction_ids)->all();
             if (count($registration_events)) {
                 foreach ($registration_events as $event) {

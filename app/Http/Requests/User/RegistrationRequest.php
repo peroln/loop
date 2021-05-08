@@ -27,7 +27,7 @@ class RegistrationRequest extends FormRequest
         return [
             'hex' => 'required|string|min:10|unique:transactions',
             'lang' => ['nullable', 'string', Rule::in(['en', 'es', 'ru'])],
-            'user_name' => 'required|string|unique:users',
+            'user_name' => 'nullable|string',
             'amount_transfers' => 'nullable|integer',
             'profit_referrals' => 'nullable|integer',
             'profit_reinvest' => 'nullable|integer',

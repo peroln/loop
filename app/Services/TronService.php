@@ -28,7 +28,7 @@ class TronService implements CryptoServiceInterface
      */
     public function confirmRegistration(string $transaction_id): bool|array
     {
-        $url = $this->formUrlRequest(\Str::of(__FUNCTION__)->snake('-'), compact('transaction_id' ));
+        $url = $this->formUrlRequest(\Str::of(__FUNCTION__)->snake('-'), compact('transaction_id'));
         $response = Http::get($url);
         if ($response->successful() && count($response->json('data'))) {
             $collect_event_array = $response->collect('data');
@@ -40,13 +40,14 @@ class TronService implements CryptoServiceInterface
 
     /**
      * @param string $method_slug
-     * @param array $params
+     * @param array|null $params
      * @return string
      */
-    private function formUrlRequest(string $method_slug, array $params): string
+    public function formUrlRequest(string $method_slug, ?array $params): string
     {
         return match ($method_slug) {
-            'confirm-registration' => $this->api_tron_host . "/transactions/" . $params['transaction_id'] . "/events"
+            'confirm-registration' => $this->api_tron_host . "/transactions/" . $params['transaction_id'] . "/events",
+            'extract-registered-wallets' => $this->api_tron_host . "/contracts/" . $this->contract_address . "/events"
         };
     }
 
@@ -54,17 +55,17 @@ class TronService implements CryptoServiceInterface
      * @param array $registration_event
      * @return bool|array
      */
-    private function extractDataFromRegisterTransaction(array $registration_event): bool|array
+    public function extractDataFromRegisterTransaction(array $registration_event): bool|array
     {
-
         $referrer_id = Arr::get($registration_event, 'result.referrerId');
         $contract_user_id = Arr::get($registration_event, 'result.userId');
         $referrer_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.referrer'));
         $contract_user_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.user'));
-        $base58_id= $this->hexString2Base58(Arr::get($registration_event, 'transaction_id'));
-        $block_number =  Arr::get($registration_event, 'block_number');
-        $block_timestamp =  Arr::get($registration_event, 'block_timestamp');
-        $event_name =  Arr::get($registration_event, 'event_name');
+        $base58_id = $this->hexString2Base58(Arr::get($registration_event, 'transaction_id'));
+        $hex= Arr::get($registration_event, 'transaction_id');
+        $block_number = Arr::get($registration_event, 'block_number');
+        $block_timestamp = Arr::get($registration_event, 'block_timestamp');
+        $event_name = Arr::get($registration_event, 'event_name');
 
         return compact(
             'referrer_id',
@@ -74,7 +75,8 @@ class TronService implements CryptoServiceInterface
             'base58_id',
             'block_number',
             'block_timestamp',
-            'event_name'
+            'event_name',
+            'hex'
         );
     }
 
@@ -98,8 +100,10 @@ class TronService implements CryptoServiceInterface
     /**
      * @return string
      */
-    public function getImplementClass(){
+    public function getImplementClass()
+    {
         return self::class;
     }
+
 
 }

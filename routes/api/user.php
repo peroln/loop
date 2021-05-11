@@ -14,7 +14,7 @@ Route::group([
     Route::post('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
 });
 
-Route::put('{user}/update', [UserController::class, 'update'])->middleware(['auth:wallet']);
+Route::put('{user}/update', [UserController::class, 'update'])->middleware(['auth:wallet', 'can:update,user']);
 Route::get('check-registration/{wallet}', [UserController::class, 'checkWallet']);
 
 

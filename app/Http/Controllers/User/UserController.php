@@ -55,15 +55,10 @@ class UserController extends Controller
      * @param UserUpdateRequest $request
      * @param User $user
      * @return UserResource|JsonResponse
+     *
      */
     public function update(UserUpdateRequest $request, User $user): UserResource | JsonResponse
     {
-//        Gate::authorize('update', $user);
-        $response = Gate::inspect('update', $user);
-        if (!$response->allowed()) {
-            return response()->json($response->message(), 403);
-        }
-//        $this->authorize('update', $user);
         $user->fill($request->validated());
         if($user->save()){
             return new UserResource($user);

@@ -9,7 +9,6 @@ use App\Http\Requests\User\LoginRequest;
 use App\Http\Requests\User\RegistrationRequest;
 use App\Http\Resources\User\UserResource;
 use App\Repositories\Base\RepositoryInterface;
-use App\Repositories\UserRepository;
 use App\Repositories\WalletRepository;
 use App\Services\CryptoHandlerService;
 use App\Traits\FormatsErrorResponse;

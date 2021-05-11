@@ -15,7 +15,7 @@ return [
 
 	'defaults' => [
 		'guard'     => 'wallet',
-		'passwords' => 'users',
+//		'passwords' => 'users',
 	],
 
 	/*
@@ -76,7 +76,6 @@ return [
 		],
 		 'wallets' => [
 		     'driver' => 'eloquent',
-		     'table' => 'wallets',
              'model'  => App\Models\Wallet::class,
 		 ],
 	],

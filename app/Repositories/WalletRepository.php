@@ -15,8 +15,9 @@ class WalletRepository extends Repository
      */
     public function model(): string
     {
-       return Wallet::class;
+        return Wallet::class;
     }
+
     /**
      * @param array $params
      * @return array
@@ -30,5 +31,22 @@ class WalletRepository extends Repository
             'profit_referrals' => $params['profit_referrals'] ?? 0,
             'profit_reinvest' => $params['profit_reinvest'] ?? 0,
         ];
+    }
+
+    /**
+     * @param string $column
+     * @param string|int $value
+     * @return bool
+     */
+    public function exist(string $column, string|int $value): bool
+    {
+        try {
+            $model = $this->findByOrFail($column, $value);
+            if ($model) {
+                return true;
+            }
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 }

@@ -17,7 +17,7 @@
         "laravel/tinker": "^2.6",
         "predis/predis": "^1.1",
         "sentry/sentry-laravel": "^2.4",
-        "tymon/jwt-auth": "^1.0",
+        "tymon/jwt-auth": "^1.0.2",
         "ext-curl": "*",
         "ext-json": "*",
       "ext-bcmath": "*"

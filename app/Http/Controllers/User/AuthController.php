@@ -58,6 +58,7 @@ class AuthController extends Controller
         return response()->json(compact('token', 'expires_in'), 200);
     }
 
+
     /**
      * @return int
      */
@@ -80,6 +81,7 @@ class AuthController extends Controller
             Log::info('Login is fail. The error is: ' . $e->getMessage());
         }
     }
+
 
     /**
      * @param RegistrationRequest $request

@@ -11,6 +11,7 @@ use App\Models\User;
 use App\MultiplePaginate;
 use App\Http\Requests\User\GetAllUserRequest;
 use App\Repositories\UserRepository;
+use App\Repositories\WalletRepository;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\JsonResponse;
 
@@ -68,6 +69,17 @@ class UserController extends Controller
             return new UserResource($user);
         };
         return response()->json('The model is`t update', 400);
+
+    }
+
+    /**
+     * @param WalletRepository $wallet_repository
+     * @param string $wallet
+     * @return JsonResponse
+     */
+    public function checkWallet(WalletRepository $wallet_repository, string $wallet): JsonResponse
+    {
+        return response()->json($wallet_repository->exist('address', $wallet));
 
     }
 }

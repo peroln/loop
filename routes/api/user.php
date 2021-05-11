@@ -15,6 +15,7 @@ Route::group([
 });
 
 Route::put('{user}/update', [UserController::class, 'update'])->middleware(['auth:wallet']);
+Route::get('check-registration/{wallet}', [UserController::class, 'checkWallet']);
 
 
 Route::get('/contract_address', 'PublicApiController@address');

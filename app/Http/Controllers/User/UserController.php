@@ -7,13 +7,15 @@ use App\Http\Requests\User\GetUserByIdRequest;
 use App\Http\Requests\User\GetUserByWalletRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserResource;
+use App\Models\Language;
 use App\Models\User;
 use App\MultiplePaginate;
 use App\Http\Requests\User\GetAllUserRequest;
 use App\Repositories\UserRepository;
 use App\Repositories\WalletRepository;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Arr;
 
 
 class UserController extends Controller
@@ -57,10 +59,18 @@ class UserController extends Controller
      * @return UserResource|JsonResponse
      *
      */
-    public function update(UserUpdateRequest $request, User $user): UserResource | JsonResponse
+    public function update(UserUpdateRequest $request, User $user): UserResource|JsonResponse
     {
-        $user->fill($request->validated());
-        if($user->save()){
+        $params = $request->validated();
+        if ($request->has('language')) {
+            $language_shortcode = Arr::pull($params, 'language');
+            $lang_model = Language::where('shortcode', $language_shortcode)->firstOrFail();
+            $user->language_id = $lang_model->id;
+        }
+        if (count($params)) {
+            $user->fill($params);
+        }
+        if ($user->save()) {
             return new UserResource($user);
         };
         return response()->json('The model is`t update', 400);

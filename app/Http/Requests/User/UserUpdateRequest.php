@@ -27,7 +27,7 @@ class UserUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'lang' => ['nullable', 'string', Rule::in(['en', 'es', 'ru'])]
+            'language' => ['required', 'string', 'exists:languages,shortcode']
         ];
     }
 }

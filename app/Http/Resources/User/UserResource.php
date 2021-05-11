@@ -23,7 +23,7 @@ class UserResource extends JsonResource
             'user_name'        => $this->user_name,
             'avatar'           => $this->avatar,
             'blocked_faq'      => $this->blocked_faq,
-            'lang'             => $this->lang,
+            'language'             => $this->language->shortcode,
             'this_referral'    => $this->this_referral,
             'referrals_count'  => $this->getCountReferrals($this->id),
             'referral_link'    => $this->getReferralLink($this->id),

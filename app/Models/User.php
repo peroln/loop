@@ -16,6 +16,7 @@ class User extends Model
         'user_name',
         'avatar',
         'blocked_faq',
+        'language_id',
         'referral',
         'created_at',
         'updated_at',

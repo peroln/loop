@@ -15,7 +15,7 @@ Route::group([
 });
 
 Route::put('{user}/update', [UserController::class, 'update'])->middleware(['auth:wallet', 'can:update,user']);
-Route::get('check-registration/{wallet}', [UserController::class, 'checkWallet']);
+Route::get('check-registration/{wallet}', [UserController::class, 'checkWallet'])->whereAlphaNumeric('wallet');
 
 
 Route::get('/contract_address', 'PublicApiController@address');

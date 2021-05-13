@@ -27,6 +27,7 @@ class TransactionRepository extends Repository
         return [
             'base58_id' => $params['base58_id'],
             'hex' => $params['hex'],
+            'call_value' => $params['call_value'] ?? 0,
             'blockNumber' => $params['block_number'],
             'model_service' => $params['model_service'] ?? ''
         ];

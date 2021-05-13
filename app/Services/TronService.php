@@ -8,6 +8,7 @@ use App\Models\Helpers\CryptoServiceInterface;
 use App\Services\Blockchain\TronDecoder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class TronService implements CryptoServiceInterface
 {
@@ -46,8 +47,10 @@ class TronService implements CryptoServiceInterface
     public function formUrlRequest(string $method_slug, ?array $params): string
     {
         return match ($method_slug) {
-            'confirm-registration' => $this->api_tron_host . "/transactions/" . $params['transaction_id'] . "/events",
-            'extract-registered-wallets' => $this->api_tron_host . "/contracts/" . $this->contract_address . "/events"
+            'confirm-registration' => $this->api_tron_host . "/v1/transactions/" . $params['transaction_id'] . "/events",
+            'extract-registered-wallets' => $this->api_tron_host . "/v1/contracts/" . $this->contract_address . "/events",
+            'receive-transaction-call-value' => $this->api_tron_host . '/walletsolidity/gettransactionbyid',
+            'get-account-balance' => $this->api_tron_host . '/v1/accounts/' . $params['address'],
         };
     }
 
@@ -62,7 +65,10 @@ class TronService implements CryptoServiceInterface
         $referrer_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.referrer'));
         $contract_user_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.user'));
         $base58_id = $this->hexString2Base58(Arr::get($registration_event, 'transaction_id'));
-        $hex= Arr::get($registration_event, 'transaction_id');
+        $amount_transfers = 0; //TODO unknown logic
+        $balance = $this->getAccountBalance($contract_user_base58_address);
+        $hex = Arr::get($registration_event, 'transaction_id');
+        $call_value = $this->receiveTransactionCallValue($hex);
         $block_number = Arr::get($registration_event, 'block_number');
         $block_timestamp = Arr::get($registration_event, 'block_timestamp');
         $event_name = Arr::get($registration_event, 'event_name');
@@ -76,8 +82,50 @@ class TronService implements CryptoServiceInterface
             'block_number',
             'block_timestamp',
             'event_name',
-            'hex'
+            'hex',
+            'call_value',
+            'amount_transfers',
+            'balance'
         );
+    }
+
+    /**
+     * @param string $transaction_id
+     * @return int
+     */
+    public function receiveTransactionCallValue(string $transaction_id): int
+    {
+        $url = $this->formUrlRequest(\Str::of(__FUNCTION__)->snake('-'), null);
+        $response = Http::withBody(json_encode(['value' => $transaction_id]), 'application-json')->post($url); // or 'json' => [...]]);
+        $arr_transaction = $response->json('raw_data.contract');
+        if (count($arr_transaction) === 1) {
+            return $arr_transaction[0]['parameter']['value']['call_value'];
+        } else {
+            Log::alert('The response array has different construction. Function receiveTransactionCallValue can not handle response.');
+            return 0;
+        }
+    }
+
+    public function receiveInternalTransactionData(string $transaction_id)
+    {
+        //TODO internal transaction
+    }
+
+    /**
+     * @param string $address
+     * @return int
+     */
+    public function getAccountBalance(string $address): int
+    {
+        $url = $this->formUrlRequest(\Str::of(__FUNCTION__)->snake('-'), compact('address'));
+        $response = Http::get($url);
+        if ($response->successful() && count($response->json('data'))) {
+            $data = $response->json('data');
+            if (count($data)) {
+                return Arr::get($data[0], 'balance');
+            }
+        }
+        return 0;
     }
 
     /**

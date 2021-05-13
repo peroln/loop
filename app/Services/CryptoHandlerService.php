@@ -47,7 +47,7 @@ class CryptoHandlerService
             if (count($registration_events)) {
                 foreach ($registration_events as $event) {
                     $array_dada_events = $this->cryptoService->extractDataFromRegisterTransaction($event);
-                    $params = array_merge($array_dada_events, ['model_service' => self::class]);
+                    $params = array_merge($array_dada_events, ['model_service' => $this->cryptoService::class]);
                     $tokens[] = $this->createWithWallet($params);
                 }
             }

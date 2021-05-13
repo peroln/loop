@@ -87,4 +87,20 @@ class UserController extends Controller
         return response()->json($wallet_repository->exist('address', $wallet));
 
     }
+
+    public function getReferralReit()
+    {
+
+    }
+
+    /**
+     * @param int $contract_user_id
+     * @return UserResource
+     * @throws \ReflectionException
+     */
+    public function getUserByContractId(int $contract_user_id): UserResource
+    {
+        return new UserResource($this->userRepository->findByOrFail('contract_user_id', $contract_user_id));
+
+    }
 }

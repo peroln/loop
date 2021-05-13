@@ -22,3 +22,6 @@ Route::get('/contract_address', 'PublicApiController@address');
 Route::get('/all', 'UserController@getAllUsers');
 Route::get('/wallet/{address}', [UserController::class, 'getUserByWallet']);
 Route::get('/{id}', [UserController::class, 'getUserById']);
+
+Route::get('/ref-reit', [UserController::class, 'getReferralReit']);
+Route::get('/contract-user/{contract_user_id}', [UserController::class, 'getUserByContractId']);

@@ -40,7 +40,8 @@ class UserRepository extends Repository
             'avatar' => '/some-image.jpg',
             'blocked_faq' => false,
             'language_id' => Language::where('shortcode', $language_shortcode)->first()->id,
-            'this_referral' => $params['referrer_id'] ?? 1
+            'this_referral' => $params['referrer_id'] ?? 1,
+            'contract_user_id' => $params['contract_user_id'] ?? 1
         ];
     }
 

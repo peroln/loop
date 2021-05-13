@@ -13,6 +13,7 @@ class User extends Model
 
     protected $fillable = [
         'id',
+        'contract_user_id',
         'user_name',
         'avatar',
         'blocked_faq',

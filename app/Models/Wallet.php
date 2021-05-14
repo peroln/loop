@@ -22,6 +22,7 @@ class Wallet extends Authenticatable implements JWTSubject
         'profit_referrals',
         'profit_reinvest',
         'balance',
+        'referral_link',
         'created_at',
         'updated_at',
     ];

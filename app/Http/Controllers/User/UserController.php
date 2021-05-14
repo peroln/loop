@@ -93,6 +93,11 @@ class UserController extends Controller
      */
     public function getCountInvited(): JsonResponse
     {
+        //If need statistic by previous month
+       /* $start = new Carbon('first day of last month');
+        $end = new Carbon('last day of last month');*/
+
+
         $reit_collection = DB::table('users')
             ->select('users.contract_user_id', 'users.user_name', 'users.id', DB::raw("count(u.id) as count"),)
             ->join('users as u', function($join){

@@ -31,6 +31,7 @@ class WalletRepository extends Repository
             'profit_referrals' => $params['profit_referrals'] ?? 0,
             'profit_reinvest' => $params['profit_reinvest'] ?? 0,
             'balance' => $params['balance'] ?? 0,
+            'referral_link' => $params['referral_link'] ?? null
         ];
     }
 

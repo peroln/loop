@@ -27,7 +27,7 @@ class UserResource extends JsonResource
             'language' => $this->language->shortcode,
             'this_referral' => $this->this_referral,
             'referrals_count' => $this->getCountReferrals($this->contract_user_id),
-            'referral_link' => $this->getReferralLink($this->contract_user_id),
+//            'referral_link' => $this->getReferralLink($this->contract_user_id),
             'wallet' => new WalletResouce($this->wallet),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -18,7 +18,7 @@ class User extends Model
         'avatar',
         'blocked_faq',
         'language_id',
-        'referral',
+        'this_referral',
         'created_at',
         'updated_at',
     ];

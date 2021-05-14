@@ -101,6 +101,7 @@ class UserController extends Controller
             })
             ->groupBy('users.contract_user_id', 'users.user_name', 'users.id')
             ->orderBy('count', 'desc')
+            ->limit(10)
         ->get();
         return response()->json($reit_collection);
 

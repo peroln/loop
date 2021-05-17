@@ -13,11 +13,14 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Throwable;
 
 class CryptoHandlerService
 {
+
+
     /**
      * CryptoHandlerService constructor.
      * @param CryptoServiceInterface $cryptoService
@@ -43,33 +46,11 @@ class CryptoHandlerService
     {
         $url = $this->cryptoService->formUrlRequest(Str::of(__FUNCTION__)->snake('-'), null);
         $response = Http::get($url);
-
         if ($response->successful() && count($response->json('data'))) {
-            $collect_event_array = $response->collect('data');
-
-            $transaction_ids = $this->transactionRepository->retrieveHexIdRegistration();
-            $registration_events = $collect_event_array
-                ->whereNotIn("transaction_id", $transaction_ids)
-                ->whereIn('event_name', ['Registration', 'AddedReferralLink'])
-                ->all();
-
-            $registration_events = collect($registration_events)->groupBy('transaction_id');
-            $handled_event = collect($registration_events)->map(function ($item) {
-                $item = collect($item);
-                $event_registration = $item->where('event_name', 'Registration')->first();
-                $event_ref_referral_link = $item->where('event_name', 'AddedReferralLink')->first();
-                $referral_link = Arr::get($event_ref_referral_link, 'result.link');
-                return array_merge($event_registration, ['referral_link' => $referral_link]);
-            });
-
-            if (count($handled_event)) {
-                foreach ($handled_event as $event) {
-                    /*if($event instanceof Collection){
-                        $event = $event->toArray();
-                    }*/
-                    $array_dada_events = $this->cryptoService->extractDataFromRegisterTransaction($event);
-                    $params = array_merge($array_dada_events, ['model_service' => $this->cryptoService::class]);
-                    $tokens[] = $this->createWithWallet($params);
+            $models_param_array = $this->handlingData($response);
+            if (count($models_param_array)) {
+                foreach ($models_param_array as $params) {
+                    $this->createWithWallet($params);
                 }
             }
         }
@@ -82,6 +63,7 @@ class CryptoHandlerService
      */
     public function createWithWallet(array $params): string
     {
+
         DB::beginTransaction();
         try {
             $user_data_params = $this->userRepository->createUserDataParams($params);
@@ -104,5 +86,54 @@ class CryptoHandlerService
         return auth()->fromUser($wallet);
     }
 
+    /**
+     * @param $response
+     * @return array
+     */
+    private function handlingData($response): array
+    {
+        $params = [];
+        $collect_event_array = $response->collect('data');
+        $handled_event = $this->handlingEvents($collect_event_array);
+        if ($handled_event instanceof Collection && $handled_event->count()) {
+            try {
+                foreach ($handled_event as $event) {
+                    if (is_array($event) && count($event)) {
+                        $array_dada_events = $this->cryptoService->extractDataFromRegisterTransaction($event);
+                        if (is_array($array_dada_events) && count($array_dada_events)) {
+                            $params[] = array_merge($array_dada_events, ['model_service' => $this->cryptoService::class]);
+                        };
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::debug('hello');
+            }
 
+        }
+        return $params;
+    }
+
+    /**
+     * @param $collect_event_array
+     * @return Collection
+     */
+    private function handlingEvents($collect_event_array): Collection
+    {
+        $transaction_ids = $this->transactionRepository->retrieveHexIdRegistration();
+        $registration_events = $collect_event_array
+            ->whereNotIn("transaction_id", $transaction_ids)
+            ->whereIn('event_name', $this->cryptoService::EVENTS_TRON)
+            ->all();
+
+        $registration_events = collect($registration_events)->groupBy('transaction_id');
+        return collect($registration_events)->map(function ($item) {
+            $item = collect($item);
+            if ($item->count() === count($this->cryptoService::EVENTS_TRON)) {
+                $event_registration = $item->where('event_name', 'Registration')->first();
+                $event_ref_referral_link = $item->where('event_name', 'AddedReferralLink')->first();
+                $referral_link = Arr::get($event_ref_referral_link, 'result.link');
+                return array_merge($event_registration, ['referral_link' => $referral_link]);
+            }
+        });
+    }
 }

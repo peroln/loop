@@ -34,7 +34,9 @@ class TronService implements CryptoServiceInterface
         if ($response->successful() && count($response->json('data'))) {
             $collect_event_array = $response->collect('data');
             $registration_event = $collect_event_array->where('event_name', 'Registration')->firstWhere('contract_address', $this->contract_address);
-            return $this->extractDataFromRegisterTransaction($registration_event);
+              $referral_ref = $collect_event_array->where('event_name', 'AddedReferralLink')->firstWhere('contract_address', $this->contract_address);
+            dd($referral_ref);
+              return $this->extractDataFromRegisterTransaction($registration_event);
         }
         return false;
     }
@@ -63,15 +65,19 @@ class TronService implements CryptoServiceInterface
         $referrer_id = Arr::get($registration_event, 'result.referrerId');
         $contract_user_id = Arr::get($registration_event, 'result.userId');
         $referrer_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.referrer'));
+
         $contract_user_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.user'));
         $base58_id = $this->hexString2Base58(Arr::get($registration_event, 'transaction_id'));
-        $amount_transfers = 0; //TODO unknown logic
+        $amount_transfers = 0;
         $balance = $this->getAccountBalance($contract_user_base58_address);
+
         $hex = Arr::get($registration_event, 'transaction_id');
-        $call_value = $this->receiveTransactionCallValue($hex);
+        $call_value = Arr::get($registration_event, 'result.amount');
+//        $call_value = $this->receiveTransactionCallValue($hex);
         $block_number = Arr::get($registration_event, 'block_number');
         $block_timestamp = Arr::get($registration_event, 'block_timestamp');
         $event_name = Arr::get($registration_event, 'event_name');
+        $referral_link = Arr::get($registration_event, 'referral_link');
 
         return compact(
             'referrer_id',
@@ -85,7 +91,8 @@ class TronService implements CryptoServiceInterface
             'hex',
             'call_value',
             'amount_transfers',
-            'balance'
+            'balance',
+            'referral_link'
         );
     }
 

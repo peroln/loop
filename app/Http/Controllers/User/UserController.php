@@ -14,8 +14,8 @@ use App\Http\Requests\User\GetAllUserRequest;
 use App\Repositories\UserRepository;
 use App\Repositories\WalletRepository;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 
 class UserController extends Controller
@@ -88,8 +88,22 @@ class UserController extends Controller
 
     }
 
-    public function getReferralReit()
+    /**
+     * @return JsonResponse
+     */
+    public function getCountInvited(): JsonResponse
     {
+        $reit_collection = DB::table('users')
+            ->select('users.contract_user_id', 'users.user_name', 'users.id', DB::raw("count(u.id) as count"),)
+            ->join('users as u', function ($join) {
+                $join->on('users.contract_user_id', '=', 'u.this_referral')
+                    ->whereBetween('u.created_at', [now()->subMonths(1), now()]);
+            })
+            ->groupBy('users.contract_user_id', 'users.user_name', 'users.id')
+            ->orderBy('count', 'desc')
+            ->limit(10)
+            ->get();
+        return response()->json($reit_collection);
 
     }
 

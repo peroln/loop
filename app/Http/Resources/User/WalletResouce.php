@@ -20,6 +20,7 @@ class WalletResouce extends JsonResource
             'coin' => $this->coin,
             'address' => $this->address,
             'balance' => $this->balance,
+            'referral_link' => $this->referral_link,
             'amount_transfers' => $this->amount_transfers,
             'profit_referrals' => $this->profit_referrals,
             'profit_reinvest' => $this->profit_reinvest,

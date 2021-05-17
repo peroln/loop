@@ -16,7 +16,7 @@ class TronService implements CryptoServiceInterface
 
     public string $contract_address;
     public string $api_tron_host;
-
+    const EVENTS_TRON = ['Registration', 'AddedReferralLink'];
     public function __construct()
     {
         $this->contract_address = config('tron.contract_address');
@@ -34,9 +34,7 @@ class TronService implements CryptoServiceInterface
         if ($response->successful() && count($response->json('data'))) {
             $collect_event_array = $response->collect('data');
             $registration_event = $collect_event_array->where('event_name', 'Registration')->firstWhere('contract_address', $this->contract_address);
-              $referral_ref = $collect_event_array->where('event_name', 'AddedReferralLink')->firstWhere('contract_address', $this->contract_address);
-            dd($referral_ref);
-              return $this->extractDataFromRegisterTransaction($registration_event);
+            return $this->extractDataFromRegisterTransaction($registration_event);
         }
         return false;
     }
@@ -62,23 +60,28 @@ class TronService implements CryptoServiceInterface
      */
     public function extractDataFromRegisterTransaction(array $registration_event): bool|array
     {
-        $referrer_id = Arr::get($registration_event, 'result.referrerId');
-        $contract_user_id = Arr::get($registration_event, 'result.userId');
-        $referrer_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.referrer'));
+        try {
+            $referrer_id = Arr::get($registration_event, 'result.referrerId');
+            $contract_user_id = Arr::get($registration_event, 'result.userId');
+            $referrer_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.referrer'));
 
-        $contract_user_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.user'));
-        $base58_id = $this->hexString2Base58(Arr::get($registration_event, 'transaction_id'));
-        $amount_transfers = 0;
-        $balance = $this->getAccountBalance($contract_user_base58_address);
+            $contract_user_base58_address = $this->hexString2Base58(Arr::get($registration_event, 'result.user'));
+            $base58_id = $this->hexString2Base58(Arr::get($registration_event, 'transaction_id'));
+            $amount_transfers = 0;
+            $balance = $this->getAccountBalance($contract_user_base58_address);
 
-        $hex = Arr::get($registration_event, 'transaction_id');
-        $call_value = Arr::get($registration_event, 'result.amount');
+
+            $hex = Arr::get($registration_event, 'transaction_id');
+            $call_value = Arr::get($registration_event, 'result.amount');
 //        $call_value = $this->receiveTransactionCallValue($hex);
-        $block_number = Arr::get($registration_event, 'block_number');
-        $block_timestamp = Arr::get($registration_event, 'block_timestamp');
-        $event_name = Arr::get($registration_event, 'event_name');
-        $referral_link = Arr::get($registration_event, 'referral_link');
+            $block_number = Arr::get($registration_event, 'block_number');
+            $block_timestamp = Arr::get($registration_event, 'block_timestamp');
+            $event_name = Arr::get($registration_event, 'event_name');
+            $referral_link = Arr::get($registration_event, 'referral_link');
 
+        } catch (\Throwable $e) {
+            Log::error($e->getMessage());
+        }
         return compact(
             'referrer_id',
             'contract_user_id',

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\GetUserByContractIdRequest;
 use App\Http\Requests\User\GetUserByIdRequest;
 use App\Http\Requests\User\GetUserByWalletRequest;
 use App\Http\Requests\User\UserUpdateRequest;
@@ -112,9 +113,9 @@ class UserController extends Controller
      * @return UserResource
      * @throws \ReflectionException
      */
-    public function getUserByContractId(int $contract_user_id): UserResource
+    public function getUserByContractId(GetUserByContractIdRequest $request): UserResource
     {
-        return new UserResource($this->userRepository->findByOrFail('contract_user_id', $contract_user_id));
+        return new UserResource($this->userRepository->findByOrFail('contract_user_id', $request->input('contract_user_id')));
 
     }
 }

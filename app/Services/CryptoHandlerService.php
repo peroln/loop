@@ -106,7 +106,7 @@ class CryptoHandlerService
                     }
                 }
             } catch (\Throwable $e) {
-                Log::debug('hello');
+                Log::debug($e->getMessage());
             }
 
         }
@@ -124,7 +124,7 @@ class CryptoHandlerService
             ->whereNotIn("transaction_id", $transaction_ids)
             ->whereIn('event_name', $this->cryptoService::EVENTS_TRON)
             ->all();
-
+//TODO Here should be handling event ~ "upgrade" (create new platform)
         $registration_events = collect($registration_events)->groupBy('transaction_id');
         return collect($registration_events)->map(function ($item) {
             $item = collect($item);

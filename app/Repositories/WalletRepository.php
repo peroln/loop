@@ -26,7 +26,7 @@ class WalletRepository extends Repository
     {
         return [
             'coin' => 'trx',
-            'address' => $params['contract_user_base58_address'],
+            'address' => $params['contract_user_base58_address'] ?? '',
             'amount_transfers' => $params['amount_transfers'] ?? 0,
             'profit_referrals' => $params['profit_referrals'] ?? 0,
             'profit_reinvest' => $params['profit_reinvest'] ?? 0,

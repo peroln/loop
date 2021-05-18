@@ -52,6 +52,10 @@ class RouteServiceProvider extends ServiceProvider
                 ->middleware('api')
                 ->group(function () {
 
+                    Route::prefix('debug')
+                        ->namespace($this->namespace)
+                        ->group($this->basePath . 'debug.php');
+
                     Route::prefix('ping')
                         ->namespace($this->namespace)
                         ->group($this->basePath . 'ping.php');

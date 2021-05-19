@@ -4,17 +4,29 @@ namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\ChangeCommandRequest;
+use App\Http\Requests\Service\RequestCommandRequest;
 use App\Http\Resources\Service\CommandResource;
 use App\Models\Command;
+use App\Services\CommandHandlerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CommandController extends Controller
 {
+
+    public CommandHandlerService $commandHandlerService;
+
+    public function __construct(CommandHandlerService $commandHandlerService)
+    {
+
+        $this->commandHandlerService = $commandHandlerService;
+    }
+
     /**
      * @return AnonymousResourceCollection
      */
@@ -25,12 +37,23 @@ class CommandController extends Controller
 
 
     /**
-     * @return CommandResource
+     * @return CommandResource|JsonResponse
+     * @throws \Throwable
      */
-    public function store(): CommandResource
+    public function store(): CommandResource|JsonResponse
     {
-        $command = Command::create(['reference' => Str::random(18)]);
-        $command->wallets()->attach(Auth::user()->id, ['order' => 1]);
+        DB::beginTransaction();
+        try {
+            $wallet_id = Auth::user()->id;
+            $command = Command::create(['reference' => Str::random(18)]);
+            $command->wallets()->attach($wallet_id, ['order' => 1]);
+            $command->commandRefRequests()->create(['wallet_id' => $wallet_id, 'order' => 1, 'reference_id' => $wallet_id]);
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json($e->getMessage(), 400);
+        }
+
         return new CommandResource($command);
     }
 
@@ -66,7 +89,7 @@ class CommandController extends Controller
     public function destroy(Command $command): JsonResponse
     {
         $command->wallets()->detach();
-        if($command->delete()){
+        if ($command->delete()) {
             return response()->json('The model was deleted', 200);
         };
         return response()->json('The model was not deleted', 400);
@@ -79,24 +102,22 @@ class CommandController extends Controller
      */
     public function changeCommand(ChangeCommandRequest $request, int $id): CommandResource
     {
-        $handled_arr = $this->handleCommandArray($request->wallet_ids, $id);
         $command = Command::find($id);
+        //TODO Fix undeleteable wallet (order 1)
+        $handled_arr = $this->commandHandlerService->handleCommandArray($request->wallet_ids, $id);
         $command->wallets()->sync($handled_arr);
         $command->fresh();
         return new CommandResource($command);
     }
 
     /**
-     * @param array $wallet_arr_ids
-     * @param int $id
-     * @return array
+     * @param RequestCommandRequest $request
+     * @return JsonResponse
      */
-    private function handleCommandArray(array $wallet_arr_ids, int $id): array
+    public function requestCommand(RequestCommandRequest $request): JsonResponse
     {
-        $handled_arr = [];
-        foreach ($wallet_arr_ids as $key => $id) {
-            $handled_arr[$id] = ['order' => $key + 1];
-        }
-        return $handled_arr;
+        $command_ref = $request->input('ref');
+        $referral = $this->commandHandlerService->createNewRequest($command_ref);
+        return response()->json(compact('referral', 'command_ref'));
     }
 }

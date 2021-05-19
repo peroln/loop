@@ -48,6 +48,11 @@ class Wallet extends Authenticatable implements JWTSubject
         return $this->hasMany(Transaction::class);
     }
 
+    public function commandRefRequests()
+    {
+        return $this->hasMany(CommandRefRequest::class);
+    }
+
     /**
      * @return BelongsToMany
      */

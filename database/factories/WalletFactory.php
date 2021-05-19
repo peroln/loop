@@ -32,7 +32,7 @@ class WalletFactory extends Factory
             'amount_transfers' => 0, // $profit_reinvest + $profit_referrals,
             'profit_referrals' => 0, // $profit_referrals,
             'profit_reinvest'  => 0, // $profit_reinvest,
-            'referral_link'    => 'TKKn6cywjhDzjCNqTY3qKwjnvfoXGsF6Xe',
+            'referral_link'    => '669d140f1eb8049bd3ad85f0152643333b491b14',
             'created_at'       => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at'       => Carbon::now()->format('Y-m-d H:i:s'),
         ];

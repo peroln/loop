@@ -23,17 +23,18 @@ class WalletFactory extends Factory
      */
     public function definition()
     {
-        $profit_reinvest = Arr::random(range(10, 100, 10));
-        $profit_referrals = Arr::random(range(10, 100, 10));
+//        $profit_reinvest = Arr::random(range(10, 100, 10));
+//        $profit_referrals = Arr::random(range(10, 100, 10));
         return [
 
-            'coin'              => 'trx',
-            'address'           => \Str::random(32),
-            'amount_transfers'  => $profit_reinvest + $profit_referrals,
-            'profit_referrals'  => $profit_referrals,
-            'profit_reinvest'   => $profit_reinvest,
-            'created_at'        => Carbon::now()->format('Y-m-d H:i:s'),
-            'updated_at'        => Carbon::now()->format('Y-m-d H:i:s'),
+            'coin'             => 'trx',
+            'address'          => 'TQmfde23Z7wsW7D4zmKnkQXGMCivGSDoj4',  // \Str::random(32),
+            'amount_transfers' => 0, // $profit_reinvest + $profit_referrals,
+            'profit_referrals' => 0, // $profit_referrals,
+            'profit_reinvest'  => 0, // $profit_reinvest,
+            'referral_link'    => 'TKKn6cywjhDzjCNqTY3qKwjnvfoXGsF6Xe',
+            'created_at'       => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at'       => Carbon::now()->format('Y-m-d H:i:s'),
         ];
     }
 }

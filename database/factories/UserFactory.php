@@ -23,7 +23,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_name' => $this->faker->userName,
+            'user_name' => 'Contract`s Owner', // $this->faker->userName,
             'avatar' => 'd9sf8h7d.jpg',
             'blocked_faq' => false,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),

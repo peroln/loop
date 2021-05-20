@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $quantity = 10;
+        $quantity = 1;
         User::factory()
             ->count($quantity)
             ->state(new Sequence(

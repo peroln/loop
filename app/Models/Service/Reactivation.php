@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Reactivation extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'platform_level_id',
+        'wallet_id',
+        'count'
+    ];
 }

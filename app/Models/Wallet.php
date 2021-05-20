@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Service\Platform;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, BelongsToMany};
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -51,6 +52,10 @@ class Wallet extends Authenticatable implements JWTSubject
     public function commandRefRequests()
     {
         return $this->hasMany(CommandRefRequest::class);
+    }
+    public function platforms()
+    {
+        return $this->hasMany(Platform::class)->whereIn('active', [0,1]);
     }
 
     /**

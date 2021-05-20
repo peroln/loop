@@ -3,10 +3,19 @@
 namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Service\CreatePlatformRequest;
+use App\Services\PlatformHandlerService;
 use Illuminate\Http\Request;
 
 class ReactivationController extends Controller
 {
+    public PlatformHandlerService $service;
+
+    public function __construct(PlatformHandlerService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,20 +27,22 @@ class ReactivationController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param CreatePlatformRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Throwable
      */
-    public function store(Request $request)
+    public function store(CreatePlatformRequest $request)
     {
-        //
+        if($this->service->reactivationPlatform($request->input('platform_level_id'))){
+            return response()->json('true');
+        };
+        return response()->json('true', 400);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -42,8 +53,8 @@ class ReactivationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -54,7 +65,7 @@ class ReactivationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

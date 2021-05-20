@@ -22,4 +22,7 @@ class Platform extends Model
     {
         return $this->belongsTo(Wallet::class);
     }
+    public function platformLevel(){
+        return $this->belongsTo(PlatformLevel::class);
+    }
 }

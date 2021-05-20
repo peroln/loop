@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Models\Command;
 use App\Models\CommandRefRequest;
 use App\Models\Wallet;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class CommandHandlerService
@@ -57,8 +58,15 @@ class CommandHandlerService
      * @param int $id
      * @return array
      */
-    public function handleCommandArray(array $wallet_arr_ids, int $id): array
+    public function handleCommandArray(array $wallet_arr_ids, int $owner_id): array
     {
+        if ($wallet_arr_ids[0] !== $owner_id) {
+            if (in_array($owner_id, $wallet_arr_ids, true)) {
+                $key = array_search($owner_id, $wallet_arr_ids, true);
+                unset($wallet_arr_ids[$key]);
+            }
+            array_unshift($wallet_arr_ids, $owner_id);
+        }
         $handled_arr = [];
         foreach ($wallet_arr_ids as $key => $id) {
             $handled_arr[$id] = ['order' => $key + 1];

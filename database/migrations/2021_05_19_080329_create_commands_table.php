@@ -17,6 +17,7 @@ class CreateCommandsTable extends Migration
             $table->id();
             $table->string('reference')->unique();
             $table->unsignedInteger('status')->default(1);
+            $table->foreignId('wallet_id')->constrained();
             $table->timestamps();
         });
     }

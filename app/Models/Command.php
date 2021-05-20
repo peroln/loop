@@ -12,12 +12,17 @@ class Command extends Model
 
     protected $fillable = [
         'reference',
-        'status'
+        'status',
+        'wallet_id'
     ];
 
     public function wallets()
     {
         return $this->belongsToMany(Wallet::class)->withPivot('order');
+    }
+    public function wallet()
+    {
+        return $this->belongTo(Wallet::class);
     }
 
     public function commandRefRequests()

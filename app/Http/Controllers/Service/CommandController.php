@@ -45,7 +45,7 @@ class CommandController extends Controller
         DB::beginTransaction();
         try {
             $wallet_id = Auth::user()->id;
-            $command = Command::create(['reference' => Str::random(18)]);
+            $command = Command::create(['reference' => Str::random(18), 'wallet_id' => $wallet_id]);
             $command->wallets()->attach($wallet_id, ['order' => 1]);
             $command->commandRefRequests()->create(['wallet_id' => $wallet_id, 'order' => 1, 'reference_id' => $wallet_id]);
             DB::commit();
@@ -102,9 +102,10 @@ class CommandController extends Controller
      */
     public function changeCommand(ChangeCommandRequest $request, int $id): CommandResource
     {
+
         $command = Command::find($id);
         //TODO Fix undeleteable wallet (order 1)
-        $handled_arr = $this->commandHandlerService->handleCommandArray($request->wallet_ids, $id);
+        $handled_arr = $this->commandHandlerService->handleCommandArray($request->wallet_ids, $command->wallet_id);
         $command->wallets()->sync($handled_arr);
         $command->fresh();
         return new CommandResource($command);

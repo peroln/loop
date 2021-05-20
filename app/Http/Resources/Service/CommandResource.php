@@ -17,6 +17,7 @@ class CommandResource extends JsonResource
         return [
             'id' => $this->id,
             'reference' => $this->reference,
+            'wallet_id' => $this->wallet_id,
             'wallets' => $this->wallets
             ];
     }

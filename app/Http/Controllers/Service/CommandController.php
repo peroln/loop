@@ -97,14 +97,11 @@ class CommandController extends Controller
 
     /**
      * @param ChangeCommandRequest $request
-     * @param int $id
+     * @param Command $command
      * @return CommandResource
      */
-    public function changeCommand(ChangeCommandRequest $request, int $id): CommandResource
+    public function changeCommand(ChangeCommandRequest $request, Command $command): CommandResource
     {
-
-        $command = Command::find($id);
-        //TODO Fix undeleteable wallet (order 1)
         $handled_arr = $this->commandHandlerService->handleCommandArray($request->wallet_ids, $command->wallet_id);
         $command->wallets()->sync($handled_arr);
         $command->fresh();

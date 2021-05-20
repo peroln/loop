@@ -7,7 +7,6 @@ namespace App\Services;
 use App\Models\Command;
 use App\Models\CommandRefRequest;
 use App\Models\Wallet;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class CommandHandlerService
@@ -55,7 +54,7 @@ class CommandHandlerService
 
     /**
      * @param array $wallet_arr_ids
-     * @param int $id
+     * @param int $owner_id
      * @return array
      */
     public function handleCommandArray(array $wallet_arr_ids, int $owner_id): array

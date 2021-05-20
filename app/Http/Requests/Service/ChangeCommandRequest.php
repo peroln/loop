@@ -25,16 +25,9 @@ class ChangeCommandRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|integer|exists:commands',
             'wallet_ids' => 'array|max:50|min:1',
             'wallet_ids.*' => 'required|integer|exists:wallets,id'
         ];
-    }
-    public function prepareForValidation()
-    {
-        $this->merge([
-            'id' => $this->route('id')
-        ]);
     }
 
 }

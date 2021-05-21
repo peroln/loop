@@ -5,6 +5,8 @@ namespace App\Services;
 
 
 use App\Models\Helpers\CryptoServiceInterface;
+use App\Models\User;
+use App\Models\Wallet;
 use App\Services\Blockchain\TronDecoder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
@@ -17,6 +19,7 @@ class TronService implements CryptoServiceInterface
     public string $contract_address;
     public string $api_tron_host;
     const EVENTS_TRON = ['Registration', 'AddedReferralLink'];
+    const EVENT_REACTIVATION = 'Upgrade';
     public function __construct()
     {
         $this->contract_address = config('tron.contract_address');
@@ -48,7 +51,7 @@ class TronService implements CryptoServiceInterface
     {
         return match ($method_slug) {
             'confirm-registration' => $this->api_tron_host . "/v1/transactions/" . $params['transaction_id'] . "/events",
-            'extract-registered-wallets' => $this->api_tron_host . "/v1/contracts/" . $this->contract_address . "/events",
+            'events-handler' => $this->api_tron_host . "/v1/contracts/" . $this->contract_address . "/events",
             'receive-transaction-call-value' => $this->api_tron_host . '/walletsolidity/gettransactionbyid',
             'get-account-balance' => $this->api_tron_host . '/v1/accounts/' . $params['address'],
         };
@@ -163,5 +166,33 @@ class TronService implements CryptoServiceInterface
         return self::class;
     }
 
+    public function extractDataFromReactivationTransaction(array $reactivation_event): bool|array
+    {
+        try {
+            $platform_level_id = Arr::get($reactivation_event, 'result.platform');
+            $referrer_base58_address = $this->hexString2Base58(Arr::get($reactivation_event, 'result.referrer'));
+            $contract_user_base58_address = $this->hexString2Base58(Arr::get($reactivation_event, 'result.user'));
+            $base58_id = $this->hexString2Base58(Arr::get($reactivation_event, 'transaction_id'));
+            $hex = Arr::get($reactivation_event, 'transaction_id');
+            $block_number = Arr::get($reactivation_event, 'block_number');
+            $block_timestamp = Arr::get($reactivation_event, 'block_timestamp');
+            $event_name = Arr::get($reactivation_event, 'event_name');
+            $referrer_id = User::with(['wallet' => fn($q) => $q->where('address', $contract_user_base58_address)])->firstOrFail()->contract_user_id;
 
+        } catch (\Throwable $e) {
+            Log::error($e->getMessage());
+        }
+        return compact(
+            'referrer_id',
+            'referrer_base58_address',
+            'contract_user_base58_address',
+            'base58_id',
+            'block_number',
+            'block_timestamp',
+            'event_name',
+            'hex',
+            'platform_level_id'
+
+        );
+    }
 }

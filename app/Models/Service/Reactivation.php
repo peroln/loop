@@ -13,4 +13,7 @@ class Reactivation extends Model
         'wallet_id',
         'count'
     ];
+    public function platformLevel(){
+        return $this->belongsTo(PlatformLevel::class);
+    }
 }

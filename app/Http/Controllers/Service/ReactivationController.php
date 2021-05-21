@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\CreatePlatformRequest;
 use App\Services\PlatformHandlerService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReactivationController extends Controller
 {
@@ -33,7 +34,7 @@ class ReactivationController extends Controller
      */
     public function store(CreatePlatformRequest $request)
     {
-        if($this->service->reactivationPlatform($request->input('platform_level_id'))){
+        if($this->service->reactivationPlatform(Auth::user()->id, $request->input('platform_level_id'))){
             return response()->json('true');
         };
         return response()->json('true', 400);

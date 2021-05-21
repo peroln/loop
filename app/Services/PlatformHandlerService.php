@@ -14,15 +14,16 @@ use Illuminate\Support\Facades\Log;
 class PlatformHandlerService
 {
     /**
+     * @param int $wallet_id
      * @param int $platform_level_id
      * @return string
      */
-    public function createNewSubscriber(int $platform_level_id): string
+    public function createNewSubscriber(int $wallet_id, int $platform_level_id = 1): string
     {
         $current_free_platform = $this->findCurrentPlatformOwner($platform_level_id);
-        $current_free_platform->wallets()->attach(Auth::user()->id);
+        $current_free_platform->wallets()->attach($wallet_id);
         Platform::create([
-            'wallet_id'         => Auth::user()->id,
+            'wallet_id'         => $wallet_id,
             'platform_level_id' => $platform_level_id
         ]);
 
@@ -64,11 +65,11 @@ class PlatformHandlerService
      * @return bool
      * @throws \Throwable
      */
-    public function reactivationPlatform(int $platform_level_id): bool
+    public function reactivationPlatform(int $wallet_id, int $platform_level_id): bool
     {
         $reactivation_model = Reactivation::firstOrNew([
             'platform_level_id' => $platform_level_id,
-            'wallet_id'         => Auth::user()->id
+            'wallet_id'         => $wallet_id
         ]);
         $reactivation_model->count++;
         DB::beginTransaction();
@@ -76,7 +77,7 @@ class PlatformHandlerService
             $reactivation_model->save();
             Platform::create([
                 'platform_level_id' => $platform_level_id,
-                'wallet_id'         => Auth::user()->id
+                'wallet_id'         => $wallet_id
             ]);
             DB::commit();
             return true;

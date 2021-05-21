@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Service;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\CreatePlatformRequest;
 use App\Http\Resources\Service\PlatformResource;
+use App\Http\Resources\Service\ReactivationResource;
 use App\Models\Service\Platform;
 use App\Models\Wallet;
 use App\Services\PlatformHandlerService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PlatformController extends Controller
 {
@@ -36,7 +38,7 @@ class PlatformController extends Controller
      */
     public function store(CreatePlatformRequest $request)
     {
-        $recipient_address = $this->service->createNewSubscriber($request->input('platform_level_id'));
+        $recipient_address = $this->service->createNewSubscriber(Auth::user()->id, $request->input('platform_level_id'));
         return response()->json(compact('recipient_address'));
     }
 
@@ -77,5 +79,10 @@ class PlatformController extends Controller
     public function platformUsersInfo(Wallet $wallet)
     {
         return PlatformResource::collection($wallet->platforms()->orderBy('id')->get());
+    }
+
+    public function platformReactivationUsersInfo(Wallet $wallet)
+    {
+        return ReactivationResource::collection($wallet->reactivations) ;
     }
 }

@@ -28,7 +28,7 @@ class WalletFactory extends Factory
         return [
 
             'coin'             => 'trx',
-            'address'          => 'TQmfde23Z7wsW7D4zmKnkQXGMCivGSDoj4',  // \Str::random(32),
+            'address'          => 'TKKn6cywjhDzjCNqTY3qKwjnvfoXGsF6Xe',  // \Str::random(32),
             'amount_transfers' => 0, // $profit_reinvest + $profit_referrals,
             'profit_referrals' => 0, // $profit_referrals,
             'profit_reinvest'  => 0, // $profit_reinvest,

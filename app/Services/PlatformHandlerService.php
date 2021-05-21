@@ -21,12 +21,11 @@ class PlatformHandlerService
     {
         $current_free_platform = $this->findCurrentPlatformOwner($platform_level_id);
         $current_free_platform->wallets()->attach(Auth::user()->id);
-        for ($i = 0; $i < 3; $i++) {
-            Platform::create([
-                'wallet_id'         => Auth::user()->id,
-                'platform_level_id' => $platform_level_id
-            ]);
-        }
+        Platform::create([
+            'wallet_id'         => Auth::user()->id,
+            'platform_level_id' => $platform_level_id
+        ]);
+
         return $current_free_platform->wallet->address;
     }
 
@@ -81,7 +80,7 @@ class PlatformHandlerService
             ]);
             DB::commit();
             return true;
-        }catch(\Throwable $e){
+        } catch (\Throwable $e) {
             DB::rollBack();
             Log::error($e->getMessage());
             return false;

@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\TransactionEvent;
 use App\Repositories\Base\Repository;
+use Illuminate\Support\Arr;
 
 class TransactionEventRepository extends Repository
 {
@@ -24,14 +25,13 @@ class TransactionEventRepository extends Repository
     public function createTransactionEventDataParams(array $params): array
     {
         return [
-            "referrer_id" => $params['referrer_id'] ?? 1,
-            "contract_user_id" => $params['contract_user_id'] ?? 1,
-            "referrer_base58_address" => $params['referrer_base58_address'] ?? 1,
-            "contract_user_base58_address" => $params['contract_user_base58_address'] ?? 1,
-            "block_number" => $params['block_number'] ?? 1,
-            "block_timestamp" => $params['block_timestamp'] ?? 1,
-            "event_name" => $params['event_name'] ?? '',
-
+            "referrer_id" => Arr::get($params, 'referrer_id', 1),
+            "contract_user_id" => Arr::get($params, 'contract_user_id', 1),
+            "referrer_base58_address" => Arr::get($params, 'referrer_base58_address', 1),
+            "contract_user_base58_address" => Arr::get($params, 'contract_user_base58_address', 1),
+            "block_number" => Arr::get($params, 'block_number', 1),
+            "block_timestamp" => Arr::get($params, 'block_timestamp', 1),
+            "event_name" => Arr::get($params, 'event_name', '')
         ];
     }
 }

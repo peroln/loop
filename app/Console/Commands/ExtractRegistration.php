@@ -40,7 +40,7 @@ class ExtractRegistration extends Command
     public function handle(CryptoHandlerService $service)
     {
         try {
-            $service->extractRegisteredWallets();
+            $service->eventsHandler();
         } catch (\Throwable $e) {
             Log::error($e->getMessage());
         }

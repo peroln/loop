@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\PingCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
         if (config('env') !== 'production') {
             $schedule->command('telescope:prune --hours=48')->daily();
         }
+        $schedule->command(PingCommand::class)->everyMinute();
         $schedule->command('registration:extract')->everyMinute();
     }
 

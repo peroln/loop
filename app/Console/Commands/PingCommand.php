@@ -2,25 +2,26 @@
 
 namespace App\Console\Commands;
 
-use App\Services\CryptoHandlerService;
+use App\Events\PingEvent;
+use App\Events\ReactivationPlatform;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class ExtractRegistration extends Command
+class PingCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'registration:extract';
+    protected $signature = 'ping:send';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command send request to server and extract registered wallets';
+    protected $description = 'Command description';
 
     /**
      * Create a new command instance.
@@ -33,16 +34,12 @@ class ExtractRegistration extends Command
     }
 
     /**
-     * Execute the console command.
-     *
      *
      */
-    public function handle(CryptoHandlerService $service)
+    public function handle()
     {
-        try {
-            $service->eventsHandler();
-        } catch (\Throwable $e) {
-            Log::error($e->getMessage());
-        }
+        broadcast(new PingEvent());
+       broadcast(new ReactivationPlatform());
+       $this->info('Ping Command');
     }
 }

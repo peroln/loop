@@ -17,6 +17,7 @@ class CreatePlatformWalletTable extends Migration
             $table->id();
             $table->foreignId('platform_id')->constrained();
             $table->foreignId('wallet_id')->constrained();
+            $table->unsignedInteger('place');
             $table->unsignedInteger('active')->default(1);
             $table->timestamps();
         });

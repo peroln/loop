@@ -1,5 +1,15 @@
 version: '3.9'
 
+x-fpm-cli: &fpm_cli
+  build:
+    context: ../
+    dockerfile: docker/php-fpm/Dockerfile
+  restart: unless-stopped
+  working_dir: /application
+  volumes:
+    - ../:/application
+    - ../docker/php_cli/php-ini-overrides.ini:/etc/php/8.0/cli/conf.d/99-overrides.ini
+
 services:
 
   postgres:
@@ -79,6 +89,18 @@ services:
 #    ports:
 #      - ${MYSQL_PORT}:3306
 
+
+  laravel-echo:
+    container_name: ${PROJECT_NAME:-project}_laravel_echo
+    <<: *fpm_cli
+    command: [ "php", "artisan", "websockets:serve" ]
+    ports:
+      - ${LARAVEL_ECHO_PORT:-8084}:6001
+    links:
+      - 'redis:redis'
+    networks:
+      - loooop_platform
+
   cron:
     build:
       context: ../
@@ -95,15 +117,8 @@ services:
       - redis
 
   queue-worker:
-    build:
-      context: ../
-      dockerfile: docker/php-fpm/Dockerfile
     container_name: ${PROJECT_NAME}-queue-worker
-    restart: unless-stopped
-    working_dir: /application
-    volumes:
-      - ../:/application
-      - ../docker/php_cli/php-ini-overrides.ini:/etc/php/8.0/cli/conf.d/99-overrides.ini
+    <<: *fpm_cli
     command: [ "php", "artisan", "queue:work", "--delay=0", "--tries=3" ]
     networks:
       - loooop_platform

@@ -2,10 +2,15 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\Http\UnauthorizedException;
 use App\Traits\FormatsErrorResponse;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\PostTooLargeException;
 use Illuminate\Http\Response;
 use App\Exceptions\Model\NotFoundException;
+use ReflectionException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -143,7 +148,11 @@ class Handler extends ExceptionHandler
 
         $this->renderable(
             function (\Exception $e, $request) {
-                logger($e->getTraceAsString());
+                try {
+                    logger($e->getTraceAsString());
+                } catch (Throwable $exception) {
+                    return response($this->errorResponse($e->getMessage()), Response::HTTP_NOT_FOUND);
+                }
 
                 $HTTP_CODES = array_keys(Response::$statusTexts);
                 $ERROR_CODE = in_array($e->getCode(), $HTTP_CODES, true) ? $e->getCode() :

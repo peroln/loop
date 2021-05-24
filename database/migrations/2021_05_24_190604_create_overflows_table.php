@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePlatformWalletTable extends Migration
+class CreateOverflowsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreatePlatformWalletTable extends Migration
      */
     public function up()
     {
-        Schema::create('platform_wallet', function (Blueprint $table) {
+        Schema::create('overflows', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('platform_id')->constrained();
+            $table->foreignId('platform_level_id')->constrained();
             $table->foreignId('wallet_id')->constrained();
-            $table->unsignedInteger('place');
-            $table->unsignedInteger('active')->default(1);
+            $table->unsignedInteger('count');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreatePlatformWalletTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('platform_wallet');
+        Schema::dropIfExists('overflows');
     }
 }

@@ -13,4 +13,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', fn() => response()->noContent(\Illuminate\Http\Response::HTTP_NOT_FOUND));
+Route::get('/', fn() => response()->view('ws_client'));
+

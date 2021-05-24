@@ -10,6 +10,10 @@ use App\Repositories\TransactionEventRepository;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WalletRepository;
+use App\Services\EventsHandlers\OverflowPlatformEvent;
+use App\Services\EventsHandlers\PlatformCreateEventHandler;
+use App\Services\EventsHandlers\PlatformReactivationEvent;
+use App\Services\EventsHandlers\PlatformSubscriberEventHandler;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -74,18 +78,29 @@ class CryptoHandlerService
         $response = Http::get($url);
         if ($response->successful() && count($response->json('data'))) {
             $response = $response->collect('data');
+//       TODO     change to class
             $this->fixRegisteredWallets($response);
-            $this->fixReactivation($response);
+
+            $create_platforms = app()->make(PlatformCreateEventHandler::class);
+            $create_platforms->handleResponse($response);
+
+            $create_subscribers = app()->make(PlatformSubscriberEventHandler::class);
+            $create_subscribers->handleResponse($response);
+
+            $create_reinvest = app()->make(PlatformReactivationEvent::class);
+            $create_reinvest->handleResponse($response);
+
+            $overflow_event = app()->make(OverflowPlatformEvent::class);
+            $overflow_event->handleResponse($response);
 
         }
     }
 
     /**
      * @param array $params
-     * @return string
      * @throws Throwable
      */
-    public function createWithWallet(array $params): string
+    public function createWithWallet(array $params): void
     {
 
         DB::beginTransaction();
@@ -102,14 +117,11 @@ class CryptoHandlerService
             $transaction_events_data_params = $this->transactionEventRepository->createTransactionEventDataParams($params);
             $transaction->transactionEvents()->create($transaction_events_data_params);
 
-            $this->platformHandlerService->createNewSubscriber($wallet->id);
-
             DB::commit();
         } catch (Throwable $e) {
             DB::rollBack();
-            throw $e;
+           Log::error(__FILE__ . '/ '. $e->getMessage());
         }
-        return auth()->fromUser($wallet);
     }
 
     /**

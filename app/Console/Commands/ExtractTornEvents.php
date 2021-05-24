@@ -6,14 +6,14 @@ use App\Services\CryptoHandlerService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class ExtractRegistration extends Command
+class ExtractTornEvents extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'registration:extract';
+    protected $signature = 'torn-events:extract';
 
     /**
      * The console command description.

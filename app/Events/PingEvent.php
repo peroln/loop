@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace App\Events\Broadcast\Debug;
+namespace App\Events;
 
-use App\Events\Broadcast\BroadcastEvent;
-use App\Events\Broadcast\SocketEvents;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 /**
  * Class PingEvent
  * @package App\Events\Broadcast\Debug
  */
-class PingEvent extends BroadcastEvent
+class PingEvent implements ShouldBroadcast
 {
     public function broadcastOn()
     {
@@ -21,13 +21,13 @@ class PingEvent extends BroadcastEvent
     {
         return [
             'data' => [
-                'ping' => true,
+                'ping' => 'hello my friend',
             ],
         ];
     }
 
     public function broadcastAs(): string
     {
-        return SocketEvents::PING_EVENT;
+        return 'TestEvent';
     }
 }

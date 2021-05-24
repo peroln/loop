@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Events\Broadcast\Debug\PingEvent;
+use App\Events\PingEvent;
+use App\Events\ReactivationPlatform;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class PingCommand extends Command
 {
@@ -32,13 +34,12 @@ class PingCommand extends Command
     }
 
     /**
-     * Execute the console command.
      *
-     * @return int
      */
     public function handle()
     {
         broadcast(new PingEvent());
-        return 0;
+       broadcast(new ReactivationPlatform());
+       $this->info('Ping Command');
     }
 }

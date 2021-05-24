@@ -19,10 +19,10 @@ class CreateTransactionEventsTable extends Migration
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string("referrer_id");
-            $table->string("contract_user_id");
-            $table->string("referrer_base58_address");
-            $table->string("contract_user_base58_address");
+            $table->string("referrer_id")->nullable();
+            $table->string("contract_user_id")->nullable();
+            $table->string("referrer_base58_address")->nullable();
+            $table->string("contract_user_base58_address")->nullable();
             $table->integer('block_number');
             $table->unsignedBigInteger('block_timestamp');
             $table->string('event_name');

@@ -69,12 +69,12 @@
         <a href="https://www.javascripting.com/view/pusher-js">https://www.javascripting.com/view/pusher-js</a> -> Connection States
         Binding on events <a
                 href="https://stackoverflow.com/questions/62153997/binding-callbacks-on-laravel-echo-with-laravel-websockets">https://stackoverflow.com/questions/62153997/binding-callbacks-on-laravel-echo-with-laravel-websockets</a>
-    var YourTokenLogin = ''; //Bearer token
+    var YourTokenLogin = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODk1MFwvYXBpXC91c2VyXC9hdXRoXC9sb2dpbiIsImlhdCI6MTYyMTY5NjU3MywiZXhwIjoxNjIxNzAwMTczLCJuYmYiOjE2MjE2OTY1NzMsImp0aSI6IlkxMHp4eXdnSEl0QWtXVnkiLCJzdWIiOjEsInBydiI6ImNjYWY4ZDgwZDE1OGQwMTY1ODAyN2U1MTEzN2MwZmY0NGQzNjcwMzcifQ.Bw2u7Tpk5tsLbx0QtEwNcu--E0NjnLwDKRS7xlyGyBc'; //Bearer token
     var echo = new Echo({
            broadcaster: 'pusher',
             wsHost: window.location.hostname,
             wsPort: 8811,
-            key: 'app-pusher-key',
+            key: 'c7eff08f02639017cf57',
             forceTLS: false,
             disableStats: true,
             auth: {
@@ -131,8 +131,8 @@
 
     <h6>SERVER ADDRESSES</h6>
 
-    API_HOST = <input onchange="setAuthHost(this.value)" id="API_HOST" value="http://0.0.0.0:8800"> <br /><br />
-    SOCKET_HOST = <input onchange="setHost(this.value)" id="SOCKET_HOST" value="http://0.0.0.0:8811"> <br />
+    API_HOST = <input onchange="setAuthHost(this.value)" id="API_HOST" value="http://127.0.0.1:8950"> <br /><br />
+    SOCKET_HOST = <input onchange="setHost(this.value)" id="SOCKET_HOST" value="http://127.0.0.1:8084"> <br />
 
     <hr />
 
@@ -176,6 +176,7 @@
             let channel_name = document.getElementById('channel_name').value;
             let event = document.getElementById('event').value;
             console.log(event);
+            console.log(client);
             client.private(channel_name)
                 .listen(event, (e) => {
                     logger('Event received: ', e)
@@ -206,16 +207,16 @@
 
     Hi dear friend, firstly auth in system for using sockets
     <br /><br />
-    USER AUTH ROUTE: <input id="auth_route" name="auth_route" value="/api/shipper/login" /> <br /> <br />
+    USER AUTH ROUTE: <input id="auth_route" name="auth_route" value="/api/user/auth/login" /> <br /> <br />
     <form id="auth">
-        <input name="email" value="shipper1" placeholder="username" /> <input name="password" value="user1Qwerty_"
+        <input name="address" value="TKKn6cywjhDzjCNqTY3qKwjnvfoXGsF6Xe" placeholder="username" /> <input name="password" value="user1Qwerty_"
                 placeholder="Password" /> <input name="deviceId" value="deviceqwerty123" placeholder="deviceId" />
         <input type="submit">
     </form>
     <div class="line"></div>
     ADMIN AUTH ROUTE: <input id="admin_auth_route" name="admin_auth_route" value="/api/admin/login" /> <br /> <br />
     <form id="authAdmin">
-        <input name="emailAdmin" value="admin@mail.com" /> <input name="passwordAdmin" /> <input type="submit">
+        <input name="emailAdmin" value="TKKn6cywjhDzjCNqTY3qKwjnvfoXGsF6Xe" /> <input name="passwordAdmin" /> <input type="submit">
     </form>
 
     </form>
@@ -271,14 +272,15 @@
     window.addEventListener('error', ev => logger(ev.message));
     document.getElementById('auth').addEventListener('submit', login);
     document.getElementById('authAdmin').addEventListener('submit', loginAdmin);
-
+    Pusher.logToConsole = true;
     function initEcho(token = '') {
         console.log(window.location.hostname);
+        console.log(token);
         client = new Echo({
             broadcaster: 'pusher',
             wsHost: window.location.hostname,
-            wsPort: {{ env('LARAVEL_ECHO_PORT') }},
-            key: '{{ env('PUSHER_APP_KEY') }}',
+            wsPort: 8084,
+            key: 'c7eff08f02639017cf57',
             forceTLS: false,
             disableStats: true,
             auth: {
@@ -328,13 +330,15 @@
     }
 
     function login(e) {
+        console.log('Login function');
         try {
             e.preventDefault();
             let authRoute = document.getElementById('auth_route').value;
             let formData = new FormData(document.getElementById('auth'))
             let data = {
-                userName: formData.get('email'),
-                password: formData.get('password'),
+                address: formData.get('address'),
+               /* userName: formData.get('email'),
+                password: formData.get('password'),*/
             };
             if (formData.has('deviceId')) {
                 data.deviceId = formData.get('deviceId');

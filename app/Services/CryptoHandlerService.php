@@ -96,7 +96,7 @@ class CryptoHandlerService
             $overflow_event->handleResponse($response);
 
             $financial_event = app()->make(FinancialAccountingTransfer::class);
-//            $financial_event->handleResponse($response);
+            $financial_event->handleResponse($response);
 
         }
     }

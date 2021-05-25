@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Blockchain\ContractAbi;
+use App\Services\Blockchain\ContractCallService;
 use App\Services\Blockchain\TronDecoder;
 use Illuminate\Console\Command;
 
@@ -40,7 +42,7 @@ class TestCommand extends Command
      */
     public function handle()
     {
-        dd($this->hexString2Base58('0x669d140f1eb8049bd3ad85f0152643333b491b14'));
+        dd((new ContractCallService())->getFirstUser());
         return 0;
     }
 }

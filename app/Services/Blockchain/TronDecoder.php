@@ -55,5 +55,15 @@ trait TronDecoder
         return $this->base58CheckEn($address);
     }
 
+    /**
+     * @param $base58add
+     * @return string
+     * @source https://github.com/tronprotocol/documentation/blob/master/TRX_CN/index.php
+     */
+    function base58check2HexString($base58add)
+    {
+        $address = $this->base58CheckDe($base58add);
+        return bin2hex($address);
+    }
 
 }

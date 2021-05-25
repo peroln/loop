@@ -42,6 +42,7 @@ class PlatformCreateEventHandler extends BaseEventsHandler
                 'event_name'                   => Arr::get($params, 'event_name'),
             ]);
         } catch (\Throwable $exception) {
+            Log::info(Arr::get($params, 'contract_user_base58_address'));
             Log::error(__FILE__ . '/' . $exception->getMessage());
         }
 

@@ -20,7 +20,8 @@ class PlatformResource extends JsonResource
             'platform_level_id' => $this->platform_level_id,
             'platform_level' => $this->platformLevel->name,
             'active' => $this->active,
-            'subscribers' => $this->wallets()->pluck('wallet_id')
+            'subscribers' => $this->wallets()->pluck('wallet_id'),
+            'reactivations' => $this->platformLevel->reactivation()->where('wallet_id', $this->wallet_id)->first()?->count ?? 0
         ];
     }
 }

@@ -86,7 +86,7 @@ class OverflowPlatformEvent extends BaseEventsHandler
 
             OverflowEvent::dispatch($overflow);
         } catch (\Throwable $exception) {
-            Log::info(Arr::get($params, 'referrer_base58_address'));
+            Log::info(Arr::get($params, 'receiver'));
             Log::error(__FILE__ . '/' . $exception->getMessage());
         }
 

@@ -86,7 +86,7 @@ class PlatformReactivationEvent extends BaseEventsHandler
 
             ReactivationPlatform::dispatch($platform);
         } catch (\Throwable $exception) {
-            Log::info(Arr::get($params, 'referrer_base58_address'));
+            Log::info(Arr::get($params, 'contract_user_base58_address'));
             Log::error(__FILE__ . '/' . $exception->getMessage());
         }
 

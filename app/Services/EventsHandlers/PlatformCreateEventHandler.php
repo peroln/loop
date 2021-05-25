@@ -42,6 +42,7 @@ class PlatformCreateEventHandler extends BaseEventsHandler
                 'event_name'                   => Arr::get($params, 'event_name'),
             ]);
         } catch (\Throwable $exception) {
+            Log::info(Arr::get($params, 'contract_user_base58_address'));
             Log::error(__FILE__ . '/' . $exception->getMessage());
         }
 
@@ -55,9 +56,9 @@ class PlatformCreateEventHandler extends BaseEventsHandler
     public function extractDataFromTransaction(array $event): array
     {
         try {
-            $referrer_base58_address = $this->hexString2Base58(Arr::get($event, 'result.referrer'));
-            $contract_user_base58_address = $this->hexString2Base58(Arr::get($event, 'result.user'));
-            $base58_id = $this->hexString2Base58(Arr::get($event, 'transaction_id'));
+            $referrer_base58_address = $this->hexString2Base58(Arr::get($event, 'result.referrer', ''));
+            $contract_user_base58_address = $this->hexString2Base58(Arr::get($event, 'result.user', ''));
+            $base58_id = $this->hexString2Base58(Arr::get($event, 'transaction_id', ''));
             $hex = Arr::get($event, 'transaction_id');
             $block_number = Arr::get($event, 'block_number');
             $block_timestamp = Arr::get($event, 'block_timestamp');

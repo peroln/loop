@@ -10,6 +10,7 @@ use App\Repositories\TransactionEventRepository;
 use App\Repositories\TransactionRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WalletRepository;
+use App\Services\EventsHandlers\FinancialAccountingTransfer;
 use App\Services\EventsHandlers\OverflowPlatformEvent;
 use App\Services\EventsHandlers\PlatformCreateEventHandler;
 use App\Services\EventsHandlers\PlatformReactivationEvent;
@@ -75,7 +76,8 @@ class CryptoHandlerService
     public function eventsHandler(): void
     {
         $url = $this->cryptoService->formUrlRequest(Str::of(__FUNCTION__)->snake('-'), null);
-        $response = Http::get($url);
+        $response = Http::get($url, ['limit' => 100]);
+
         if ($response->successful() && count($response->json('data'))) {
             $response = $response->collect('data');
 //       TODO     change to class
@@ -92,6 +94,9 @@ class CryptoHandlerService
 
             $overflow_event = app()->make(OverflowPlatformEvent::class);
             $overflow_event->handleResponse($response);
+
+            $financial_event = app()->make(FinancialAccountingTransfer::class);
+            $financial_event->handleResponse($response);
 
         }
     }

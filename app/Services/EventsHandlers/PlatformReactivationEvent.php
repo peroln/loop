@@ -25,7 +25,7 @@ class PlatformReactivationEvent extends BaseEventsHandler
     public function extractDataFromTransaction(array $event): bool|array
     {
         try {
-            $contract_user_base58_address = $this->hexString2Base58(Arr::get($event, 'result.user'));
+            $contract_user_base58_address = $this->hexString2Base58(Arr::get($event, 'result.caller'));
             $base58_id = $this->hexString2Base58(Arr::get($event, 'transaction_id'));
             $hex = Arr::get($event, 'transaction_id');
             $block_number = Arr::get($event, 'block_number');

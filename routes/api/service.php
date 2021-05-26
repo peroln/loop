@@ -4,7 +4,7 @@ Route::post('commands/{ref}/request', [\App\Http\Controllers\Service\CommandCont
 Route::apiResource('commands', CommandController::class)->middleware(['auth:wallet']);
 
 Route::get('platforms/wallets/{wallet}', [\App\Http\Controllers\Service\PlatformController::class, 'platformUsersInfo']);
-Route::get('platform-reactivation/wallets/{wallet}', [\App\Http\Controllers\Service\PlatformController::class, 'platformReactivationUsersInfo'])->middleware(['auth:wallet']);
+Route::get('cabinet/info', [\App\Http\Controllers\Service\CabinetController::class, 'mainInformation']);
 
 Route::apiResource('platform-levels', PlatformLevelController::class);
 Route::apiResource('platforms', PlatformController::class)->middleware(['auth:wallet']);

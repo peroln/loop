@@ -33,7 +33,7 @@ class FinancialAccountingTransfer extends BaseEventsHandler
             $platform_referral = Arr::get($event, 'result.activateAmount');
             $commission_id_1 = Arr::get($event, 'result.fee');
             $receiver_platform_reinvest = $this->hexString2Base58(Arr::get($event, 'result.buyReceiver', ''));
-            $receiver_platform_referral = $this->hexString2Base58(Arr::get($event, 'result.feeReceiver', ''));
+            $receiver_platform_referral = $this->hexString2Base58(Arr::get($event, 'result.activateReceiver', ''));
 
         } catch (\Throwable $e) {
             Log::error($e->getMessage());

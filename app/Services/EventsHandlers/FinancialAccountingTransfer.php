@@ -3,8 +3,6 @@
 
 namespace App\Services\EventsHandlers;
 
-
-use App\Models\Service\Platform;
 use App\Models\Transaction;
 use App\Models\TransactionEvent;
 use App\Models\Wallet;
@@ -59,15 +57,13 @@ class FinancialAccountingTransfer extends BaseEventsHandler
     function createNewResource(array $params): void
     {
         try {
-            $receiver_amount = Wallet::where('address', Arr::get($params, 'receiver_amount'))->firstOrFail();
             $receiver_commission= Wallet::where('address', Arr::get($params, 'receiver_commission'))->firstOrFail();
-            $receiver_amount->amount_transfers += Arr::get($params, 'amount', 0);
             $receiver_commission->profit_referrals += Arr::get($params, 'count_commission', 0);
-            $receiver_amount->save();
+            $receiver_commission->amount_transfers = $receiver_commission->profit_referrals + $receiver_commission->profit_reinvest;
             $receiver_commission->save();
 
             $transaction = Transaction::firstOrCreate([
-                'wallet_id'     => $receiver_amount->id,
+                'wallet_id'     => $receiver_commission->id,
                 'base58_id'     => Arr::get($params, 'base58_id'),
                 'hex'           => Arr::get($params, 'hex'),
                 'model_service' => TronService::class

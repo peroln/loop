@@ -76,8 +76,7 @@ class CryptoHandlerService
     public function eventsHandler(): void
     {
         $url = $this->cryptoService->formUrlRequest(Str::of(__FUNCTION__)->snake('-'), null);
-        $response = Http::get($url, ['limit' => 100]);
-
+        $response = Http::get($url, ['limit' => 200]);
         if ($response->successful() && count($response->json('data'))) {
             $response = $response->collect('data');
 //       TODO     change to class

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Wallet;
+use App\Services\Blockchain\ContractCallService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -28,7 +29,7 @@ class WalletFactory extends Factory
         return [
 
             'coin'             => 'trx',
-            'address'          => 'TZCZLn5ZRAxUVxos9hU1X7tGs2gZ1Eiayd',  // \Str::random(32),
+            'address'          => (new ContractCallService())->getFirstUser(),  // \Str::random(32),
             'amount_transfers' => 0, // $profit_reinvest + $profit_referrals,
             'profit_referrals' => 0, // $profit_referrals,
             'profit_reinvest'  => 0, // $profit_reinvest,

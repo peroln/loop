@@ -29,6 +29,10 @@ class PlatformSubscriberEventHandler extends BaseEventsHandler
                 $subscriber_wallet_id,
                 ['place' => Arr::get($params, 'place')]
             );
+            if($referer_current_platform->wallets()->count() >= 3){
+                $referer_current_platform->active = 0;
+                $referer_current_platform->save();
+            }
 
             $transaction = Transaction::firstOrCreate([
                 'wallet_id'     => $referer_wallet->id,

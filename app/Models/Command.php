@@ -22,7 +22,7 @@ class Command extends Model
     }
     public function wallet()
     {
-        return $this->belongTo(Wallet::class);
+        return $this->belongsTo(Wallet::class);
     }
 
     public function commandRefRequests()

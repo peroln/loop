@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Http\Resources\Service\CommandResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class WalletResouce extends JsonResource
@@ -24,7 +25,8 @@ class WalletResouce extends JsonResource
             'amount_transfers' => $this->amount_transfers,
             'profit_referrals' => $this->profit_referrals,
             'profit_reinvest' => $this->profit_reinvest,
-            'transactions' => TransactionResource::collection($this->whenLoaded('transactions'))
+            'transactions' => TransactionResource::collection($this->whenLoaded('transactions')),
+            'commands' =>CommandResource::collection($this->commands)
         ];
     }
 }

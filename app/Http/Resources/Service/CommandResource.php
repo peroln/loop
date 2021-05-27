@@ -18,7 +18,8 @@ class CommandResource extends JsonResource
             'id' => $this->id,
             'reference' => $this->reference,
             'wallet_id' => $this->wallet_id,
-            'wallets' => $this->wallets
+            'wallets' => $this->wallets,
+            'contract_user_id' => $this->wallet->user->contract_user_id
             ];
     }
 }

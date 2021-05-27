@@ -18,6 +18,7 @@ class Wallet extends Authenticatable implements JWTSubject
     protected $fillable = [
         'id',
         'user_id',
+        'contract_user_id',
         'coin',
         'address',
         'amount_transfers',

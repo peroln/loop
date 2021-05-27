@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Service;
 
+use App\Http\Resources\User\WalletResouce;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CommandResource extends JsonResource
@@ -19,7 +20,6 @@ class CommandResource extends JsonResource
             'reference' => $this->reference,
             'wallet_id' => $this->wallet_id,
             'wallets' => $this->wallets,
-            'contract_user_id' => $this->wallet->user->contract_user_id
             ];
     }
 }

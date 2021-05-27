@@ -89,6 +89,7 @@ class CommandController extends Controller
     public function destroy(Command $command): JsonResponse
     {
         $command->wallets()->detach();
+        $command->commandRefRequests()->delete();
         if ($command->delete()) {
             return response()->json('The model was deleted', 200);
         };

@@ -85,11 +85,11 @@ class CryptoHandlerService
             $create_platforms = app()->make(PlatformCreateEventHandler::class);
             $create_platforms->handleResponse($response);
 
-            $create_subscribers = app()->make(PlatformSubscriberEventHandler::class);
-            $create_subscribers->handleResponse($response);
-
             $create_reinvest = app()->make(PlatformReactivationEvent::class);
             $create_reinvest->handleResponse($response);
+
+            $create_subscribers = app()->make(PlatformSubscriberEventHandler::class);
+            $create_subscribers->handleResponse($response);
 
             $overflow_event = app()->make(OverflowPlatformEvent::class);
             $overflow_event->handleResponse($response);

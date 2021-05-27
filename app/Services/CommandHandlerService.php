@@ -32,6 +32,7 @@ class CommandHandlerService
         $last_record_ref_request = $this->commandRefRequest->where('command_id', $command->id)->latest()->first();
         if ($last_record_ref_request) {
             $last_order = $last_record_ref_request->order;
+            $this->commandRefRequest->where('command_id', $command->id)->delete();
         }
         $next_wallets = $command->wallets()->wherePivot('order', '>', $last_order)->orderBy('order')->first();
         return $next_wallets ?? $command->wallets()->wherePivot('order', 1)->orderBy('order')->first();
@@ -45,7 +46,7 @@ class CommandHandlerService
     {
         $command = Command::where('reference', $ref)->firstOrFail();
         $next_wallet = $this->getNextReferenceInCommandRef($command);
-        $command_ref_request = $command->commandRefRequests()->create(['wallet_id' => Auth::user()->id, 'order' => $next_wallet->pivot?->order, 'reference_id' => $next_wallet->id]);
+        $command_ref_request = $command->commandRefRequests()->create(['order' => $next_wallet->pivot?->order, 'reference_id' => $next_wallet->id]);
         if ($command_ref_request instanceof CommandRefRequest) {
             return $next_wallet->referral_link;
         }

@@ -10,7 +10,6 @@ class CommandRefRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'wallet_id',
         'command_id',
         'reference_id',
         'order',

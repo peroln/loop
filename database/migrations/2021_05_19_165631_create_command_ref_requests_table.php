@@ -19,7 +19,6 @@ class CreateCommandRefRequestsTable extends Migration
             $table->unsignedBigInteger('reference_id');
             $table->foreign('reference_id')->references('id')->on('wallets');
             $table->unsignedInteger('order');
-            $table->foreignId('wallet_id')->constrained();
             $table->unsignedInteger('status')->default(1);
             $table->timestamps();
         });

@@ -2,6 +2,8 @@
 
 namespace App\Events;
 
+use App\Models\Wallet;
+use App\Models\Service\Overflow as ModelOverflow;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -13,17 +15,18 @@ use Illuminate\Queue\SerializesModels;
 class Overflow implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    private \App\Models\Service\Overflow $overflow;
+    private Wallet $wallet;
+    private ModelOverflow $overflow;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(\App\Models\Service\Overflow $overflow)
+    public function __construct(Wallet $wallet, ModelOverflow $overflow)
     {
         //
+        $this->wallet = $wallet;
         $this->overflow = $overflow;
     }
 
@@ -34,7 +37,7 @@ class Overflow implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('overflow.' . $this->overflow->id);
+        return new PrivateChannel('wallet.' . $this->wallet->id);
     }
     public function broadcastWith(): array
     {

@@ -69,7 +69,7 @@
         <a href="https://www.javascripting.com/view/pusher-js">https://www.javascripting.com/view/pusher-js</a> -> Connection States
         Binding on events <a
                 href="https://stackoverflow.com/questions/62153997/binding-callbacks-on-laravel-echo-with-laravel-websockets">https://stackoverflow.com/questions/62153997/binding-callbacks-on-laravel-echo-with-laravel-websockets</a>
-    var YourTokenLogin = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODk1MFwvYXBpXC91c2VyXC9hdXRoXC9sb2dpbiIsImlhdCI6MTYyMTY5NjU3MywiZXhwIjoxNjIxNzAwMTczLCJuYmYiOjE2MjE2OTY1NzMsImp0aSI6IlkxMHp4eXdnSEl0QWtXVnkiLCJzdWIiOjEsInBydiI6ImNjYWY4ZDgwZDE1OGQwMTY1ODAyN2U1MTEzN2MwZmY0NGQzNjcwMzcifQ.Bw2u7Tpk5tsLbx0QtEwNcu--E0NjnLwDKRS7xlyGyBc'; //Bearer token
+    var YourTokenLogin = ''; //Bearer token
     var echo = new Echo({
            broadcaster: 'pusher',
             wsHost: window.location.hostname,
@@ -209,7 +209,7 @@
     <br /><br />
     USER AUTH ROUTE: <input id="auth_route" name="auth_route" value="/api/user/auth/login" /> <br /> <br />
     <form id="auth">
-        <input name="address" value="TKKn6cywjhDzjCNqTY3qKwjnvfoXGsF6Xe" placeholder="username" /> <input name="password" value="user1Qwerty_"
+        <input name="address" value="" placeholder="username" /> <input name="password" value="user1Qwerty_"
                 placeholder="Password" /> <input name="deviceId" value="deviceqwerty123" placeholder="deviceId" />
         <input type="submit">
     </form>
@@ -365,7 +365,7 @@
         }
     }
 
-    function loginAdmin(e) {
+/*    function loginAdmin(e) {
         try {
             e.preventDefault();
             let formData = new FormData(document.getElementById('authAdmin'));
@@ -390,5 +390,5 @@
         } catch (e) {
             logger(e.message)
         }
-    }
+    }*/
 </script>

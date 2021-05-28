@@ -60,17 +60,17 @@ class OverflowPlatformEvent extends BaseEventsHandler
     public function createNewResource(array $params): void
     {
         try {
-            $wallet_id = Wallet::where('address', Arr::get($params, 'receiver'))->firstOrFail()->id;
+            $wallet = Wallet::where('address', Arr::get($params, 'receiver'))->firstOrFail();
 
             $overflow = Overflow::firstOrNew([
                 'platform_level_id' => Arr::get($params, 'platform'),
-                'wallet_id'         => $wallet_id,
+                'wallet_id'         => $wallet->id,
             ]);
             $overflow->count++;
             $overflow->save();
 
             $transaction = Transaction::firstOrCreate([
-                'wallet_id'     => $wallet_id,
+                'wallet_id'     => $wallet->id,
                 'base58_id'     => Arr::get($params, 'base58_id'),
                 'hex'           => Arr::get($params, 'hex'),
                 'model_service' => TronService::class
@@ -84,7 +84,7 @@ class OverflowPlatformEvent extends BaseEventsHandler
                 'event_name'                   => Arr::get($params, 'event_name'),
             ]);
 
-            OverflowEvent::dispatch($overflow);
+            OverflowEvent::dispatch($wallet,$overflow);
         } catch (\Throwable $exception) {
             Log::info(Arr::get($params, 'receiver'));
             Log::error(__FILE__ . '/' . $exception->getMessage());

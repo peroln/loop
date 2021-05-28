@@ -4,9 +4,15 @@
 namespace App\Services\EventsHandlers;
 
 
+use App\Models\Helpers\CryptoServiceInterface;
+use App\Repositories\TransactionEventRepository;
 use App\Repositories\TransactionRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\WalletRepository;
 use App\Services\Blockchain\TronDecoder;
+use App\Services\PlatformHandlerService;
 use App\Services\TronService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -14,11 +20,15 @@ abstract class  BaseEventsHandler
 {
     use  TronDecoder;
 
-    private TransactionRepository $transactionRepository;
-
-    public function __construct(TransactionRepository $transactionRepository)
+    public function __construct(
+        public TransactionRepository $transactionRepository,
+        public CryptoServiceInterface $cryptoService,
+        public UserRepository $userRepository,
+        public TransactionEventRepository $transactionEventRepository,
+        public WalletRepository $walletRepository,
+        public PlatformHandlerService $platformHandlerService
+    )
     {
-        $this->transactionRepository = $transactionRepository;
     }
 
     /**
@@ -26,7 +36,7 @@ abstract class  BaseEventsHandler
      * @param array $arr_names
      * @return array
      */
-    public function extractEvents(Collection $collect_event_array, array $arr_names): array
+    public function extractEvents(Collection $collect_event_array, array|string $arr_names): array
     {
         $except_transaction_ids = $this->transactionRepository->retrieveHexIdRegistration($arr_names);
         return $collect_event_array
@@ -35,13 +45,24 @@ abstract class  BaseEventsHandler
             ->all();
     }
 
+    /**
+     * @param array $event
+     * @return bool|array
+     */
     abstract public function extractDataFromTransaction(array $event): bool|array;
 
-    public function extractEventData(Collection $response)
+    /**
+     * @param Collection $response
+     * @return array
+     */
+    public function extractEventData(Collection $response): array
     {
-        $events = $this->extractEvents($response, [static::EVENT_NAME]);
+        $events = $this->extractEvents($response, static::EVENT_NAME);
         $events = collect($events);
         $params = [];
+        if (is_array(static::EVENT_NAME)) {
+            $events = $this->handleMultiEvents($events);
+        }
         if ($events->count()) {
             try {
                 foreach ($events as $event) {
@@ -53,14 +74,35 @@ abstract class  BaseEventsHandler
                     }
                 }
             } catch (\Throwable $e) {
-                Log::debug($e->getMessage());
+                Log::debug(__FILE__ . ' ' . $e->getMessage());
             }
 
         }
         return $params;
     }
 
-    public function handleResponse(Collection $response)
+    /**
+     * @param Collection $events
+     * @return Collection
+     */
+    private function handleMultiEvents(Collection $events): Collection
+    {
+        $registration_events = $events->groupBy('transaction_id');
+        return collect($registration_events)->map(function ($item) {
+            $item = collect($item);
+            if ($item->count() === count(static::EVENT_NAME)) {
+                $event_registration = $item->where('event_name', 'Registration')->first();
+                $event_ref_referral_link = $item->where('event_name', 'AddedReferralLink')->first();
+                $referral_link = Arr::get($event_ref_referral_link, 'result.link');
+                return array_merge($event_registration, ['referral_link' => $referral_link]);
+            }
+        });
+    }
+
+    /**
+     * @param Collection $response
+     */
+    public function handleResponse(Collection $response): void
     {
         $params = $this->extractEventData($response);
         if (count($params)) {
@@ -71,5 +113,8 @@ abstract class  BaseEventsHandler
 
     }
 
+    /**
+     * @param array $params
+     */
     abstract public function createNewResource(array $params): void;
 }

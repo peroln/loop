@@ -19,3 +19,4 @@ yarn-error.log
 /.env
 /.editorconfig
 /config/sentry.php
+/Loooop-prod-users.pem

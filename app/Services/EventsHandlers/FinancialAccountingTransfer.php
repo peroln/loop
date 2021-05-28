@@ -50,38 +50,6 @@ class FinancialAccountingTransfer extends BaseEventsHandler
             'hex',
             'commission_id_1',
         );
-        /*array:9 [
-  "block_number" => 16318199
-  "block_timestamp" => 1622018685000
-  "caller_contract_address" => "TCybHQHSwaCNxXshMcwLfrTbXvcCKCoQF4"
-  "contract_address" => "TCybHQHSwaCNxXshMcwLfrTbXvcCKCoQF4"
-  "event_index" => 1
-  "event_name" => "ReferralPaymentTransfer"
-  "result" => array:12 [
-    0 => "0x1ef65926237c26043f01e2a5accc9d0e3f1bf646"
-    1 => "90000000"
-    "activateReceiver" => "0x1ef65926237c26043f01e2a5accc9d0e3f1bf646"
-    2 => "0x1ef65926237c26043f01e2a5accc9d0e3f1bf646"
-    "buyAmount" => "90000000"
-    3 => "90000000"
-    4 => "0x1ef65926237c26043f01e2a5accc9d0e3f1bf646"
-    5 => "20000000"
-    "fee" => "20000000"
-    "feeReceiver" => "0x1ef65926237c26043f01e2a5accc9d0e3f1bf646"
-    "activateAmount" => "90000000"
-    "buyReceiver" => "0x1ef65926237c26043f01e2a5accc9d0e3f1bf646"
-  ]
-  "result_type" => array:6 [
-    "activateReceiver" => "address"
-    "buyAmount" => "uint256"
-    "fee" => "uint256"
-    "feeReceiver" => "address"
-    "activateAmount" => "uint256"
-    "buyReceiver" => "address"
-  ]
-  "transaction_id" => "44e4c9150afea8ab9da7e59f712fe3a5f8061226869dc1b5a891a8cc8d8aa253"
-]
-*/
     }
 
     /**
@@ -125,18 +93,4 @@ class FinancialAccountingTransfer extends BaseEventsHandler
             Log::error(__FILE__ . '/' . $exception->getMessage());
         }
     }
-    /*array:11 [
-  "platform_reinvest" => "90000000"
-  "platform_referral" => "90000000"
-  "receiver_platform_reinvest" => "TCnvPPYna6YshPNUAopG88wsBkBunCh1rU"
-  "receiver_platform_referral" => "TCnvPPYna6YshPNUAopG88wsBkBunCh1rU"
-  "base58_id" => "W2AdGzSPsDE9vs9SgHVQpf7PYx8yYHNuZvH2qoPR2yzwAcsUF"
-  "block_number" => 16318199
-  "block_timestamp" => 1622018685000
-  "event_name" => "ReferralPaymentTransfer"
-  "hex" => "44e4c9150afea8ab9da7e59f712fe3a5f8061226869dc1b5a891a8cc8d8aa253"
-  "commission_id_1" => "20000000"
-  "model_service" => "App\Services\TronService"
-]
-*/
 }

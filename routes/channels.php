@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Broadcast;
 use App\Models\Service\Platform;
-
+use App\Models\Wallet;
 /*
 |--------------------------------------------------------------------------
 | Broadcast Channels
@@ -19,6 +19,6 @@ Broadcast::channel('debug', function () {
     return 1;
 });
 
-Broadcast::channel('platform.{platformId}', function ($user, $platformId) {
-    return $user->id === Platform::findOrFail($platformId)->wallet_id;
+Broadcast::channel('wallet.{walletId}', function ($user, $walletId) {
+    return $user->id === Wallet::findOrFail($walletId)->id;
 });

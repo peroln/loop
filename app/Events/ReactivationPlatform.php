@@ -35,7 +35,7 @@ class ReactivationPlatform implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('platforms.' . $this->platform->id);
+        return new PrivateChannel('wallet.' . $this->platform->wallet_id);
 
     }
 
@@ -44,9 +44,11 @@ class ReactivationPlatform implements ShouldBroadcast
         return [
             'data' => [
                 'reactivation' => 'true',
+                'platform'     => $this->platform
             ],
         ];
     }
+
     public function broadcastAs(): string
     {
         return 'ReactivationEvent';

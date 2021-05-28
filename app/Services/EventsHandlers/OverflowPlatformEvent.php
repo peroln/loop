@@ -84,7 +84,8 @@ class OverflowPlatformEvent extends BaseEventsHandler
                 'event_name'                   => Arr::get($params, 'event_name'),
             ]);
 
-            OverflowEvent::dispatch($wallet,$overflow);
+            OverflowEvent::dispatch($overflow);
+
         } catch (\Throwable $exception) {
             Log::info(Arr::get($params, 'receiver'));
             Log::error(__FILE__ . '/' . $exception->getMessage());

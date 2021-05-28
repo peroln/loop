@@ -14,7 +14,7 @@ class ChangeCommandRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->command->wallet_id === Auth::user()->id;
     }
 
     /**

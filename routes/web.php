@@ -13,5 +13,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', fn() => response()->view('ws_client'));
+Route::get('/', fn() => response()->view('welcome'));
 

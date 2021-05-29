@@ -98,7 +98,7 @@ class UserController extends Controller
             ->select('users.contract_user_id', 'users.user_name', 'users.id', DB::raw("count(u.id) as count"),)
             ->join('users as u', function ($join) {
                 $join->on('users.contract_user_id', '=', 'u.this_referral')
-                    ->whereBetween('u.created_at', [now()->subMonths(1), now()]);
+                    ->whereBetween('u.created_at', [now()->startOfMonth(), now()]);
             })
             ->groupBy('users.contract_user_id', 'users.user_name', 'users.id')
             ->orderBy('count', 'desc')

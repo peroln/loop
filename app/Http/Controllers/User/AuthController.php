@@ -90,15 +90,6 @@ class AuthController extends Controller
      */
     public function registration(RegistrationRequest $request)
     {
-        /*$data_event = $this->cryptoHandlerService->cryptoService->confirmRegistration($request->input('hex'));
-        if($data_event === false){
-            return response()->json('The hex param is invalid.', 400);
-        }
-        $params = array_merge($request->validated(), $data_event, ['model_service' => $this->cryptoHandlerService->cryptoService->getImplementClass()]);
-
-        $token = $this->cryptoHandlerService->createWithWallet($params);
-        $expires_in = $this->getExpiresTime();
-        return response()->json(compact('token', 'expires_in'), 201);*/
     }
 
     /**

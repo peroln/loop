@@ -19,7 +19,7 @@ class UserPolicy
      */
     public function viewAny(Wallet $wallet)
     {
-        dd('any');
+
     }
 
     /**
@@ -31,7 +31,7 @@ class UserPolicy
      */
     public function view(Wallet $wallet, User $model)
     {
-        dd('view');
+
     }
 
     /**

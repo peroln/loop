@@ -37,8 +37,11 @@ class TransactionRepository extends Repository
     /**
      * @return array
      */
-    public function retrieveHexIdRegistration(array $event_name): array
+    public function retrieveHexIdRegistration(array|string $event_name): array
     {
+        if(!is_array($event_name)){
+            $event_name = Arr::wrap($event_name);
+        }
         return $this->getModel()->whereHas('transactionEvents', fn($q) => $q->whereIn('event_name', $event_name))->pluck('hex')->unique()->toArray();
     }
 

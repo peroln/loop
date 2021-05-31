@@ -30,7 +30,7 @@ class TransactionEventRepository extends Repository
             "referrer_base58_address" => Arr::get($params, 'referrer_base58_address', 1),
             "contract_user_base58_address" => Arr::get($params, 'contract_user_base58_address', 1),
             "block_number" => Arr::get($params, 'block_number', 1),
-            "block_timestamp" => Arr::get($params, 'block_timestamp', 1),
+            "block_timestamp" => Arr::get($params, 'block_timestamp'),
             "event_name" => Arr::get($params, 'event_name', '')
         ];
     }

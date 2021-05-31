@@ -80,7 +80,7 @@ class OverflowPlatformEvent extends BaseEventsHandler
                 "transaction_id"               => $transaction->id,
                 "contract_user_base58_address" => Arr::get($params, 'from'),
                 'block_number'                 => Arr::get($params, 'block_number'),
-                'block_timestamp'              => Arr::get($params, 'block_timestamp'),
+                'block_timestamp'              => date('Y-m-d H:i:s', (int)Arr::get($params, 'block_timestamp')/1000),
                 'event_name'                   => Arr::get($params, 'event_name'),
             ]);
 

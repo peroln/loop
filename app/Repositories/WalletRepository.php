@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\Wallet;
 use App\Repositories\Base\Repository;
+use Illuminate\Support\Arr;
 
 class WalletRepository extends Repository
 {
@@ -32,7 +33,8 @@ class WalletRepository extends Repository
             'profit_reinvest' => $params['profit_reinvest'] ?? 0,
             'balance' => $params['balance'] ?? 0,
             'referral_link' => $params['referral_link'] ?? null,
-            'contract_user_id' => $params['contract_user_id'] ?? 1
+            'contract_user_id' => $params['contract_user_id'] ?? 1,
+            'created_at' => Arr::get($params,'block_timestamp')
         ];
     }
 

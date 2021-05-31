@@ -73,7 +73,7 @@ class PlatformReactivationEvent extends BaseEventsHandler
 //            "referrer_base58_address" => Arr::get($params, 'referrer_base58_address'),
                 "contract_user_base58_address" => Arr::get($params, 'contract_user_base58_address'),
                 'block_number'                 => Arr::get($params, 'block_number'),
-                'block_timestamp'              => Arr::get($params, 'block_timestamp'),
+                'block_timestamp'              => (int)date('Y-m-d H:i:s', Arr::get($params, 'block_timestamp')/1000),
                 'event_name'                   => Arr::get($params, 'event_name'),
             ]);
 

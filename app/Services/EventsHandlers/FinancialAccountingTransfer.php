@@ -3,6 +3,8 @@
 
 namespace App\Services\EventsHandlers;
 
+use App\Models\Service\FinancialTransaction;
+use App\Models\Service\TargetIncome;
 use App\Models\Transaction;
 use App\Models\TransactionEvent;
 use App\Models\Wallet;
@@ -59,13 +61,13 @@ class FinancialAccountingTransfer extends BaseEventsHandler
     function createNewResource(array $params): void
     {
         try {
-            $receiver_platform_referral= Wallet::where('address', Arr::get($params, 'receiver_platform_referral'))->firstOrFail();
+            $receiver_platform_referral = Wallet::where('address', Arr::get($params, 'receiver_platform_referral'))->firstOrFail();
 
             $receiver_platform_referral->profit_referrals += Arr::get($params, 'platform_referral', 0);
             $receiver_platform_referral->amount_transfers = $receiver_platform_referral->profit_referrals + $receiver_platform_referral->profit_reinvest;
             $receiver_platform_referral->save();
 
-            $receiver_platform_reinvest= Wallet::where('address', Arr::get($params, 'receiver_platform_reinvest'))->firstOrFail();
+            $receiver_platform_reinvest = Wallet::where('address', Arr::get($params, 'receiver_platform_reinvest'))->firstOrFail();
 
             $receiver_platform_reinvest->profit_reinvest += Arr::get($params, 'platform_reinvest', 0);
             $receiver_platform_reinvest->amount_transfers = $receiver_platform_reinvest->profit_referrals + $receiver_platform_reinvest->profit_reinvest;
@@ -79,17 +81,31 @@ class FinancialAccountingTransfer extends BaseEventsHandler
                 'model_service' => TronService::class,
             ]);
 
-            TransactionEvent::create([
+            $transaction_event = TransactionEvent::create([
                 "transaction_id"               => $transaction->id,
                 "referrer_base58_address"      => Arr::get($params, 'receiver_platform_referral'),
                 "contract_user_base58_address" => Arr::get($params, 'receiver_platform_reinvest'),
                 'block_number'                 => Arr::get($params, 'block_number'),
-                'block_timestamp'              => date('Y-m-d H:i:s', (int)Arr::get($params, 'block_timestamp')/1000),
+                'block_timestamp'              => date('Y-m-d H:i:s', (int)Arr::get($params, 'block_timestamp') / 1000),
                 'event_name'                   => Arr::get($params, 'event_name'),
             ]);
+            FinancialTransaction::insert([
+                [
+                    'transaction_event_id' => $transaction_event->id,
+                    'target_income_id'     => TargetIncome::where('name', 'referral')->firstOrFail()->id,
+                    'amount'               => Arr::get($params, 'platform_referral', 0),
+                    'wallet_id'            => $receiver_platform_referral->id,
+                    'created_at'           => date('Y-m-d H:i:s', (int)Arr::get($params, 'block_timestamp') / 1000)
+                ],
+                [
+                    'transaction_event_id' => $transaction_event->id,
+                    'target_income_id'     => TargetIncome::where('name', 'account')->firstOrFail()->id,
+                    'amount'               => Arr::get($params, 'platform_reinvest', 0),
+                    'wallet_id'            => $receiver_platform_reinvest->id,
+                    'created_at'           => date('Y-m-d H:i:s', (int)Arr::get($params, 'block_timestamp') / 1000)
+                ]
+            ]);
         } catch (\Throwable $exception) {
-            Log::info(Arr::get($params, 'receiver_platform_referral'));
-            Log::info(Arr::get($params, 'receiver_platform_reinvest'));
             Log::error(__FILE__ . '/' . $exception->getMessage());
         }
     }

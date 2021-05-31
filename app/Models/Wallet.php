@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Service\FinancialTransaction;
 use App\Models\Service\Platform;
 use App\Models\Service\Reactivation;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, BelongsToMany};
@@ -31,13 +32,8 @@ class Wallet extends Authenticatable implements JWTSubject
     ];
     const CREATED_AT = null;
 
-/*    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];*/
-
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -45,22 +41,33 @@ class Wallet extends Authenticatable implements JWTSubject
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    public function commandRefRequests()
+    /**
+     * @return HasMany
+     */
+    public function commandRefRequests(): HasMany
     {
         return $this->hasMany(CommandRefRequest::class);
     }
-    public function platforms()
+
+    /**
+     * @return HasMany
+     */
+    public function platforms(): HasMany
     {
         return $this->hasMany(Platform::class);
     }
-    public function reactivations()
+
+    /**
+     * @return HasMany
+     */
+    public function reactivations(): HasMany
     {
         return $this->hasMany(Reactivation::class);
     }
@@ -73,13 +80,27 @@ class Wallet extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Command::class);
     }
 
+    /**
+     * @return mixed
+     */
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
+    /**
+     * @return array
+     */
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function financialTransactions(): HasMany
+    {
+        return $this->hasMany(FinancialTransaction::class);
     }
 }

@@ -21,7 +21,7 @@ class PingEvent implements ShouldBroadcast
     {
         return [
             'data' => [
-                'ping' => 'hello my friend',
+                'ping' => 'hello my frontend`s friend!',
             ],
         ];
     }

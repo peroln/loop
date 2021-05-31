@@ -61,7 +61,7 @@ class PlatformCreateEventHandler extends BaseEventsHandler
             $base58_id = $this->hexString2Base58(Arr::get($event, 'transaction_id', ''));
             $hex = Arr::get($event, 'transaction_id');
             $block_number = Arr::get($event, 'block_number');
-            $block_timestamp = Arr::get($event, 'block_timestamp');
+            $block_timestamp = date('Y-m-d H:i:s', (int)Arr::get($event, 'block_timestamp')/1000);
             $event_name = Arr::get($event, 'event_name');
             $platform = Arr::get($event, 'result.platform');
 

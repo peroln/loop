@@ -76,7 +76,7 @@ class FinancialAccountingTransfer extends BaseEventsHandler
                 'wallet_id'     => $receiver_platform_reinvest->id,
                 'base58_id'     => Arr::get($params, 'base58_id'),
                 'hex'           => Arr::get($params, 'hex'),
-                'model_service' => TronService::class
+                'model_service' => TronService::class,
             ]);
 
             TransactionEvent::create([
@@ -84,7 +84,7 @@ class FinancialAccountingTransfer extends BaseEventsHandler
                 "referrer_base58_address"      => Arr::get($params, 'receiver_platform_referral'),
                 "contract_user_base58_address" => Arr::get($params, 'receiver_platform_reinvest'),
                 'block_number'                 => Arr::get($params, 'block_number'),
-                'block_timestamp'              => Arr::get($params, 'block_timestamp'),
+                'block_timestamp'              => date('Y-m-d H:i:s', (int)Arr::get($params, 'block_timestamp')/1000),
                 'event_name'                   => Arr::get($params, 'event_name'),
             ]);
         } catch (\Throwable $exception) {

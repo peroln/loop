@@ -30,7 +30,7 @@ class CreateTransactionsTable extends Migration
             $table->unsignedInteger('fee_limit')->nullable();
             $table->unsignedInteger('call_value')->nullable();
             $table->unsignedBigInteger('expiration')->nullable();
-            $table->unsignedBigInteger('timestamp')->nullable();
+            $table->string('timestamp')->nullable();
             $table->timestamps();
         });
     }

@@ -29,11 +29,12 @@ class Wallet extends Authenticatable implements JWTSubject
         'created_at',
         'updated_at',
     ];
+    const CREATED_AT = null;
 
-    protected $hidden = [
+/*    protected $hidden = [
         'created_at',
         'updated_at',
-    ];
+    ];*/
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

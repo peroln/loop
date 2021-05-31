@@ -12,4 +12,10 @@ class PlatformLevel extends Model
     public function reactivation(){
         return $this->hasMany(Reactivation::class);
     }
+    public function league(){
+        return $this->belongsTo(League::class);
+    }
+    public function platforms(){
+        return $this->hasMany(Platform::class);
+    }
 }

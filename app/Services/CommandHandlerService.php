@@ -54,21 +54,23 @@ class CommandHandlerService
     }
 
     /**
-     * @param array $wallet_arr_ids
+     * @param array $contract_user_ids
      * @param int $owner_id
      * @return array
      */
-    public function handleCommandArray(array $wallet_arr_ids, int $owner_id): array
+    public function handleCommandArray(array $contract_user_ids, int $owner_id): array
     {
-        if ($wallet_arr_ids[0] !== $owner_id) {
-            if (in_array($owner_id, $wallet_arr_ids, true)) {
-                $key = array_search($owner_id, $wallet_arr_ids, true);
-                unset($wallet_arr_ids[$key]);
+        if ($contract_user_ids[0] !== $owner_id) {
+            if (in_array($owner_id, $contract_user_ids, true)) {
+                $key = array_search($owner_id, $contract_user_ids, true);
+                unset($contract_user_ids[$key]);
             }
-            array_unshift($wallet_arr_ids, $owner_id);
+            array_unshift($contract_user_ids, $owner_id);
         }
         $handled_arr = [];
-        foreach ($wallet_arr_ids as $key => $id) {
+        $arr_wallets = Wallet::whereIn('contract_user_id', $contract_user_ids)->pluck('contract_user_id', 'id');
+        dd($arr_wallets);
+        foreach ($contract_user_ids as $key => $contract_user_id) {
             $handled_arr[$id] = ['order' => $key + 1];
         }
         return $handled_arr;

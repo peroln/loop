@@ -22,3 +22,7 @@ Broadcast::channel('debug', function () {
 Broadcast::channel('wallet.{walletId}', function ($user, $walletId) {
     return $user->id === Wallet::findOrFail($walletId)->id;
 });
+
+Broadcast::channel('debug', function () {
+    return true;
+});

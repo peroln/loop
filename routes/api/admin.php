@@ -1,14 +1,7 @@
 <?php
 
-
-use App\Http\Controllers\Admin\Auth\AuthController;
-use App\Http\Controllers\Admin\Auth\Authy2FAController;
-use App\Http\Controllers\Admin\Auth\ForgotPasswordController;
-use App\Http\Controllers\Admin\Management\AdminsController;
-use App\Http\Controllers\Admin\Management\UsersController;
-use App\Http\Controllers\Admin\SettingsController;
-use App\Services\Base\BaseAppGuards;
 use Illuminate\Support\Facades\Route;
+//use \App\Http\Controllers\Admin\LanguageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,13 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(
-	['namespace' => 'Auth'],
-	static function (): void {
-
-
-	}
-);
+Route::resource('language', LanguageController::class);
 
 
 

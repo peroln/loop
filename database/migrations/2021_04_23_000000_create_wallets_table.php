@@ -15,9 +15,12 @@ class CreateWalletsTable extends Migration
     {
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->unique();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->string('coin')->default('trx');
-            $table->string('address');
+            $table->string('address')->unique();
             $table->decimal('amount_transfers',20, 2)->default(0);
             $table->decimal('profit_referrals',20, 2)->default(0);
             $table->decimal('profit_reinvest',20, 2)->default(0);

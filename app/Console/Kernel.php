@@ -27,6 +27,8 @@ class Kernel extends ConsoleKernel
         if (config('env') !== 'production') {
             $schedule->command('telescope:prune --hours=48')->daily();
         }
+        $schedule->command('torn-events:extract')->everyMinute();
+        $schedule->command('ping:send')->everyMinute();
     }
 
     /**

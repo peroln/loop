@@ -15,10 +15,10 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('user_name')->nullable()->unique();
+            $table->string('user_name')->nullable();
             $table->string('avatar')->nullable();
             $table->boolean('blocked_faq')->default(false);
-            $table->enum('lang', ['en', 'es', 'ru'])->default('en');
+            $table->foreignId('language_id');
             $table->integer('this_referral')->default(1);
             $table->timestamps();
         });

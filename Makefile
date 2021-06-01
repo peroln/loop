@@ -11,7 +11,7 @@ END_COLOR='\033[0m'      #  ${END_COLOR}
 DOCKER_PATH=./docker
 ENV_FILE_PATH=./docker/.env
 
-DOCKER_COMPOSE_FILES=--env-file ${ENV_FILE_PATH} --f ${DOCKER_PATH}/docker-compose.yml -f ${DOCKER_PATH}/docker-compose.dev.yml
+DOCKER_COMPOSE_FILES=--env-file ${ENV_FILE_PATH} --f ${DOCKER_PATH}/docker-compose.yml
 
 # -p key in docker-compose command is equivalent to --project-name
 ifndef PROJECT_NAME
@@ -21,6 +21,16 @@ endif
 ifeq ($(MODE), PROD)
 	DOCKER_COMPOSE_FILES=--env-file ${ENV_FILE_PATH} -f ${DOCKER_PATH}/docker-compose.yml -f ${DOCKER_PATH}/docker-compose.prod.yml
 endif
+
+define LOGO
+
+#  ██╗      ██████╗  ██████╗  ██████╗  ██████╗  ██████╗ ██████╗
+#  ██║     ██╔═══██╗██╔═══██╗██╔═══██╗██╔═══██╗██╔═══██╗██╔══██╗
+#  ██║     ██║   ██║██║   ██║██║   ██║██║   ██║██║   ██║██████╔╝
+#  ██║     ██║   ██║██║   ██║██║   ██║██║   ██║██║   ██║██╔═══╝
+#  ███████╗╚██████╔╝╚██████╔╝╚██████╔╝╚██████╔╝╚██████╔╝██║
+#  ╚══════╝ ╚═════╝  ╚═════╝  ╚═════╝  ╚═════╝  ╚═════╝ ╚═╝
+endef
 
 export LOGO
 

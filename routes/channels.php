@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
-
+use App\Models\Service\Platform;
+use App\Models\Wallet;
 /*
 |--------------------------------------------------------------------------
 | Broadcast Channels
@@ -13,6 +14,15 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+Broadcast::channel('debug', function () {
+    \Illuminate\Support\Facades\Log::info('Chanel route');
+    return 1;
+});
+
+Broadcast::channel('wallet.{walletId}', function ($user, $walletId) {
+    return $user->id === Wallet::findOrFail($walletId)->id;
+});
+
+Broadcast::channel('debug', function () {
+    return true;
 });

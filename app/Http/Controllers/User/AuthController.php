@@ -6,15 +6,15 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\LoginRequest;
-//use App\Models\Helpers\CryptoServiceInterface;
-use App\Models\User;
-use App\Models\Wallet;
+use App\Http\Requests\User\RegistrationRequest;
+use App\Http\Resources\User\UserResource;
 use App\Repositories\Base\RepositoryInterface;
-use App\Repositories\UserRepository;
+use App\Repositories\WalletRepository;
+use App\Services\CryptoHandlerService;
 use App\Traits\FormatsErrorResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 
@@ -29,24 +29,14 @@ class AuthController extends Controller
 
 
     /**
-     * @var UserRepository
-     */
-    private RepositoryInterface $user;
-    /**
-     * @var CryptoServiceInterface
-     */
-//    private CryptoServiceInterface $cryptoService;
-
-    /**
      * AuthController constructor.
-     * @param RepositoryInterface $user
-//     * @param CryptoServiceInterface $cryptoService
+     * @param CryptoHandlerService $cryptoHandlerService
+     * @param RepositoryInterface $userRepository
      */
-    public function __construct(RepositoryInterface $user/*, CryptoServiceInterface $cryptoService*/)
+    public function __construct(private CryptoHandlerService $cryptoHandlerService, private RepositoryInterface $userRepository)
     {
         $this->middleware('auth:wallet', ['except' => ['login', 'registration']]);
-//        $this->cryptoService = $cryptoService;
-        $this->user = $user;
+
     }
 
     /**
@@ -55,7 +45,7 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $this->authenticate($request->validated());
+        app()->call([self::class, 'authenticate'], ['valid_request' => $request->validated()]);
         if (!auth()->check()) {
             response()->json(['error' => 'Authentication is failure'], 501);
         }
@@ -64,63 +54,51 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 502);
         }
-
-        $user = $this->user->getUserByWallet(auth()->user()->address);
         $expires_in = $this->getExpiresTime();
-
-        return response()->json(compact('token', 'expires_in', 'user'), 200);
+        return response()->json(compact('token', 'expires_in'), 200);
     }
+
 
     /**
      * @return int
      */
     private function getExpiresTime(): int
     {
-        return auth()->factory()->getTTL() * 60;
+        return auth()->factory()->getTTL() * 60 * 1000;
     }
 
     /**
+     * @param WalletRepository $wallet_repository
      * @param array $valid_request
      */
-    private function authenticate(array $valid_request): void
+    public static function authenticate(WalletRepository $wallet_repository, array $valid_request): void
     {
         $address = $valid_request['address'];
-        $wallet = Wallet::where('address', $address)->firstOrFail();
-        Auth::login($wallet);
+        try{
+            $wallet = $wallet_repository->findByOrFail('address', $address);
+            Auth::login($wallet);
+        }catch(\Exception $e){
+            Log::info('Login is fail. The error is: ' . $e->getMessage());
+        }
     }
 
-    public function register(Request $request)
+
+    /**
+     * @param RegistrationRequest $request
+     * @return JsonResponse
+     * @throws \Throwable
+     */
+    public function registration(RegistrationRequest $request)
     {
-//        return response()->json($this->cryptoService->confirmRegistration('ed45dd66da3198f2754e10233f50ae586d84a43dd1c679149e4a6e5b11519ba3'));
-        $validator = \Validator::make(
-            $request->all(),
-            [
-                'address' => 'required|string|max:255',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
-
-        $user = User::create([
-//            'name' => $request->get('name'),
-//            'email' => $request->get('email'),
-//            'password' => Hash::make($request->get('password')),
-        ]);
-
-        $token = \JWTAuth::fromUser($user);
-
-        return response()->json(compact('user', 'token'), 201);
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return UserResource
      */
-    public function getAuthenticatedUser(): JsonResponse
+    public function getAuthenticatedUser(): UserResource
     {
-        $user = $this->user->getUserByWallet(Auth::user()->address);
-        return response()->json(compact('user'));
+        $user = $this->userRepository->getUserByWallet(Auth::user()->address);
+        return new UserResource($user);
     }
 
     /**
@@ -145,13 +123,10 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the token array structure.
-     *
      * @param string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    protected function respondWithToken($token): JsonResponse
+    protected function respondWithToken(string $token): JsonResponse
     {
         return response()->json([
             'access_token' => $token,

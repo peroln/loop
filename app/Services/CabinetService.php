@@ -31,7 +31,10 @@ class CabinetService
 
     }
 
-    public function LeagueDesk()
+    /**
+     * @return array
+     */
+    public function LeagueDesk(): array
     {
         $start_date = now()->startOfMonth()->subMonth();
         $end_date = now()->endOfMonth()->subMonth();
@@ -44,6 +47,12 @@ class CabinetService
         return compact('users_info', 'leagues_info');
     }
 
+    /**
+     * @param $start_date
+     * @param $end_date
+     * @param $limit
+     * @return mixed
+     */
     private function createRequest($start_date, $end_date, $limit)
     {
         try {

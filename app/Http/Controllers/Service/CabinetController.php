@@ -3,6 +3,9 @@
 
 namespace App\Http\Controllers\Service;
 
+use App\Http\Requests\Service\PartnerRequest;
+use App\Http\Resources\User\UserPartnerResource;
+use App\Models\User;
 use App\Services\CabinetService;
 use Illuminate\Http\JsonResponse;
 
@@ -38,5 +41,14 @@ class CabinetController
     public function LeagueDesk(): JsonResponse
     {
         return response()->json($this->cabinetService->LeagueDesk());
+    }
+
+    /**
+     * @param PartnerRequest $request
+     * @return UserPartnerResource
+     */
+    public function partners(PartnerRequest $request): UserPartnerResource
+    {
+        return new UserPartnerResource(User::where('contract_user_id', $request->input('contract_user_id'))->firstOrFail());
     }
 }

@@ -32,4 +32,11 @@ class CabinetController
     {
         return response()->json($this->cabinetService->RatingLeague());
     }
+    /**
+     * @return JsonResponse
+     */
+    public function LeagueDesk(): JsonResponse
+    {
+        return response()->json($this->cabinetService->LeagueDesk());
+    }
 }

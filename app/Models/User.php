@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -37,6 +38,22 @@ class User extends Model
     public function language(): BelongsTo
     {
         return $this->belongsTo(Language::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function referral(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'this_referral', 'id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function subscribers(): HasMany
+    {
+        return $this->hasMany(self::class, 'this_referral', 'id');
     }
 
 }

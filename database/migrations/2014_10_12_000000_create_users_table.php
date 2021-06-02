@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('avatar')->nullable();
             $table->boolean('blocked_faq')->default(false);
             $table->foreignId('language_id');
-            $table->integer('this_referral')->default(1);
+            $table->integer('this_referral')->nullable();
             $table->timestamps();
         });
     }

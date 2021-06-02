@@ -23,6 +23,7 @@ class User extends Model
         'created_at',
         'updated_at',
     ];
+    const CREATED_AT = null;
 
     /**
      * @return HasOne

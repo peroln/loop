@@ -25,7 +25,7 @@ class ChangeCommandRequest extends FormRequest
     public function rules()
     {
         return [
-            'contract_user_ids' => 'array|max:50|min:1',
+            'contract_user_ids' => 'required|array|max:50|min:1',
             'contract_user_ids.*' => 'required|integer|exists:wallets,contract_user_id'
         ];
     }

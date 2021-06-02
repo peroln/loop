@@ -2,8 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Events\Overflow as OverflowEvent;
 use App\Events\PingEvent;
+use App\Events\ReactivationPlatform;
+use App\Models\Service\Overflow;
+use App\Models\Service\Platform;
 use Illuminate\Console\Command;
+
 
 class PingCommand extends Command
 {
@@ -37,6 +42,7 @@ class PingCommand extends Command
     public function handle()
     {
         broadcast(new PingEvent());
-       $this->info('Ping Command');
+        broadcast(new OverflowEvent(Overflow::first()));
+        broadcast(new ReactivationPlatform(Platform::first()));
     }
 }

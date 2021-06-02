@@ -42,7 +42,7 @@ class CryptoHandlerService
         $url = $this->cryptoService->formUrlRequest(Str::of(__FUNCTION__)->snake('-'), null);
         $response = Http::get($url, ['limit' => 200]);
         if ($response->successful() && count($response->json('data'))) {
-            $response = $response->collect('data');
+            $response = $response->collect('data')->reverse();
             foreach ($this->handlers_classes as $handler_class) {
                 $handler = app()->make($handler_class);
                 $handler->handleResponse($response);

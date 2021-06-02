@@ -8,6 +8,7 @@ use App\Http\Resources\User\UserResource;
 use App\Models\Language;
 use App\Models\User;
 use App\Repositories\Base\Repository;
+use Illuminate\Support\Arr;
 
 
 class UserRepository extends Repository
@@ -41,7 +42,8 @@ class UserRepository extends Repository
             'blocked_faq' => false,
             'language_id' => Language::where('shortcode', $language_shortcode)->first()?->id,
             'this_referral' => $params['referrer_id'] ?? 1,
-            'contract_user_id' => $params['contract_user_id'] ?? 1
+            'contract_user_id' => $params['contract_user_id'] ?? 1,
+            'created_at' => Arr::get($params,'block_timestamp')
         ];
     }
 

@@ -3,9 +3,8 @@
 namespace App\Http\Requests\Service;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class ChangeCommandRequest extends FormRequest
+class PartnerRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +13,7 @@ class ChangeCommandRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->command->wallet_id === Auth::user()->id;
+        return true;
     }
 
     /**
@@ -25,9 +24,7 @@ class ChangeCommandRequest extends FormRequest
     public function rules()
     {
         return [
-            'contract_user_ids' => 'required|array|max:50|min:1',
-            'contract_user_ids.*' => 'required|integer|exists:wallets,contract_user_id'
+            'contract_user_id' => 'required|integer|exists:users'
         ];
     }
-
 }

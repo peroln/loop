@@ -6,6 +6,8 @@ Route::apiResource('commands', CommandController::class)->middleware(['auth:wall
 Route::get('platforms/wallets/{wallet}', [\App\Http\Controllers\Service\PlatformController::class, 'platformUsersInfo']);
 Route::get('cabinet/info', [\App\Http\Controllers\Service\CabinetController::class, 'mainInformation']);
 Route::get('cabinet/league-rating', [\App\Http\Controllers\Service\CabinetController::class, 'leagueRating']);
+Route::get('cabinet/league-desk', [\App\Http\Controllers\Service\CabinetController::class, 'LeagueDesk']);
+Route::post('cabinet/partners', [\App\Http\Controllers\Service\CabinetController::class, 'partners']);
 
 Route::apiResource('platform-levels', PlatformLevelController::class);
 Route::apiResource('platforms', PlatformController::class)->middleware(['auth:wallet']);

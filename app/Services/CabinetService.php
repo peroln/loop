@@ -5,9 +5,11 @@ namespace App\Services;
 
 
 use App\Models\Service\League;
+use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use PhpParser\Builder;
 
 class CabinetService
 {
@@ -25,13 +27,41 @@ class CabinetService
      */
     public function RatingLeague()
     {
+        return $this->createRequest(now()->startOfMonth(), now(), 10);
+
+    }
+
+    /**
+     * @return array
+     */
+    public function LeagueDesk(): array
+    {
+        $start_date = now()->startOfMonth()->subMonth();
+        $end_date = now()->endOfMonth()->subMonth();
+        $limit = 3;
+        $leagues_info = $this->createRequest($start_date, $end_date, $limit);
+        $users_info = User::withCount(['subscribers' => function ($q) use ($start_date, $end_date) {
+            $q->whereHas('wallet', fn($q) => $q->whereBetween('created_at', [$start_date, $end_date]));
+        }])->orderByDesc('subscribers_count')->limit($limit)->get();
+
+        return compact('users_info', 'leagues_info');
+    }
+
+    /**
+     * @param $start_date
+     * @param $end_date
+     * @param $limit
+     * @return mixed
+     */
+    private function createRequest($start_date, $end_date, $limit)
+    {
         try {
             $arr = League::leftJoin('platform_levels', 'leagues.id', '=', 'platform_levels.league_id')
                 ->leftJoin('platforms', 'platform_levels.id', '=', 'platforms.platform_level_id')
                 ->leftJoin('wallets', 'platforms.wallet_id', '=', 'wallets.id')
-                ->leftJoin('financial_transactions', function ($q) {
+                ->leftJoin('financial_transactions', function ($q) use ($start_date, $end_date) {
                     $q->on('wallets.id', '=', 'financial_transactions.wallet_id')
-                        ->where('financial_transactions.created_at', '<', now());
+                        ->whereBetween('financial_transactions.created_at', [$start_date, $end_date]);
                 })
                 ->select(
                     'leagues.name',
@@ -53,8 +83,8 @@ class CabinetService
                 return $item['contract_user_id'];
             }]);
 
-            return $arr1->map(function ($item, $key) {
-                return $item->map(function ($i, $k) {
+            return $arr1->map(function ($item, $key) use ($limit) {
+                return $item->map(function ($i, $k) use ($limit) {
                     return [
                         'contract_user_id' => $k,
                         'sum'              => $i->sum('amount')
@@ -62,12 +92,12 @@ class CabinetService
                 })
                     ->sortByDesc('sum')
                     ->values()
-                    ->take(10);
+                    ->take($limit);
             });
 
         } catch (\Throwable $e) {
             Log::error($e->getMessage());
         }
-
     }
+
 }

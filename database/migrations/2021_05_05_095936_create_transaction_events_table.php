@@ -24,7 +24,7 @@ class CreateTransactionEventsTable extends Migration
             $table->string("referrer_base58_address")->nullable();
             $table->string("contract_user_base58_address")->nullable();
             $table->integer('block_number');
-            $table->unsignedBigInteger('block_timestamp');
+            $table->string('block_timestamp');
             $table->string('event_name');
             $table->timestamps();
         });

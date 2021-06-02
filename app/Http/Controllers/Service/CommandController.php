@@ -103,7 +103,7 @@ class CommandController extends Controller
      */
     public function changeCommand(ChangeCommandRequest $request, Command $command): CommandResource
     {
-        $handled_arr = $this->commandHandlerService->handleCommandArray($request->wallet_ids, $command->wallet_id);
+        $handled_arr = $this->commandHandlerService->handleCommandArray($request->contract_user_ids, $command->wallet->contract_user_id);
         $command->wallets()->sync($handled_arr);
         $command->fresh();
         return new CommandResource($command);

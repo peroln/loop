@@ -30,7 +30,8 @@ class TransactionRepository extends Repository
             'hex' => Arr::get($params, 'hex', ''),
             'call_value' => Arr::get($params, 'call_value', 0),
             'blockNumber' => Arr::get($params, 'block_number', 0),
-            'model_service' => Arr::get($params, 'model_service', '')
+            'model_service' => Arr::get($params, 'model_service', ''),
+            'block_timestamp' => Arr::get($params, 'block_timestamp')
         ];
     }
 

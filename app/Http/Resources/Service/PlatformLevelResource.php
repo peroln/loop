@@ -20,7 +20,8 @@ class PlatformLevelResource extends JsonResource
             'cost_buy'                   => $this->cost_buy,
             'cost_activation'            => $this->cost_activation,
             'cost_gaz'                   => $this->cost_gaz,
-            'count_platform_subscribers' => $this->count_platform_subscribers
+            'count_platform_subscribers' => $this->count_platform_subscribers,
+            'league' => $this->league->name
 
         ];
     }

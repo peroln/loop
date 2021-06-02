@@ -34,6 +34,7 @@ class Overflow implements ShouldBroadcast
     public function broadcastOn()
     {
         return new PrivateChannel('wallet.' . $this->overflow->wallet_id);
+//        return new PrivateChannel('debug');
     }
 
     public function broadcastWith(): array

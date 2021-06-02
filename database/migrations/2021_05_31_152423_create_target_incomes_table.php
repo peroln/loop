@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateTargetIncomesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('target_incomes', function (Blueprint $table) {
             $table->id();
-            $table->string('user_name')->nullable();
-            $table->string('avatar')->nullable();
-            $table->boolean('blocked_faq')->default(false);
-            $table->foreignId('language_id');
-            $table->integer('this_referral')->nullable();
+            $table->string('name');
+            $table->unsignedInteger('active')->default(1);
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('target_incomes');
     }
 }

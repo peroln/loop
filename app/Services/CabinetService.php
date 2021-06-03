@@ -43,8 +43,9 @@ class CabinetService
         $users_info = User::withCount(['subscribers' => function ($q) use ($start_date, $end_date) {
             $q->whereHas('wallet', fn($q) => $q->whereBetween('created_at', [$start_date, $end_date]));
         }])->orderByDesc('subscribers_count')->limit($limit)->get();
-
-        return compact('users_info', 'leagues_info');
+        $month = now()->subMonth()->format('F');
+        $year = now()->subMonth()->format('Y');
+        return compact('month', 'year', 'users_info', 'leagues_info');
     }
 
     /**

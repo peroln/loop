@@ -2,10 +2,7 @@
 
 namespace App\Http\Resources\Service;
 
-use App\Models\Service\Platform;
-use App\Models\Wallet;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\DB;
 
 class PlatformResource extends JsonResource
 {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Http\Resources\Service\StatusResource;
 use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,6 +30,7 @@ class UserResource extends JsonResource
             'referrals_count' => $this->getCountReferrals($this->contract_user_id),
 //            'referral_link' => $this->getReferralLink($this->contract_user_id),
             'wallet' => new WalletResouce($this->wallet),
+            'statuses' => StatusResource::collection($this->statuses()->withPivot('level')->get()) ,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 

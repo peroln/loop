@@ -25,9 +25,15 @@ class CabinetService
     /**
      * @return mixed
      */
-    public function RatingLeague()
+    public function RatingLeague(string $period = 'month')
     {
-        return $this->createRequest(now()->startOfMonth(), now(), 10);
+        $data_start = match ($period) {
+            'year' => now()->startOfYear(),
+            'month' => now()->startOfMonth(),
+            'week' => now()->startOfWeek(),
+            'day' => now()->startOfDay()
+        };
+        return $this->createRequest($data_start, now(), 10);
 
     }
 

@@ -3,11 +3,13 @@
 
 namespace App\Http\Controllers\Service;
 
+use App\Http\Requests\Service\LeagueRatingRequest;
 use App\Http\Requests\Service\PartnerRequest;
 use App\Http\Resources\User\UserPartnerResource;
 use App\Models\User;
 use App\Services\CabinetService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 
 class CabinetController
@@ -31,10 +33,11 @@ class CabinetController
     /**
      * @return JsonResponse
      */
-    public function leagueRating(): JsonResponse
+    public function leagueRating(LeagueRatingRequest $request): JsonResponse
     {
-        return response()->json($this->cabinetService->RatingLeague());
+        return response()->json($this->cabinetService->RatingLeague($request->input('period', 'month')));
     }
+
     /**
      * @return JsonResponse
      */

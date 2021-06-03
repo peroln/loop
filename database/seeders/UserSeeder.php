@@ -18,11 +18,9 @@ class UserSeeder extends Seeder
         $quantity = 1;
         User::factory()
             ->count($quantity)
-            ->state(new Sequence(
-               fn() => ['language_id' => 1,'this_referral' => null]
-//               fn() => ['language_id' => Language::all()->random(),'this_referral' => rand(1, $quantity)]
-            ))
+            ->state(new Sequence(fn() => ['language_id' => 1,'this_referral' => null]))
             ->has(Wallet::factory()->count(1))
             ->create();
     }
 }
+//                 fn() => ['language_id' => Language::all()->random(),'this_referral' => rand(1, $quantity)]

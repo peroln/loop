@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\GetUserByContractIdRequest;
 use App\Http\Requests\User\GetUserByIdRequest;
+use App\Http\Requests\User\GetUserByReferralRequest;
 use App\Http\Requests\User\GetUserByWalletRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Http\Resources\User\UserResource;
@@ -118,4 +119,14 @@ class UserController extends Controller
         return new UserResource($this->userRepository->findByOrFail('contract_user_id', $request->input('contract_user_id')));
 
     }
+
+    /**
+     * @param GetUserByReferralRequest $query
+     * @return UserResource
+     */
+    public function getUserByReferral(GetUserByReferralRequest $query): UserResource
+    {
+        return $this->userRepository->getUserByReferralLink($query->input('referral_link'));
+    }
+
 }

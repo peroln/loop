@@ -21,6 +21,7 @@ Route::get('check-registration/{wallet}', [UserController::class, 'checkWallet']
 Route::get('/contract_address', 'PublicApiController@address');
 Route::get('/all', 'UserController@getAllUsers');
 Route::get('/wallet/{address}', [UserController::class, 'getUserByWallet']);
+Route::get('/referral-link/{referral_link}', [UserController::class, 'getUserByReferral']);
 Route::get('/{id}', [UserController::class, 'getUserById']);
 
 Route::get('/contract-user/{contract_user_id}', [UserController::class, 'getUserByContractId']);

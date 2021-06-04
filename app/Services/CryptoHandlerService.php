@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 use App\Models\Helpers\CryptoServiceInterface;
+use App\Services\EventsHandlers\AddReferralLinkHandler;
 use App\Services\EventsHandlers\FinancialAccountingTransfer;
 use App\Services\EventsHandlers\OverflowPlatformEvent;
 use App\Services\EventsHandlers\PlatformCreateEventHandler;
@@ -19,6 +20,7 @@ class CryptoHandlerService
 
     private array $handlers_classes = [
         WalletRegistrationEventHandler::class,
+        AddReferralLinkHandler::class,
         PlatformCreateEventHandler::class,
         PlatformReactivationEvent::class,
         PlatformSubscriberEventHandler::class,

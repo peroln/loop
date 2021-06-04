@@ -78,7 +78,7 @@ class PlatformController extends Controller
 
     public function platformUsersInfo(Wallet $wallet)
     {
-        return PlatformResource::collection($wallet->platforms()->orderBy('id')->get()->unique('platform_level_id'));
+        return PlatformResource::collection($wallet->platforms()->orderBy('id')->get());
     }
 
     public function platformReactivationUsersInfo(Wallet $wallet)

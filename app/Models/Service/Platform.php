@@ -11,9 +11,11 @@ class Platform extends Model
 {
     use HasFactory;
 
+    const CREATED_AT = null;
     protected $fillable = [
         'platform_level_id',
-        'wallet_id'
+        'wallet_id',
+        'created_at'
     ];
 
     /**

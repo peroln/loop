@@ -8,6 +8,7 @@ use App\Http\Resources\User\UserResource;
 use App\Models\Language;
 use App\Models\User;
 use App\Repositories\Base\Repository;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 
 
@@ -25,6 +26,11 @@ class UserRepository extends Repository
     public function getUserByWallet(string $address): UserResource
     {
         return new UserResource($this->getModel()->whereHas('wallet', fn($q) => $q->where('address', $address))->first());
+    }
+
+    public function getUserByReferralLink(string $referral_link): UserResource
+    {
+        return new UserResource($this->getModel()->whereHas('wallet', fn($q) => $q->where('referral_link', $referral_link))->first());
     }
 
 

@@ -37,10 +37,10 @@ class CryptoHandlerService
     }
 
 
-    public function eventsHandler(): void
+    public function eventsHandler($event_name): void
     {
         $url = $this->cryptoService->formUrlRequest(Str::of(__FUNCTION__)->snake('-'), null);
-        $response = Http::get($url, ['limit' => 200]);
+        $response = Http::get($url, ['limit' => 200, 'event_name' => $event_name]);
         if ($response->successful() && count($response->json('data'))) {
             $response = $response->collect('data')->reverse();
             foreach ($this->handlers_classes as $handler_class) {

@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Service\Platform;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,21 +11,21 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ReactivationPlatform implements ShouldBroadcast
+class MoneyTransactionEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public Platform $platform;
+    public User $user;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Platform $platform)
+    public function __construct(User $user)
     {
         //
-        $this->platform = $platform;
+        $this->user = $user;
     }
 
     /**
@@ -35,22 +35,6 @@ class ReactivationPlatform implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('wallet.' . $this->platform->wallet_id);
-//        return new PrivateChannel('debug');
-    }
-
-    public function broadcastWith(): array
-    {
-        return [
-            'data' => [
-                'reactivation' => 'true',
-                'platform'     => $this->platform
-            ],
-        ];
-    }
-
-    public function broadcastAs(): string
-    {
-        return 'ReactivationEvent';
+        return new PrivateChannel('channel-name');
     }
 }

@@ -3,6 +3,7 @@
 
 namespace App\Services\EventsHandlers;
 
+use App\Events\MoneyTransactionEvent;
 use App\Models\Service\FinancialTransaction;
 use App\Models\Service\TargetIncome;
 use App\Models\Transaction;
@@ -66,12 +67,14 @@ class FinancialAccountingTransfer extends BaseEventsHandler
             $receiver_platform_referral->profit_referrals += Arr::get($params, 'platform_referral', 0);
             $receiver_platform_referral->amount_transfers = $receiver_platform_referral->profit_referrals + $receiver_platform_referral->profit_reinvest;
             $receiver_platform_referral->save();
+            MoneyTransactionEvent::dispatch($receiver_platform_referral->user);
 
             $receiver_platform_reinvest = Wallet::where('address', Arr::get($params, 'receiver_platform_reinvest'))->firstOrFail();
 
             $receiver_platform_reinvest->profit_reinvest += Arr::get($params, 'platform_reinvest', 0);
             $receiver_platform_reinvest->amount_transfers = $receiver_platform_reinvest->profit_referrals + $receiver_platform_reinvest->profit_reinvest;
             $receiver_platform_reinvest->save();
+            MoneyTransactionEvent::dispatch($receiver_platform_reinvest->user);
 
 
             $transaction = Transaction::firstOrCreate([

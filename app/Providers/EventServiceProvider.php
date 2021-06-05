@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\MoneyTransactionEvent;
+use App\Events\ReactivationPlatform;
 use App\Events\UserCreatedEvent;
+use App\Listeners\MoneyUserStatusCounter;
+use App\Listeners\ReactivationUserStatusCounter;
 use App\Listeners\UserStatusCounter;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -22,6 +26,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserCreatedEvent::class => [
             UserStatusCounter::class
+        ],
+        ReactivationPlatform::class => [
+           ReactivationUserStatusCounter::class
+        ],
+        MoneyTransactionEvent::class => [
+            MoneyUserStatusCounter::class
         ]
     ];
 

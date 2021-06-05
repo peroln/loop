@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 use App\Models\Helpers\CryptoServiceInterface;
+use App\Services\EventsHandlers\AddReferralLinkHandler;
 use App\Services\EventsHandlers\FinancialAccountingTransfer;
 use App\Services\EventsHandlers\OverflowPlatformEvent;
 use App\Services\EventsHandlers\PlatformCreateEventHandler;
@@ -19,6 +20,7 @@ class CryptoHandlerService
 
     private array $handlers_classes = [
         WalletRegistrationEventHandler::class,
+        AddReferralLinkHandler::class,
         PlatformCreateEventHandler::class,
         PlatformReactivationEvent::class,
         PlatformSubscriberEventHandler::class,
@@ -37,10 +39,10 @@ class CryptoHandlerService
     }
 
 
-    public function eventsHandler(): void
+    public function eventsHandler($event_name): void
     {
         $url = $this->cryptoService->formUrlRequest(Str::of(__FUNCTION__)->snake('-'), null);
-        $response = Http::get($url, ['limit' => 200]);
+        $response = Http::get($url, ['limit' => 200, 'event_name' => $event_name]);
         if ($response->successful() && count($response->json('data'))) {
             $response = $response->collect('data')->reverse();
             foreach ($this->handlers_classes as $handler_class) {

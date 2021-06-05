@@ -17,7 +17,7 @@ class PlatformSeeder extends Seeder
     {
         $platform_levels_array_ids = PlatformLevel::pluck('id')->toArray();
         $res_arr = array_map(function ($value){
-            return ['wallet_id' => 1, 'platform_level_id' => $value];
+            return ['wallet_id' => 1, 'platform_level_id' => $value, 'created_at' => now()];
         }, $platform_levels_array_ids);
         DB::table('platforms')->insert($res_arr);
     }

@@ -23,7 +23,8 @@ class PlatformCreateEventHandler extends BaseEventsHandler
 
             Platform::create([
                 'wallet_id'         => $wallet_id,
-                'platform_level_id' => Arr::get($params, 'platform')
+                'platform_level_id' => Arr::get($params, 'platform'),
+                'created_at' =>    Arr::get($params, 'block_timestamp'),
             ]);
 
             $transaction = Transaction::firstOrCreate([

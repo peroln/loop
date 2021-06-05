@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class WalletRegistrationEventHandler extends BaseEventsHandler
 {
-    const EVENT_NAME = ['Registration', 'AddedReferralLink'];
+    const EVENT_NAME = 'Registration';
 
     /**
      * @param array $event
@@ -31,7 +31,7 @@ class WalletRegistrationEventHandler extends BaseEventsHandler
             $block_number = Arr::get($event, 'block_number');
             $block_timestamp = date('Y-m-d H:i:s', (int)Arr::get($event, 'block_timestamp', microtime(true))/1000);
             $event_name = Arr::get($event, 'event_name');
-            $referral_link = Arr::get($event, 'referral_link');
+
 
         } catch (\Throwable $e) {
             Log::error(__FILE__ . ' ' . $e->getMessage());
@@ -48,7 +48,7 @@ class WalletRegistrationEventHandler extends BaseEventsHandler
             'hex',
             'call_value',
             'amount_transfers',
-            'referral_link'
+//            'referral_link'
         );
     }
 
@@ -69,7 +69,7 @@ class WalletRegistrationEventHandler extends BaseEventsHandler
             $transaction = $wallet->transactions()->create($transaction_data_params);
 
             $transaction_events_data_params = $this->transactionEventRepository->createTransactionEventDataParams($params);
-            $event = $transaction->transactionEvents()->create($transaction_events_data_params);
+            $transaction->transactionEvents()->create($transaction_events_data_params);
 
             DB::commit();
         } catch (\Throwable $e) {

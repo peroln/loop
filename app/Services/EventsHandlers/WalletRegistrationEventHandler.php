@@ -31,7 +31,7 @@ class WalletRegistrationEventHandler extends BaseEventsHandler
             $block_number = Arr::get($event, 'block_number');
             $block_timestamp = date('Y-m-d H:i:s', (int)Arr::get($event, 'block_timestamp', microtime(true))/1000);
             $event_name = Arr::get($event, 'event_name');
-//            $referral_link = Arr::get($event, 'referral_link');
+
 
         } catch (\Throwable $e) {
             Log::error(__FILE__ . ' ' . $e->getMessage());

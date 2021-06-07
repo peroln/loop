@@ -4,6 +4,7 @@
 namespace App\Services\EventsHandlers;
 
 
+use App\Events\CreatedPlatformEvent;
 use App\Models\Service\Platform;
 use App\Models\Transaction;
 use App\Models\TransactionEvent;
@@ -20,12 +21,16 @@ class PlatformCreateEventHandler extends BaseEventsHandler
     {
         try {
             $wallet_id = Wallet::where('address', Arr::get($params, 'contract_user_base58_address'))->firstOrFail()->id;
+            if($wallet_id === 2){
+                Log::info(__METHOD__ . 'Wallet 2');
+            }
 
-            Platform::create([
+            $platform = Platform::create([
                 'wallet_id'         => $wallet_id,
                 'platform_level_id' => Arr::get($params, 'platform'),
-                'created_at' =>    Arr::get($params, 'block_timestamp'),
+                'created_at'        => Arr::get($params, 'block_timestamp'),
             ]);
+            CreatedPlatformEvent::dispatch($platform);
 
             $transaction = Transaction::firstOrCreate([
                 'wallet_id'     => $wallet_id,
@@ -62,7 +67,7 @@ class PlatformCreateEventHandler extends BaseEventsHandler
             $base58_id = $this->hexString2Base58(Arr::get($event, 'transaction_id', ''));
             $hex = Arr::get($event, 'transaction_id');
             $block_number = Arr::get($event, 'block_number');
-            $block_timestamp = date('Y-m-d H:i:s', (int)Arr::get($event, 'block_timestamp')/1000);
+            $block_timestamp = date('Y-m-d H:i:s', (int)Arr::get($event, 'block_timestamp') / 1000);
             $event_name = Arr::get($event, 'event_name');
             $platform = Arr::get($event, 'result.platform');
 

@@ -4,6 +4,7 @@
 namespace App\Services\EventsHandlers;
 
 
+use App\Events\CreatedPlatformEvent;
 use App\Events\ReactivationPlatform;
 use App\Models\Service\Platform;
 use App\Models\Service\Reactivation;
@@ -29,7 +30,7 @@ class PlatformReactivationEvent extends BaseEventsHandler
             $base58_id = $this->hexString2Base58(Arr::get($event, 'transaction_id'));
             $hex = Arr::get($event, 'transaction_id');
             $block_number = Arr::get($event, 'block_number');
-            $block_timestamp = Arr::get($event, 'block_timestamp');
+            $block_timestamp = date('Y-m-d H:i:s', Arr::get($event, 'block_timestamp')/1000);
             $event_name = Arr::get($event, 'event_name');
             $platform = Arr::get($event, 'result.platform');
 
@@ -58,8 +59,10 @@ class PlatformReactivationEvent extends BaseEventsHandler
 
             $platform = Platform::create([
                 'wallet_id'         => $wallet_id,
-                'platform_level_id' => Arr::get($params, 'platform')
+                'platform_level_id' => Arr::get($params, 'platform'),
+                'created_at'        => Arr::get($params, 'block_timestamp')
             ]);
+            CreatedPlatformEvent::dispatch($platform);
 
             $transaction = Transaction::firstOrCreate([
                 'wallet_id'     => $wallet_id,
@@ -73,7 +76,7 @@ class PlatformReactivationEvent extends BaseEventsHandler
 //            "referrer_base58_address" => Arr::get($params, 'referrer_base58_address'),
                 "contract_user_base58_address" => Arr::get($params, 'contract_user_base58_address'),
                 'block_number'                 => Arr::get($params, 'block_number'),
-                'block_timestamp'              => (int)date('Y-m-d H:i:s', Arr::get($params, 'block_timestamp')/1000),
+                'block_timestamp'              => Arr::get($params, 'block_timestamp'),
                 'event_name'                   => Arr::get($params, 'event_name'),
             ]);
 

@@ -9,7 +9,8 @@ class PlatformResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
+     *
      * @return array
      */
     public function toArray($request)
@@ -20,9 +21,10 @@ class PlatformResource extends JsonResource
             'platform_level_id'                => $this->platform_level_id,
             'platform_level'                   => $this->platformLevel->name,
             'active'                           => $this->active,
+            'activated'                        => $this->activated,
             'subscribers'                      => $this->wallets()->pluck('wallet_id'),
             'reactivations'                    => $this->platformLevel->reactivation()->where('wallet_id', $this->wallet_id)->first()?->count ?? 0,
-            'total_subscribers_platform_level' => $this->totalSubscribersByLevel()
+            'total_subscribers_platform_level' => $this->totalSubscribersByLevel(),
         ];
     }
 }

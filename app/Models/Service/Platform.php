@@ -15,6 +15,7 @@ class Platform extends Model
     protected $fillable = [
         'platform_level_id',
         'wallet_id',
+        'activated',
         'created_at'
     ];
 

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Http\Controllers\User;
 
@@ -30,8 +30,9 @@ class AuthController extends Controller
 
     /**
      * AuthController constructor.
-     * @param CryptoHandlerService $cryptoHandlerService
-     * @param RepositoryInterface $userRepository
+     *
+     * @param  CryptoHandlerService  $cryptoHandlerService
+     * @param  RepositoryInterface   $userRepository
      */
     public function __construct(private CryptoHandlerService $cryptoHandlerService, private RepositoryInterface $userRepository)
     {
@@ -40,7 +41,8 @@ class AuthController extends Controller
     }
 
     /**
-     * @param LoginRequest $request
+     * @param  LoginRequest  $request
+     *
      * @return JsonResponse
      */
     public function login(LoginRequest $request): JsonResponse
@@ -68,23 +70,24 @@ class AuthController extends Controller
     }
 
     /**
-     * @param WalletRepository $wallet_repository
-     * @param array $valid_request
+     * @param  WalletRepository  $wallet_repository
+     * @param  array             $valid_request
      */
     public static function authenticate(WalletRepository $wallet_repository, array $valid_request): void
     {
         $address = $valid_request['address'];
-        try{
+        try {
             $wallet = $wallet_repository->findByOrFail('address', $address);
             Auth::login($wallet);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             Log::info('Login is fail. The error is: ' . $e->getMessage());
         }
     }
 
 
     /**
-     * @param RegistrationRequest $request
+     * @param  RegistrationRequest  $request
+     *
      * @return JsonResponse
      * @throws \Throwable
      */
@@ -123,15 +126,16 @@ class AuthController extends Controller
     }
 
     /**
-     * @param string $token
+     * @param  string  $token
+     *
      * @return JsonResponse
      */
     protected function respondWithToken(string $token): JsonResponse
     {
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $this->getExpiresTime()
+            'token_type'   => 'bearer',
+            'expires_in'   => $this->getExpiresTime(),
         ]);
     }
 }

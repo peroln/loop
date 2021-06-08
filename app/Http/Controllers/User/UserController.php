@@ -37,7 +37,8 @@ class UserController extends Controller
     }
 
     /**
-     * @param GetUserByIdRequest $request
+     * @param  GetUserByIdRequest  $request
+     *
      * @return UserResource
      */
     public function getUserById(GetUserByIdRequest $request): UserResource
@@ -46,7 +47,8 @@ class UserController extends Controller
     }
 
     /**
-     * @param GetUserByWalletRequest $query
+     * @param  GetUserByWalletRequest  $query
+     *
      * @return UserResource
      */
 
@@ -56,8 +58,9 @@ class UserController extends Controller
     }
 
     /**
-     * @param UserUpdateRequest $request
-     * @param User $user
+     * @param  UserUpdateRequest  $request
+     * @param  User               $user
+     *
      * @return UserResource|JsonResponse
      *
      */
@@ -66,8 +69,8 @@ class UserController extends Controller
         $params = $request->validated();
         if ($request->has('language')) {
             $language_shortcode = Arr::pull($params, 'language');
-            $lang_model = Language::where('shortcode', $language_shortcode)->firstOrFail();
-            $user->language_id = $lang_model->id;
+            $lang_model         = Language::where('shortcode', $language_shortcode)->firstOrFail();
+            $user->language_id  = $lang_model->id;
         }
         if (count($params)) {
             $user->fill($params);
@@ -80,8 +83,9 @@ class UserController extends Controller
     }
 
     /**
-     * @param WalletRepository $wallet_repository
-     * @param string $wallet
+     * @param  WalletRepository  $wallet_repository
+     * @param  string            $wallet
+     *
      * @return JsonResponse
      */
     public function checkWallet(WalletRepository $wallet_repository, string $wallet): JsonResponse
@@ -110,7 +114,8 @@ class UserController extends Controller
     }
 
     /**
-     * @param int $contract_user_id
+     * @param  int  $contract_user_id
+     *
      * @return UserResource
      * @throws \ReflectionException
      */
@@ -121,7 +126,8 @@ class UserController extends Controller
     }
 
     /**
-     * @param GetUserByReferralRequest $query
+     * @param  GetUserByReferralRequest  $query
+     *
      * @return UserResource
      */
     public function getUserByReferral(GetUserByReferralRequest $query): UserResource

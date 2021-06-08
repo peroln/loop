@@ -13,13 +13,13 @@ class ContractCallService
      * @return mixed
      * @throws \App\Exceptions\Ethereum\ContractException
      */
-    public function getFirstUser(): ?string
+    public function getFirstUser(int $userId = 1): ?string
     {
         $data = [
             "contract_address" => $this->base58check2HexString(config('contract.address')),
             "function_selector" => "idToAddress(uint256)",
             "owner_address" => "410000000000000000000000000000000000000000",
-            "parameter" => "0000000000000000000000000000000000000000000000000000000000000001"
+            "parameter" => str_pad(dechex($userId), 64, "0", STR_PAD_LEFT),
         ];
 
         $request = Http::post(

@@ -26,7 +26,7 @@ class UserPartnerResource extends JsonResource
             'subscribers'      => UserSubscriberResource::collection($this->subscribers),
             'wallet'           => new WalletResouce($this->wallet),
             'platforms'        => $this->wallet->platforms()->get()->count(),
-            'activated_platform' => $this->wallet->platforms()->get()->unique('platform_level_id')->count(),
+            'activated_platform' => $this->wallet->platforms()->where('activated', true)->get()->count(),
             'created_at'       => $this->created_at,
         ];
     }

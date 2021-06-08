@@ -24,7 +24,8 @@ class PlatformHandlerService
         $current_free_platform->wallets()->attach($wallet_id);
         Platform::create([
             'wallet_id'         => $wallet_id,
-            'platform_level_id' => $platform_level_id
+            'platform_level_id' => $platform_level_id,
+            'created_at' => now()
         ]);
 
         return $current_free_platform->wallet->address;
@@ -77,7 +78,8 @@ class PlatformHandlerService
             $reactivation_model->save();
             Platform::create([
                 'platform_level_id' => $platform_level_id,
-                'wallet_id'         => $wallet_id
+                'wallet_id'         => $wallet_id,
+                'created_at' => now()
             ]);
             DB::commit();
             return true;

@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\CreatedPlatformEvent;
 use App\Events\MoneyTransactionEvent;
 use App\Events\ReactivationPlatform;
 use App\Events\UserCreatedEvent;
 use App\Listeners\MoneyUserStatusCounter;
+use App\Listeners\PlatformUserStatusCounter;
 use App\Listeners\ReactivationUserStatusCounter;
 use App\Listeners\UserStatusCounter;
 use Illuminate\Auth\Events\Registered;
@@ -32,6 +34,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MoneyTransactionEvent::class => [
             MoneyUserStatusCounter::class
+        ],
+        CreatedPlatformEvent::class => [
+            PlatformUserStatusCounter::class
         ]
     ];
 

@@ -5,7 +5,8 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 projectName=loooop_platform
-domains=5uhw14kedp3r.corp.merehead.xyz
+#domains=(loooop.corp.merehead.xyz landing.loooop.corp.merehead.xyz)
+domains=(5uhw14kedp3r.loooop.net)
 rsa_key_size=4096
 data_path="../docker/certbot"
 email="" # Adding a valid address is strongly recommended
@@ -77,4 +78,4 @@ echo
 
 echo "### Stoping nginx_proxy ..."
 projectName+="_nginx_proxy_1"
-#docker stop $projectName
+docker stop $projectName

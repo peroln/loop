@@ -38,9 +38,9 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'encrypted' => true,
-                'host' => 'laravel-echo',
-                'port' => 6001,
-                'scheme' => 'http',
+                'host' => '5uhw14kedp3r.corp.merehead.xyz',
+                'port' => 8084,
+                'scheme' => 'https',
                 'useTLS' => true,
             ],
         ],

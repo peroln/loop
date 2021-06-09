@@ -46,7 +46,7 @@ class MoneyUserStatusCounter
         $users_amount = (int)$event->user->wallet->amount_transfers;
 
         $user_level = match (true) {
-            $users_amount >= 5000000000 => 5, // 2025
+            $users_amount >= 5000000000 => 5,
             $users_amount >= 150000000 => 4,
             $users_amount >= 50000000 => 3,
             $users_amount >= 5000000 => 2,

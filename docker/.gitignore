@@ -4,3 +4,4 @@ mysql-data/
 certbot/
 nginx_proxy/nginx.conf.bak
 .env
+docker/nginx_proxy/nginx.conf

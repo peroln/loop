@@ -25,7 +25,8 @@ class MoneyUserStatusCounter
     /**
      * Handle the event.
      *
-     * @param MoneyTransactionEvent $event
+     * @param  MoneyTransactionEvent  $event
+     *
      * @return void
      */
     public function handle(MoneyTransactionEvent $event)
@@ -52,8 +53,8 @@ class MoneyUserStatusCounter
             $users_amount >= 5000000 => 2,
             default => 1
         };
-        $status = Status::where('name', 'Moneymaker')->firstOrFail();
-        $old_model = $event->user->statuses()->wherePivot('status_id', $status->id)->first();
+        $status     = Status::where('name', 'Moneymaker')->firstOrFail();
+        $old_model  = $event->user->statuses()->wherePivot('status_id', $status->id)->first();
         if ($old_model) {
             $old_model->pivot->level = $user_level;
             $old_model->pivot->save();

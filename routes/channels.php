@@ -14,11 +14,6 @@ use App\Models\Wallet;
 |
 */
 
-Broadcast::channel('debug', function () {
-    \Illuminate\Support\Facades\Log::info('Chanel route');
-    return 1;
-});
-
 Broadcast::channel('wallet.{walletId}', function ($user, $walletId) {
     return $user->id === Wallet::findOrFail($walletId)->id;
 });

@@ -46,13 +46,14 @@ class MoneyUserStatusCounter
 
         $users_amount = (int)$event->user->wallet->amount_transfers;
 
-        $user_level = match (true) {
-            $users_amount >= 5000000000 => 5,
-            $users_amount >= 150000000 => 4,
-            $users_amount >= 50000000 => 3,
-            $users_amount >= 5000000 => 2,
-            default => 1
-        };
+                $user_level = match (true) {
+                    $users_amount >= 13500000000000 => 5,
+                    $users_amount >= 1350000000000 => 4,
+                    $users_amount >= 340000000000 => 3,
+                    $users_amount >= 65000000000 => 2,
+                    $users_amount >= 7000000000 => 1,
+                    default => 0
+                };
         $status     = Status::where('name', 'Moneymaker')->firstOrFail();
         $old_model  = $event->user->statuses()->wherePivot('status_id', $status->id)->first();
         if ($old_model) {

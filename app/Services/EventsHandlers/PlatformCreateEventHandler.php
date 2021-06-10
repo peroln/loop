@@ -21,9 +21,6 @@ class PlatformCreateEventHandler extends BaseEventsHandler
     {
         try {
             $wallet_id = Wallet::where('address', Arr::get($params, 'contract_user_base58_address'))->firstOrFail()->id;
-            if($wallet_id === 2){
-                Log::info(__METHOD__ . 'Wallet 2');
-            }
 
             $platform = Platform::create([
                 'wallet_id'         => $wallet_id,

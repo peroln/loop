@@ -42,7 +42,6 @@ class PingCommand extends Command
     public function handle()
     {
         broadcast(new PingEvent());
-        broadcast(new OverflowEvent(Overflow::first()));
-        broadcast(new ReactivationPlatform(Platform::first()));
+//        broadcast(new OverflowEvent(Overflow::first()));
     }
 }

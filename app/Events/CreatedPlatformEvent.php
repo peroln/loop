@@ -27,7 +27,6 @@ class CreatedPlatformEvent
     {
         //
         $this->platform = $platform;
-        Log::info($platform->wallet_id . ' - ' . $platform->platform_level_id);
 
     }
 

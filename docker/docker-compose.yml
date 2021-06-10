@@ -10,7 +10,7 @@ x-fpm-cli: &fpm_cli
     - ../:/application
     - ../docker/php_cli/php-ini-overrides.ini:/etc/php/8.0/cli/conf.d/99-overrides.ini
     - ${SSL_LOCAL_FULLCHAIN_PATH}:/etc/letsencrypt/live/${DOMAIN}/fullchain.pem
-    - ${SSL_LOCAL_CERT_PATH}:/etc/letsencrypt/live/${DOMAIN}/privkey.pem
+    - ${SSL_LOCAL_PRIV_PATH}:/etc/letsencrypt/live/${DOMAIN}/privkey.pem
 
 services:
 
@@ -58,7 +58,7 @@ services:
       - ../:/application
       - ../docker/php-fpm/php-ini-overrides.ini:/etc/php/8.0/fpm/conf.d/99-overrides.ini
       - ${SSL_LOCAL_FULLCHAIN_PATH}:/etc/letsencrypt/live/${DOMAIN}/fullchain.pem
-      - ${SSL_LOCAL_CERT_PATH}:/etc/letsencrypt/live/${DOMAIN}/privkey.pem
+      - ${SSL_LOCAL_PRIV_PATH}:/etc/letsencrypt/live/${DOMAIN}/privkey.pem
     networks:
       - loooop_platform
     links:
@@ -115,7 +115,7 @@ services:
     volumes:
       - ../:/application
       - ${SSL_LOCAL_FULLCHAIN_PATH}:/etc/letsencrypt/live/${DOMAIN}/fullchain.pem
-      - ${SSL_LOCAL_CERT_PATH}:/etc/letsencrypt/live/${DOMAIN}/privkey.pem
+      - ${SSL_LOCAL_PRIV_PATH}:/etc/letsencrypt/live/${DOMAIN}/privkey.pem
     networks:
       - loooop_platform
     links:

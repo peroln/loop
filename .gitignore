@@ -20,3 +20,4 @@ yarn-error.log
 /.editorconfig
 /config/sentry.php
 /Loooop-prod-users.pem
+/docker/ssl_crt/temp/

@@ -38,8 +38,8 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'encrypted' => true,
-                'host' => '5uhw14kedp3r.corp.merehead.xyz',
-                'port' => 8084,
+                'host' => env('PUSHER_WEBSERVER_HOST', '5uhw14kedp3r.loooop.net'),
+                'port' => env('PUSHER_WEBSERVER_PORT', 8084),
                 'scheme' => 'https',
                 'useTLS' => true,
             ],

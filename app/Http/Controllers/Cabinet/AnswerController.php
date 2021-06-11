@@ -7,6 +7,7 @@ use App\Http\Requests\Cabinet\AnswerStoreRequest;
 use App\Http\Requests\Cabinet\AnswerUpdateRequest;
 use App\Http\Resources\Cabinet\AnswerResource;
 use App\Models\Cabinet\Answer;
+use App\Services\AnswerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -14,6 +15,15 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class AnswerController extends Controller
 {
+
+
+    private AnswerService $answerService;
+
+    public function __construct(AnswerService $answerService)
+    {
+        $this->answerService = $answerService;
+    }
+
     /**
      * @return AnonymousResourceCollection
      */
@@ -29,9 +39,7 @@ class AnswerController extends Controller
      */
     public function store(AnswerStoreRequest $request): AnswerResource
     {
-        $answer = new Answer();
-        $answer->fill($request->validated());
-        $answer->save();
+        $answer = $this->answerService->storeResource($request);
         return new AnswerResource($answer);
     }
 
@@ -53,8 +61,7 @@ class AnswerController extends Controller
      */
     public function update(AnswerUpdateRequest $request, Answer $answer): AnswerResource
     {
-        $answer->fill($request->validated());
-        $answer->save();
+        $answer = $this->answerService->updateResource($request, $answer);
         return new AnswerResource($answer);
     }
 

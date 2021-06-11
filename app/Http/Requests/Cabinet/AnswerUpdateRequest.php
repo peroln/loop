@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Cabinet;
 
+use App\Models\Cabinet\Question;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AnswerUpdateRequest extends FormRequest
 {
@@ -27,7 +29,9 @@ class AnswerUpdateRequest extends FormRequest
         return [
             'user_id'     => 'required_without_all:question_id,text|integer|exists:users,id',
             'question_id' => 'required_without_all:user_id,text|integer|exists:questions,id',
-            'text'        => 'required_without_all:question_id,user_id|string|unique:answers,text,' . $this->answer->id,
+            'content'                      => 'required_without_all:active,approved,user_id|array',
+            'content.*.text'               => ['required_with:content.*.language_shortcode', 'string'],
+            'content.*.language_shortcode' => 'required_with:content.*.text|string|exists:languages,shortcode',
         ];
     }
 

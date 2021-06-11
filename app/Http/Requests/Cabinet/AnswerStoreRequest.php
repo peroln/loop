@@ -27,7 +27,9 @@ class AnswerStoreRequest extends FormRequest
         return [
             'user_id' => 'required|integer|exists:users,id',
             'question_id' => 'required|integer|exists:questions,id',
-            'text'    => 'required|string|unique:answers',
+            'content' => 'required|array',
+            'content.*.text'    => ['required','string'],
+            'content.*.language_shortcode' => 'required|string|exists:languages,shortcode'
         ];
     }
 

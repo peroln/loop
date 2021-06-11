@@ -101,13 +101,15 @@ class CabinetService
 
             return $arr1->map(function ($item) use ($limit) {
                 return $item->map(function ($i, $k) use ($limit) {
-                    if (!$k) {
+                    if (!$k || !$i->sum('amount')) {
                         return [];
                     }
                     return [
                         'contract_user_id' => $k,
                         'sum'              => $i->sum('amount'),
                     ];
+                })->reject(function ($arr) {
+                    return !count($arr);
                 })
                     ->sortByDesc('sum')
                     ->values()

@@ -4,6 +4,8 @@ namespace App\Http\Requests\Cabinet;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class QuestionStoreRequest extends FormRequest
 {
@@ -14,6 +16,7 @@ class QuestionStoreRequest extends FormRequest
      */
     public function authorize()
     {
+
         return true;
     }
 
@@ -24,9 +27,12 @@ class QuestionStoreRequest extends FormRequest
      */
     public function rules()
     {
+        Log::info('hello');
         return [
             'user_id' => 'required|integer|exists:users,id',
-            'text'    => 'required|string|unique:questions',
+            'content' => 'required|array',
+            'content.*.text'    => ['required','string', 'unique:contents,text'],
+            'content.*.language_shortcode' => 'required|string|exists:languages,shortcode'
         ];
     }
 

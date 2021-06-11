@@ -16,7 +16,6 @@ class CreateQuestionsTable extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->text('text')->unique();
             $table->unsignedInteger('active')->default(1);
             $table->unsignedInteger('approved')->default(0);
             $table->timestamps();

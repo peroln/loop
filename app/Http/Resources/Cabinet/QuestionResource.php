@@ -19,7 +19,7 @@ class QuestionResource extends JsonResource
         return [
             'id'               => $this->id,
             'user_contract_id' => $this->user->contract_user_id,
-            'text'             => $this->text,
+            'contents'             => ContentResource::collection($this->contents),
             'answers'          => AnswerResource::collection($this->answers),
             'active'           => $this->active,
             'approved'         => $this->approved,

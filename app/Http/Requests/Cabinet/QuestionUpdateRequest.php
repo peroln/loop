@@ -26,8 +26,8 @@ class QuestionUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|integer|exists:users,id',
-            'text'    => 'required|string|unique:questions,text,' . $this->question->id,
+            'user_id' => 'required_without_all:active,approved,text|integer|exists:users,id',
+            'text'    => 'required_without_all:active,approved,user_id|string|unique:questions,text,' . $this->question->id,
             'active' => ['integer', Rule::in([0,1])],
             'approved' => ['integer', Rule::in([0,1])],
         ];

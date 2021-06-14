@@ -6,18 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cabinet\QuestionStoreRequest;
 use App\Http\Requests\Cabinet\QuestionUpdateRequest;
 use App\Http\Resources\Cabinet\QuestionResource;
-use App\Models\Cabinet\Content;
 use App\Models\Cabinet\Question;
-use App\Models\Language;
 use App\Services\QuestionService;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class QuestionController extends Controller
 {
@@ -25,8 +17,10 @@ class QuestionController extends Controller
 
     public function __construct(QuestionService $questionService)
     {
+//        $this->authorizeResource(Question::class, 'question');
+        $this->middleware('auth:wallet')->except(['index','show']);
+
         $this->questionService = $questionService;
-        $this->authorizeResource(Question::class, 'question');
     }
 
     /**
@@ -34,7 +28,6 @@ class QuestionController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-
         return QuestionResource::collection(Question::all());
     }
 
@@ -45,6 +38,7 @@ class QuestionController extends Controller
      */
     public function store(QuestionStoreRequest $request): QuestionResource
     {
+        $this->authorize('create', Question::class);
         $question = $this->questionService->storeResource($request);
         return new QuestionResource($question);
 
@@ -57,6 +51,7 @@ class QuestionController extends Controller
      */
     public function show(Question $question): QuestionResource
     {
+        $this->authorize('view', Question::class);
         return new QuestionResource($question);
     }
 
@@ -68,6 +63,7 @@ class QuestionController extends Controller
      */
     public function update(QuestionUpdateRequest $request, Question $question): QuestionResource
     {
+        $this->authorize('update', $question);
         $question = $this->questionService->updateResource($request, $question);
         return new QuestionResource($question);
     }
@@ -79,6 +75,7 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question): JsonResponse
     {
+        $this->authorize('delete', $question);
         $question->delete();
         return response()->json('The model was deleted successfully');
     }

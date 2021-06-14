@@ -20,7 +20,7 @@ class AnswerController extends Controller
     public function __construct(AnswerService $answerService)
     {
         $this->answerService = $answerService;
-        $this->authorizeResource(Answer::class, 'answer');
+        //        $this->authorizeResource(Answer::class, 'answer');
     }
 
     /**
@@ -38,6 +38,7 @@ class AnswerController extends Controller
      */
     public function store(AnswerStoreRequest $request): AnswerResource
     {
+        $this->authorize('create', Answer::class);
         $answer = $this->answerService->storeResource($request);
         return new AnswerResource($answer);
     }
@@ -60,6 +61,7 @@ class AnswerController extends Controller
      */
     public function update(AnswerUpdateRequest $request, Answer $answer): AnswerResource
     {
+        $this->authorize('update', $answer);
         $answer = $this->answerService->updateResource($request, $answer);
         return new AnswerResource($answer);
     }
@@ -71,6 +73,7 @@ class AnswerController extends Controller
      */
     public function destroy(Answer $answer): JsonResponse
     {
+        $this->authorize('delete', $answer);
         $answer->delete();
         return response()->json('The model was deleted successfully');
     }

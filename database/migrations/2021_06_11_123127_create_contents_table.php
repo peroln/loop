@@ -19,6 +19,7 @@ class CreateContentsTable extends Migration
             $table->string('contentable_type');
             $table->foreignId('language_id')->constrained();
             $table->text('text');
+            $table->string('subject')->nullable();
             $table->timestamps();
         });
     }

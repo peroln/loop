@@ -32,7 +32,8 @@ class QuestionStoreRequest extends FormRequest
 //            'user_id' => 'required|integer|exists:users,id',
             'content' => 'required|array',
             'content.*.text'    => ['required','string', 'unique:contents,text'],
-            'content.*.language_shortcode' => 'required|string|exists:languages,shortcode'
+            'content.*.language_shortcode' => 'required|string|exists:languages,shortcode',
+            'content.*.subject' => 'required|string',
         ];
     }
 

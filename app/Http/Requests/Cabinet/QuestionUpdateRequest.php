@@ -35,6 +35,7 @@ class QuestionUpdateRequest extends FormRequest
                 }),
             ],
             'content.*.language_shortcode' => 'required_with:content.*.text|string|exists:languages,shortcode',
+            'content.*.subject' => 'string',
             'active'                       => ['integer', Rule::in([0, 1])],
             'approved'                     => ['integer', Rule::in([0, 1])],
         ];

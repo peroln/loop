@@ -32,6 +32,7 @@ class QuestionService
             foreach ($request->input('content') as $content_params) {
                 $content = new Content([
                     'text'        => Arr::get($content_params, 'text'),
+                    'subject'        => Arr::get($content_params, 'subject'),
                     'language_id' => Language::where('shortcode', Arr::get($content_params, 'language_shortcode'))->firstOrFail()->id,
                 ]);
                 $question->contents()->save($content);
@@ -68,6 +69,7 @@ class QuestionService
                             ->firstOrFail()->id)
                         ->firstOrNew();
                     $content->text = Arr::get($content_params, 'text');
+                    $content->subject = Arr::get($content_params, 'subject');
                     $question->contents()->save($content);
                 }
             }

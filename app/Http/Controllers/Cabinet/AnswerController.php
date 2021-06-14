@@ -9,9 +9,7 @@ use App\Http\Resources\Cabinet\AnswerResource;
 use App\Models\Cabinet\Answer;
 use App\Services\AnswerService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class AnswerController extends Controller
 {
@@ -22,6 +20,7 @@ class AnswerController extends Controller
     public function __construct(AnswerService $answerService)
     {
         $this->answerService = $answerService;
+        $this->authorizeResource(Answer::class, 'answer');
     }
 
     /**

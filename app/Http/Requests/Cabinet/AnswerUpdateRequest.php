@@ -27,20 +27,20 @@ class AnswerUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'     => 'required_without_all:question_id,text|integer|exists:users,id',
-            'question_id' => 'required_without_all:user_id,text|integer|exists:questions,id',
-            'content'                      => 'required_without_all:active,approved,user_id|array',
+//            'user_id'     => 'required_without_all:question_id,text|integer|exists:users,id',
+//            'question_id' => 'required_without_all:question_id|integer|exists:questions,id',
+            'content'                      => 'required|array',
             'content.*.text'               => ['required_with:content.*.language_shortcode', 'string'],
             'content.*.language_shortcode' => 'required_with:content.*.text|string|exists:languages,shortcode',
         ];
     }
 
-    public function prepareForValidation()
+/*    public function prepareForValidation()
     {
         if ($this->has('user_id')) {
             $this->merge([
                 'user_id' => User::where('contract_user_id', $this->user_id)->first()?->id,
             ]);
         }
-    }
+    }*/
 }

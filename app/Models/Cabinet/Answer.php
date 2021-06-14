@@ -41,4 +41,13 @@ class Answer extends Model
     {
         return $this->belongsTo(Answer::class);
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($answer) {
+            $answer->contents()->delete();
+        });
+    }
 }

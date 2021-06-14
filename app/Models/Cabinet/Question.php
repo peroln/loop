@@ -42,4 +42,13 @@ class Question extends Model
     {
         return $this->morphMany(Content::class, 'contentable');
     }
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($question) {
+            $question->contents()->delete();
+            $question->answers()->delete();
+        });
+    }
 }

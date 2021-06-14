@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class QuestionController extends Controller
@@ -25,6 +26,7 @@ class QuestionController extends Controller
     public function __construct(QuestionService $questionService)
     {
         $this->questionService = $questionService;
+        $this->authorizeResource(Question::class, 'question');
     }
 
     /**
@@ -32,6 +34,7 @@ class QuestionController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
+
         return QuestionResource::collection(Question::all());
     }
 

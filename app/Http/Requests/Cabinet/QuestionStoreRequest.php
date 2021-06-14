@@ -29,14 +29,14 @@ class QuestionStoreRequest extends FormRequest
     {
         Log::info('hello');
         return [
-            'user_id' => 'required|integer|exists:users,id',
+//            'user_id' => 'required|integer|exists:users,id',
             'content' => 'required|array',
             'content.*.text'    => ['required','string', 'unique:contents,text'],
             'content.*.language_shortcode' => 'required|string|exists:languages,shortcode'
         ];
     }
 
-    public function prepareForValidation()
+/*    public function prepareForValidation()
     {
         if($this->has('user_id')){
             $this->merge([
@@ -44,5 +44,5 @@ class QuestionStoreRequest extends FormRequest
             ]);
         }
 
-    }
+    }*/
 }

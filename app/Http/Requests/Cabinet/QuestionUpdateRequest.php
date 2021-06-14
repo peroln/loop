@@ -27,8 +27,7 @@ class QuestionUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'                      => 'required_without_all:active,approved,content|integer|exists:users,id',
-            'content'                      => 'required_without_all:active,approved,user_id|array',
+            'content'                      => 'required_without_all:active,approved|array',
             'content.*.text'               => [
                 'required_with:content.*.language_shortcode', 'string', Rule::unique('contents')->where(function ($query) {
                     return $query->whereNotIn('contentable_id', [$this->question->id])
@@ -39,15 +38,5 @@ class QuestionUpdateRequest extends FormRequest
             'active'                       => ['integer', Rule::in([0, 1])],
             'approved'                     => ['integer', Rule::in([0, 1])],
         ];
-    }
-
-    public function prepareForValidation()
-    {
-        if ($this->has('user_id')) {
-            $this->merge([
-                'user_id' => User::where('contract_user_id', $this->user_id)->first()?->id,
-            ]);
-        }
-
     }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Requests\Cabinet;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AnswerStoreRequest extends FormRequest
+class BlackListStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,21 +25,21 @@ class AnswerStoreRequest extends FormRequest
     public function rules()
     {
         return [
-//            'user_id' => 'required|integer|exists:users,id',
-            'question_id' => 'required|integer|exists:questions,id',
-            'content' => 'required|array',
-            'content.*.text'    => ['required','string'],
-            'content.*.language_shortcode' => 'required|string|exists:languages,shortcode'
+            'user_id' => 'required|integer|exists:users,id|unique:black_lists'
         ];
     }
-
- /*   public function prepareForValidation()
+    public function prepareForValidation()
     {
         if($this->has('user_id')){
             $this->merge([
                 'user_id' => User::where('contract_user_id', $this->user_id)->first()?->id,
             ]);
         }
-
-    }*/
+    }
+    public function messages()
+    {
+        return [
+            'user_id.required' => 'The ID of user contract  does not exist or valid',
+        ];
+    }
 }

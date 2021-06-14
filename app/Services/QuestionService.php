@@ -27,7 +27,7 @@ class QuestionService
         DB::beginTransaction();
         try {
             $question = new Question();
-            $question->fill($request->only(['user_id']));
+            $question->user_id = $request->user()->user_id;
             $question->save();
             foreach ($request->input('content') as $content_params) {
                 $content = new Content([
@@ -59,10 +59,7 @@ class QuestionService
     {
         DB::beginTransaction();
         try {
-            if ($request->has('user_id')) {
-                $question->fill($request->only(['user_id']));
-                $question->save();
-            }
+
             if ($request->has('content')) {
                 foreach ($request->input('content') as $content_params) {
                     $content       = $question->contents()->where('language_id',

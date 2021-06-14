@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Cabinet;
 
+use App\Models\Cabinet\Question;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ContentResource extends JsonResource
@@ -16,6 +17,7 @@ class ContentResource extends JsonResource
     {
         return [
             'text'=> $this->text,
+            'subject'=> $this->when($this->contentable_type === Question::class, $this->subject),
             'language_shortcode' => $this->language->shortcode
         ];
     }

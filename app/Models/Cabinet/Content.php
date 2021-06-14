@@ -13,6 +13,7 @@ class Content extends Model
 
     protected $fillable = [
         'text',
+        'subject',
         'language_id',
         'contentable_id',
         'contentable_type',

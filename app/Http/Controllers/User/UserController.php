@@ -100,6 +100,7 @@ class UserController extends Controller
     public function getCountInvited(): JsonResponse
     {
         $reit_collection = DB::table('users')
+            ->Where('users.id', '>',1)
             ->select('users.contract_user_id', 'users.user_name', 'users.id', DB::raw("count(u.id) as count"),)
             ->join('users as u', function ($join) {
                 $join->on('users.contract_user_id', '=', 'u.this_referral')

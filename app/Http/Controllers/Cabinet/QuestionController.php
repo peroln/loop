@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Cabinet;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cabinet\QuestionIndexRequest;
 use App\Http\Requests\Cabinet\QuestionStoreRequest;
 use App\Http\Requests\Cabinet\QuestionUpdateRequest;
 use App\Http\Resources\Cabinet\QuestionResource;
 use App\Models\Cabinet\Question;
+use App\Models\Language;
 use App\Services\QuestionService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class QuestionController extends Controller
@@ -24,11 +27,20 @@ class QuestionController extends Controller
     }
 
     /**
+     * @param  QuestionIndexRequest  $request
+     *
      * @return AnonymousResourceCollection
      */
-    public function index(): AnonymousResourceCollection
+    public function index(QuestionIndexRequest $request): AnonymousResourceCollection
     {
-        return QuestionResource::collection(Question::all());
+        return QuestionResource::collection(Question::whereHas('contents', function($q) use($request){
+            if($request->has('language')){
+                $language_id = Language::where('shortcode', $request->input('language'))->firstOrFail()->id;
+                $q->where('language_id', $language_id);
+            }
+
+        })
+            ->paginate($request->input('count', 15)));
     }
 
     /**

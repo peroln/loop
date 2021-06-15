@@ -26,7 +26,8 @@ class QuestionIndexRequest extends FormRequest
         return [
             'language' => 'string|exists:languages,shortcode',
             'count' => 'integer',
-            'page' => 'integer'
+            'page' => 'integer',
+            'search' => 'string'
         ];
     }
 }

@@ -38,6 +38,9 @@ class QuestionController extends Controller
                 $language_id = Language::where('shortcode', $request->input('language'))->firstOrFail()->id;
                 $q->where('language_id', $language_id);
             }
+            if($request->has('search')){
+                $q->where('text', 'ILIKE', '%' . $request->input('search') . '%');
+            }
 
         })
             ->paginate($request->input('count', 15)));

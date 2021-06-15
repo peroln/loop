@@ -21,13 +21,13 @@ class CryptoHandlerService
 {
 
     private array $handlers_classes = [
-        WalletRegistrationEventHandler::class,
-        AddReferralLinkHandler::class,
-        PlatformCreateEventHandler::class,
-        PlatformReactivationEvent::class,
-        PlatformSubscriberEventHandler::class,
-        OverflowPlatformEvent::class,
-        FinancialAccountingTransfer::class,
+        WalletRegistrationEventHandler::EVENT_NAME => WalletRegistrationEventHandler::class,
+        AddReferralLinkHandler::EVENT_NAME         => AddReferralLinkHandler::class,
+        PlatformCreateEventHandler::EVENT_NAME     => PlatformCreateEventHandler::class,
+        PlatformReactivationEvent::EVENT_NAME      => PlatformReactivationEvent::class,
+        PlatformSubscriberEventHandler::EVENT_NAME => PlatformSubscriberEventHandler::class,
+        OverflowPlatformEvent::EVENT_NAME          => OverflowPlatformEvent::class,
+        FinancialAccountingTransfer::EVENT_NAME    => FinancialAccountingTransfer::class,
     ];
 
     /**
@@ -56,10 +56,9 @@ class CryptoHandlerService
             $fingerprint = Arr::get($response->json('meta'), 'fingerprint', '');
             if ($response->successful() && count($response->json('data'))) {
                 $response = $response->collect('data');
-                foreach ($this->handlers_classes as $handler_class) {
-                    $handler = app()->make($handler_class);
-                    $handler->handleResponse($response);
-                }
+                $handler = app()->make($this->handlers_classes[$event_name]);
+                $handler->handleResponse($response);
+
             }
         } while ($fingerprint);
     }

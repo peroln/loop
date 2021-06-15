@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Models\Service\League;
 use App\Models\User;
 use App\Models\Wallet;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use PhpParser\Builder;
@@ -68,7 +69,6 @@ class CabinetService
         try {
             $arr = League::leftJoin('platform_levels', 'leagues.id', '=', 'platform_levels.league_id')
                 ->leftJoin('platforms', 'platform_levels.id', '=', 'platforms.platform_level_id')
-                //                ->leftJoin('wallets', 'platforms.wallet_id', '=', 'wallets.id')
                 ->leftJoin('wallets', function ($join) {
                     $join->on('platforms.wallet_id', '=', 'wallets.id')
                         ->whereNotIn('wallets.id', [1]);
@@ -90,15 +90,18 @@ class CabinetService
                 ->orderBy('leagues.name')
                 ->orderBy('wallets.contract_user_id')
                 ->orderBy('amount', 'desc')
+                //                ->limit(2)
                 ->get();
 
 
-            $arr1 = $arr->groupBy([
+            $expel_arr = $this->expelFromLowestLeagues($arr);
+
+            $arr1 = $expel_arr->groupBy([
                 'name', function ($item) {
                     return $item['contract_user_id'];
                 },
             ]);
-
+            //            dd($arr1);
             return $arr1->map(function ($item) use ($limit) {
                 return $item->map(function ($i, $k) use ($limit) {
                     if (!$k || !$i->sum('amount')) {
@@ -122,4 +125,43 @@ class CabinetService
 
     }
 
+    /**
+     * @param  Collection  $arr_request
+     *
+     * @return Collection
+     */
+    private function expelFromLowestLeagues(Collection $arr_request): Collection
+    {
+        $arr_users_id['Diamond']  = $arr_request->where('name', 'Diamond')
+            ->unique('contract_user_id')
+            ->pluck('contract_user_id')
+            ->reject(fn($value) => $value == null);
+        $arr_users_id['Platinum'] = $arr_request->where('name', 'Platinum')
+            ->unique('contract_user_id')
+            ->pluck('contract_user_id')
+            ->reject(fn($value) => $value == null);;
+        $arr_users_id['Gold'] = $arr_request->where('name', 'Gold')
+            ->unique('contract_user_id')
+            ->pluck('contract_user_id')
+            ->reject(fn($value) => $value == null);;
+        $arr_users_id['Silver'] = $arr_request->where('name', 'Silver')
+            ->unique('contract_user_id')
+            ->pluck('contract_user_id')
+            ->reject(fn($value) => $value == null);;
+        $arr_users_id['Bronze'] = $arr_request->where('name', 'Bronze')
+            ->unique('contract_user_id')
+            ->pluck('contract_user_id')
+            ->reject(fn($value) => $value == null);;
+
+        $arr_exclude_users_id['Diamond'] = [];
+        $arr_exclude_users_id['Platinum'] = $arr_users_id['Diamond']->toArray();
+        $arr_exclude_users_id['Gold']   = $arr_users_id['Platinum']->merge( $arr_exclude_users_id['Platinum'])->unique()->toArray();
+        $arr_exclude_users_id['Silver'] = $arr_users_id['Gold']->merge($arr_exclude_users_id['Gold'])->unique()->toArray();
+        $arr_exclude_users_id['Bronze'] = $arr_users_id['Silver']->merge($arr_exclude_users_id['Silver'])->unique()->toArray();
+
+        return $arr_request->reject(function ($value) use ($arr_exclude_users_id) {
+            return in_array($value->contract_user_id, $arr_exclude_users_id[$value->name]);
+        });
+
+    }
 }

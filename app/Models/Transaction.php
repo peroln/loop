@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Service\Overflow;
+use App\Models\Service\OverflowTransaction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,11 +24,16 @@ class Transaction extends Model
         'call_value',
         'expiration',
         'model_service',
-        'timestamp'
+        'timestamp',
     ];
 
     public function transactionEvents()
     {
         return $this->hasMany(TransactionEvent::class);
+    }
+
+    public function overflows()
+    {
+        return $this->belongsToMany(Overflow::class);
     }
 }

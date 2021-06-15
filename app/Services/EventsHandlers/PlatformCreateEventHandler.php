@@ -70,7 +70,7 @@ class PlatformCreateEventHandler extends BaseEventsHandler
             $platform = Arr::get($event, 'result.platform');
 
         } catch (\Throwable $e) {
-            Log::error($e->getMessage());
+            Log::error(__FILE__ . '/' . $e->getMessage());
         }
         return compact(
             'referrer_base58_address',

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Service\FinancialTransaction;
+use App\Models\Service\Overflow;
 use App\Models\Service\Platform;
 use App\Models\Service\Reactivation;
 use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, BelongsToMany};
@@ -102,5 +103,10 @@ class Wallet extends Authenticatable implements JWTSubject
     public function financialTransactions(): HasMany
     {
         return $this->hasMany(FinancialTransaction::class);
+    }
+
+    public function overflows()
+    {
+        return $this->hasMany(Overflow::class);
     }
 }

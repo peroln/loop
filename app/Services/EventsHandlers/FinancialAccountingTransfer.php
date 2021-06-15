@@ -39,7 +39,7 @@ class FinancialAccountingTransfer extends BaseEventsHandler
             $receiver_platform_referral = $this->hexString2Base58(Arr::get($event, 'result.activateReceiver', ''));
 
         } catch (\Throwable $e) {
-            Log::error($e->getMessage());
+            Log::error(__FILE__ . '/' . $e->getMessage());
         }
         return compact(
             'platform_reinvest',

@@ -11,7 +11,7 @@ class TransactionEvent extends Model
 
     protected $fillable = [
         "transaction_id",
-//        'wallet_id',
+        //        'wallet_id',
         "referrer_id",
         "contract_user_id",
         "referrer_base58_address",
@@ -20,4 +20,9 @@ class TransactionEvent extends Model
         'block_timestamp',
         'event_name',
     ];
+
+    public function referrerByAddress()
+    {
+        return $this->belongsTo(Wallet::class, 'referrer_base58_address', 'address');
+    }
 }

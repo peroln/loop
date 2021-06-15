@@ -36,7 +36,7 @@ class PlatformReactivationEvent extends BaseEventsHandler
 
 
         } catch (\Throwable $e) {
-            Log::error($e->getMessage());
+            Log::error(__FILE__ . '/' . $e->getMessage());
         }
         return compact(
             'contract_user_base58_address',
@@ -89,7 +89,6 @@ class PlatformReactivationEvent extends BaseEventsHandler
 
             ReactivationPlatform::dispatch($platform);
         } catch (\Throwable $exception) {
-            Log::info(Arr::get($params, 'contract_user_base58_address'));
             Log::error(__FILE__ . '/' . $exception->getMessage());
         }
 

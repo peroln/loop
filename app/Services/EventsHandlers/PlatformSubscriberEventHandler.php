@@ -81,7 +81,7 @@ class PlatformSubscriberEventHandler extends BaseEventsHandler
             $place                        = Arr::get($event, 'result.place');
 
         } catch (\Throwable $e) {
-            Log::error($e->getMessage());
+            Log::error(__FILE__ . '/' . $e->getMessage());
         }
         return compact(
             'referrer_base58_address',

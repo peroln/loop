@@ -19,6 +19,7 @@ class AnswerController extends Controller
 
     public function __construct(AnswerService $answerService)
     {
+        $this->middleware('auth:wallet')->except(['index','show']);
         $this->answerService = $answerService;
         //        $this->authorizeResource(Answer::class, 'answer');
     }
@@ -44,13 +45,13 @@ class AnswerController extends Controller
     }
 
     /**
-     * @param  Answer  $answer
+     * @param  int  $id
      *
      * @return AnswerResource
      */
-    public function show(Answer $answer): AnswerResource
+    public function show(int $id): AnswerResource
     {
-        return new AnswerResource($answer);
+        return new AnswerResource(Answer::findOrFail($id));
     }
 
     /**

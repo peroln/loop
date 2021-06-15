@@ -21,6 +21,7 @@ class AnswerResource extends JsonResource
             'question_id'      => $this->question_id,
             'contents'         => ContentResource::collection($this->contents),
             'active'           => $this->active,
+            'created_at'       => $this->created_at,
         ];
     }
 }

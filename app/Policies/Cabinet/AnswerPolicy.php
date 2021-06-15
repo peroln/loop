@@ -32,7 +32,7 @@ class AnswerPolicy
      */
     public function view(Wallet $wallet, Answer $answer)
     {
-        //
+        return true;
     }
 
     /**

@@ -16,7 +16,7 @@ class QuestionPolicy
      *
      * @return bool
      */
-    public function viewAny(Wallet $wallet): bool
+    public function viewAny(): bool
     {
         return true;
     }

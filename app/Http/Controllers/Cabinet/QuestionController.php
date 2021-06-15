@@ -13,6 +13,7 @@ use App\Services\QuestionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuestionController extends Controller
 {
@@ -20,8 +21,8 @@ class QuestionController extends Controller
 
     public function __construct(QuestionService $questionService)
     {
-//        $this->authorizeResource(Question::class, 'question');
-        $this->middleware('auth:wallet')->except(['index','show']);
+        //        $this->authorizeResource(Question::class, 'question');
+        $this->middleware('auth:wallet')->except(['index', 'show']);
 
         $this->questionService = $questionService;
     }
@@ -33,12 +34,12 @@ class QuestionController extends Controller
      */
     public function index(QuestionIndexRequest $request): AnonymousResourceCollection
     {
-        return QuestionResource::collection(Question::whereHas('contents', function($q) use($request){
-            if($request->has('language')){
+        return QuestionResource::collection(Question::whereHas('contents', function ($q) use ($request) {
+            if ($request->has('language')) {
                 $language_id = Language::where('shortcode', $request->input('language'))->firstOrFail()->id;
                 $q->where('language_id', $language_id);
             }
-            if($request->has('search')){
+            if ($request->has('search')) {
                 $q->where('text', 'ILIKE', '%' . $request->input('search') . '%');
             }
 
@@ -60,14 +61,13 @@ class QuestionController extends Controller
     }
 
     /**
-     * @param  Question  $question
+     * @param  int  $id
      *
      * @return QuestionResource
      */
-    public function show(Question $question): QuestionResource
+    public function show(int $id): QuestionResource
     {
-        $this->authorize('view', Question::class);
-        return new QuestionResource($question);
+        return new QuestionResource(Question::findOrFail($id));
     }
 
     /**

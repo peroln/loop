@@ -33,6 +33,7 @@ class UserResource extends JsonResource
             'statuses' => StatusResource::collection($this->statuses()->withPivot('level')->get()) ,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'overflow' => OverflowResource::collection($this->wallet->overflows)
 
         ];
     }

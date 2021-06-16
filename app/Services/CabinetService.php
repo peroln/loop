@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 use App\Models\Service\League;
+use App\Models\Service\TargetIncome;
 use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Support\Collection;
@@ -75,24 +76,25 @@ class CabinetService
                 })
                 ->leftJoin('financial_transactions', function ($q) use ($start_date, $end_date) {
                     $q->on('wallets.id', '=', 'financial_transactions.wallet_id')
+                        ->where('target_income_id', TargetIncome::where('name', 'referral')->firstOrFail()->id)
                         ->whereBetween('financial_transactions.created_at', [$start_date, $end_date]);
+
                 })
                 ->select(
                     'leagues.name',
                     'wallets.contract_user_id',
-                    DB::raw('SUM(amount) as amount')
+                    'transaction_event_id',
+                    'amount'
                 )
                 ->groupBy(
                     'leagues.name',
                     'wallets.contract_user_id',
-                    'amount',
+                    'transaction_event_id',
+                    'amount'
                 )
                 ->orderBy('leagues.name')
                 ->orderBy('wallets.contract_user_id')
-                ->orderBy('amount', 'desc')
-                //                ->limit(2)
                 ->get();
-
 
             $expel_arr = $this->expelFromLowestLeagues($arr);
 
@@ -101,7 +103,7 @@ class CabinetService
                     return $item['contract_user_id'];
                 },
             ]);
-            //            dd($arr1);
+
             return $arr1->map(function ($item) use ($limit) {
                 return $item->map(function ($i, $k) use ($limit) {
                     if (!$k || !$i->sum('amount')) {
@@ -153,11 +155,11 @@ class CabinetService
             ->pluck('contract_user_id')
             ->reject(fn($value) => $value == null);;
 
-        $arr_exclude_users_id['Diamond'] = [];
+        $arr_exclude_users_id['Diamond']  = [];
         $arr_exclude_users_id['Platinum'] = $arr_users_id['Diamond']->toArray();
-        $arr_exclude_users_id['Gold']   = $arr_users_id['Platinum']->merge( $arr_exclude_users_id['Platinum'])->unique()->toArray();
-        $arr_exclude_users_id['Silver'] = $arr_users_id['Gold']->merge($arr_exclude_users_id['Gold'])->unique()->toArray();
-        $arr_exclude_users_id['Bronze'] = $arr_users_id['Silver']->merge($arr_exclude_users_id['Silver'])->unique()->toArray();
+        $arr_exclude_users_id['Gold']     = $arr_users_id['Platinum']->merge($arr_exclude_users_id['Platinum'])->unique()->toArray();
+        $arr_exclude_users_id['Silver']   = $arr_users_id['Gold']->merge($arr_exclude_users_id['Gold'])->unique()->toArray();
+        $arr_exclude_users_id['Bronze']   = $arr_users_id['Silver']->merge($arr_exclude_users_id['Silver'])->unique()->toArray();
 
         return $arr_request->reject(function ($value) use ($arr_exclude_users_id) {
             return in_array($value->contract_user_id, $arr_exclude_users_id[$value->name]);

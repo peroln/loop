@@ -21,9 +21,9 @@ class CreateWalletsTable extends Migration
                 ->onDelete('cascade');
             $table->string('coin')->default('trx');
             $table->string('address')->unique();
-            $table->decimal('amount_transfers',20, 2)->default(0);
-            $table->decimal('profit_referrals',20, 2)->default(0);
-            $table->decimal('profit_reinvest',20, 2)->default(0);
+            $table->unsignedBigInteger('amount_transfers')->default(0);
+            $table->unsignedBigInteger('profit_referrals')->default(0);
+            $table->unsignedBigInteger('profit_reinvest')->default(0);
             $table->timestamps();
         });
     }

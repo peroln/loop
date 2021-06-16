@@ -25,6 +25,7 @@ class PlatformResource extends JsonResource
             'subscribers'                      => $this->wallets()->pluck('wallet_id'),
             'reactivations'                    => $this->platformLevel->reactivation()->where('wallet_id', $this->wallet_id)->first()?->count ?? 0,
             'total_subscribers_platform_level' => $this->totalSubscribersByLevel(),
+            'enumeratorRestSubscribers'        => $this->enumeratorRestSubscribers(),
         ];
     }
 }

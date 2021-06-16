@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Log;
 class PlatformHandlerService
 {
     /**
-     * @param int $wallet_id
-     * @param int $platform_level_id
+     * @param  int  $wallet_id
+     * @param  int  $platform_level_id
+     *
      * @return string
      */
     public function createNewSubscriber(int $wallet_id, int $platform_level_id = 1): string
@@ -25,14 +26,15 @@ class PlatformHandlerService
         Platform::create([
             'wallet_id'         => $wallet_id,
             'platform_level_id' => $platform_level_id,
-            'created_at' => now()
+            'created_at'        => now(),
         ]);
 
         return $current_free_platform->wallet->address;
     }
 
     /**
-     * @param int $platform_level_id
+     * @param  int  $platform_level_id
+     *
      * @return Platform
      */
     private function findCurrentPlatformOwner(int $platform_level_id): Platform
@@ -45,13 +47,14 @@ class PlatformHandlerService
     }
 
     /**
-     * @param Platform $platform
-     * @param int $platform_level_id
+     * @param  Platform  $platform
+     * @param  int       $platform_level_id
+     *
      * @return bool
      */
     private function checkCountSubscribers(Platform $platform, int $platform_level_id): bool
     {
-        $max_count = PlatformLevel::find($platform_level_id)->count_platform_subscribers;
+        $max_count       = PlatformLevel::find($platform_level_id)->count_platform_subscribers;
         $subscribers_now = $platform->wallets()->count();
         if ($subscribers_now >= $max_count) {
             $platform->active = 0;
@@ -62,7 +65,8 @@ class PlatformHandlerService
     }
 
     /**
-     * @param int $platform_level_id
+     * @param  int  $platform_level_id
+     *
      * @return bool
      * @throws \Throwable
      */
@@ -70,7 +74,7 @@ class PlatformHandlerService
     {
         $reactivation_model = Reactivation::firstOrNew([
             'platform_level_id' => $platform_level_id,
-            'wallet_id'         => $wallet_id
+            'wallet_id'         => $wallet_id,
         ]);
         $reactivation_model->count++;
         DB::beginTransaction();
@@ -79,7 +83,7 @@ class PlatformHandlerService
             Platform::create([
                 'platform_level_id' => $platform_level_id,
                 'wallet_id'         => $wallet_id,
-                'created_at' => now()
+                'created_at'        => now(),
             ]);
             DB::commit();
             return true;

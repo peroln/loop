@@ -4,11 +4,8 @@
 namespace App\Services\EventsHandlers;
 
 
-use App\Events\ReactivationPlatform;
 use App\Models\Service\Overflow;
 use App\Events\Overflow as OverflowEvent;
-use App\Models\Service\Platform;
-use App\Models\Service\Reactivation;
 use App\Models\Transaction;
 use App\Models\TransactionEvent;
 use App\Models\Wallet;
@@ -60,6 +57,9 @@ class OverflowPlatformEvent extends BaseEventsHandler
      */
     public function createNewResource(array $params): void
     {
+        if(Arr::get($params, 'platform') == 1){
+            return;
+        }
         try {
             $wallet = Wallet::where('address', Arr::get($params, 'from'))->firstOrFail();
 

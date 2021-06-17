@@ -76,7 +76,7 @@ class CabinetService
                 })
                 ->leftJoin('financial_transactions', function ($q) use ($start_date, $end_date) {
                     $q->on('wallets.id', '=', 'financial_transactions.wallet_id')
-                        ->where('target_income_id', TargetIncome::where('name', 'referral')->firstOrFail()->id)
+                        ->where('target_income_id', TargetIncome::where('name', 'account')->firstOrFail()->id)
                         ->whereBetween('financial_transactions.created_at', [$start_date, $end_date]);
 
                 })

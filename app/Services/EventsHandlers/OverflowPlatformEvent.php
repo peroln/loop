@@ -57,7 +57,7 @@ class OverflowPlatformEvent extends BaseEventsHandler
      */
     public function createNewResource(array $params): void
     {
-        if(Arr::get($params, 'platform') == 1){
+        if(Arr::get($params, 'platform') === '1'){
             return;
         }
         try {

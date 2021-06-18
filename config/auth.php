@@ -46,10 +46,14 @@ return [
 			'driver'   => 'jwt',
 			'provider' => 'wallets'
 		],
-		'admin' => [
+		'admins' => [
 			'driver'    => 'jwt',
 			'provider' => 'admins'
-		]
+		],
+        'users' => [
+            'driver'    => 'session',
+            'provider' => 'admins'
+        ]
 	],
 
 	/*
@@ -70,7 +74,7 @@ return [
 	*/
 
 	'providers' => [
-		'users'  => [
+		'admins'  => [
 			'driver' => 'eloquent',
 			'model'  => App\Models\User::class,
 		],
@@ -103,7 +107,7 @@ return [
 			'throttle' => 60,
 		],
 		'admins' => [
-			'provider' => 'admins',
+			'provider' => 'users',
 			'table'    => 'password_resets',
 			'expire'   => 60,
 			'throttle' => 60,

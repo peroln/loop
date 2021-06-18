@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Database\Seeders\{LeagueSeeder, PlatformLevelSeeder, PlatformSeeder, TargetIncomeSeeder, StatusSeeder};
+use Database\Seeders\{LeagueSeeder, PlatformLevelSeeder, PlatformSeeder, TargetIncomeSeeder, StatusSeeder, RoleSeeder};
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,8 +17,10 @@ class DatabaseSeeder extends Seeder
         $this->call(LeagueSeeder::class);
         $this->call(StatusSeeder::class);
         $this->call(PlatformLevelSeeder::class);
+        $this->call(RoleSeeder::class);
         $this->call(\UserSeeder::class);
         $this->call(PlatformSeeder::class);
+
 
     }
 }

@@ -1,8 +1,6 @@
 <?php
 
-use App\Models\Language;
-use App\Models\User;
-use App\Models\Wallet;
+use App\Models\{User, Wallet, Language, Role};
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
@@ -18,9 +16,12 @@ class UserSeeder extends Seeder
         $quantity = 1;
         User::factory()
             ->count($quantity)
-            ->state(new Sequence(fn() => ['language_id' => 1,'this_referral' => null]))
+            ->state(new Sequence(fn() => [
+                'language_id'   => Language::whereShortcode('en')->firstOrFail()->id,
+                'this_referral' => null,
+                'role_id'       => Role::whereName('admin')->firstOrFail()->id,
+            ]))
             ->has(Wallet::factory()->count(1))
             ->create();
     }
 }
-//                 fn() => ['language_id' => Language::all()->random(),'this_referral' => rand(1, $quantity)]

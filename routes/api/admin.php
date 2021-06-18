@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::resource('language', LanguageController::class);
-
-
+Route::post('login', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'login']);
+Route::post('registration', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'registration']);
+Route::post('login2fa', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'login2FA']);
+Route::get('get-qr-code', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'getQRCode']);
 

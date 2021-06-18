@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserLogin2FARequest;
 use App\Http\Requests\Admin\UserRegistrationRequest;
+use App\Http\Requests\Admin\UserSwitcher2FARequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\Role;
 use App\Models\User;
@@ -49,7 +50,7 @@ class AuthController extends Controller
         ])) {
             $user = Auth::guard('users')->user();
             if ($user->google2fa) {
-                return 'google2fa';
+                return  response()->json(['turn to login2FA']);
             }
             return $this->getRegisterUserToken($user);
         }
@@ -103,7 +104,6 @@ class AuthController extends Controller
     public function getQRCode(): JsonResponse
     {
         $user = Auth::guard('admins')->user();
-
         $google2fa              = new Google2FA();
         $user->google2fa_secret = $google2fa->generateSecretKey();
         $user->save();
@@ -165,6 +165,14 @@ class AuthController extends Controller
     public function refresh(): JsonResponse
     {
         return $this->respondWithToken(auth()->guard('admins')->refresh());
+    }
+
+    public function switcher2FA(UserSwitcher2FARequest $request): JsonResponse
+    {
+        $user = Auth::guard('admins')->user();
+        $user->google2fa = $request->input('google2fa');
+        $user->save();
+        return response()->json(['The google2fa is '. $user->google2fa]);
     }
 
     /**

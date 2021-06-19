@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserSwitcher2FARequest extends FormRequest
@@ -24,8 +25,13 @@ class UserSwitcher2FARequest extends FormRequest
      */
     public function rules()
     {
+        if (Request::isMethod('post')) {
+            return [
+                'secret' => 'required|string',
+            ];
+        }
         return [
-            'google2fa' => 'required|boolean'
+            'qr_size' => 'integer'
         ];
     }
 }

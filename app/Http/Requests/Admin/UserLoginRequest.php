@@ -3,9 +3,8 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class UserLogin2FARequest extends FormRequest
+class UserLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +13,7 @@ class UserLogin2FARequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -25,9 +24,7 @@ class UserLogin2FARequest extends FormRequest
     public function rules()
     {
         return [
-            'secret' => 'nullable|string',
-            'email' => 'required|email|exists:users',
-            'password' => 'required'
+            //
         ];
     }
 }

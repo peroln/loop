@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Rules\MatchOldPassword;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 
-class UserRegistrationRequest extends FormRequest
+class UserChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -15,7 +16,7 @@ class UserRegistrationRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        return Auth::guard('admins')->check();
     }
 
     /**
@@ -26,15 +27,14 @@ class UserRegistrationRequest extends FormRequest
     public function rules()
     {
         return [
-            'email'            => ['required', 'email', 'unique:users'],
-            'password'         => [
+            'current_password'     => ['required', new MatchOldPassword()],
+            'new_password'         => [
                 'required', Password::min(8)
                     ->letters()
                     ->mixedCase()
                     ->numbers(),
             ],
-            'user_name'        => 'string',
-            'contract_address' => ['required', 'string', 'exists:wallets,address'],
+            'new_confirm_password' => ['same:new_password'],
         ];
     }
 }

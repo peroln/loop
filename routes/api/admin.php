@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('change-password', [\App\Http\Controllers\Admin\Auth\ChangePasswordController::class, 'store']);
 Route::resource('language', LanguageController::class);
 Route::post('login', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'login']);
 Route::post('registration', [\App\Http\Controllers\Admin\Auth\RegistrationController::class, 'registration'])->middleware(['auth:wallet']);

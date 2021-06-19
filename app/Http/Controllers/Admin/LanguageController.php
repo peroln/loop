@@ -62,7 +62,7 @@ class LanguageController extends Controller
     public function destroy(Language $language)
     {
         if ($language->delete()) {
-            return response()->json(null, 204);
+            return response()->json('The model was deleted', 200);
         };
         return response()->json('The model was not deleted', 400);
     }

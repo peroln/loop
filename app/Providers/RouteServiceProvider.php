@@ -65,6 +65,7 @@ class RouteServiceProvider extends ServiceProvider
                         ->group($this->basePath . 'user.php');
 
                     Route::prefix('admin')
+                        ->middleware('api')
                         ->namespace($this->namespace . '\\Admin')
                         ->group($this->basePath . 'admin.php');
 
@@ -74,6 +75,7 @@ class RouteServiceProvider extends ServiceProvider
                         ->group($this->basePath . 'service.php');
 
                     Route::prefix('cabinet')
+                        ->middleware('api')
                         ->namespace($this->namespace . '\\Cabinet')
                         ->group($this->basePath . 'cabinet.php');
                 });

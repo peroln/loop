@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\IndexAdminUsersRequest;
 use App\Http\Requests\User\GetUserByContractIdRequest;
 use App\Http\Requests\User\GetUserByIdRequest;
 use App\Http\Requests\User\GetUserByReferralRequest;
@@ -15,7 +16,9 @@ use App\MultiplePaginate;
 use App\Http\Requests\User\GetAllUserRequest;
 use App\Repositories\UserRepository;
 use App\Repositories\WalletRepository;
+use App\Services\CabinetService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
@@ -100,7 +103,7 @@ class UserController extends Controller
     public function getCountInvited(): JsonResponse
     {
         $reit_collection = DB::table('users')
-            ->Where('users.id', '>',1)
+            ->Where('users.id', '>', 1)
             ->select('users.contract_user_id', 'users.user_name', 'users.id', DB::raw("count(u.id) as count"),)
             ->join('users as u', function ($join) {
                 $join->on('users.contract_user_id', '=', 'u.this_referral')
@@ -136,4 +139,35 @@ class UserController extends Controller
         return $this->userRepository->getUserByReferralLink($query->input('referral_link'));
     }
 
+    /**
+     * @param  IndexAdminUsersRequest  $request
+     *
+     * @return AnonymousResourceCollection
+     */
+    public function indexAdmin(IndexAdminUsersRequest $request): AnonymousResourceCollection
+    {
+        $q = User::query()->orderBy('id');
+        if ($request->filled('searchByContractId')) {
+            $q->where('contract_user_id', 'LIKE', '%' . $request->input('searchByContractId') . '%');
+        }
+        return UserResource::collection($q->paginate($request->per_page));
+
+    }
+
+    /**
+     * @param  CabinetService  $cabinetService
+     *
+     * @return JsonResponse
+     */
+    public function getCommonInfo(CabinetService $cabinetService): JsonResponse
+    {
+        [$all_count_users, $users_invited_last_24_hour, $all_trx, $common_count_profit_referrals, $common_count_profit_reinvest] = $cabinetService->mainAdminInfo();
+        return response()->json(compact(
+            'all_count_users',
+            'users_invited_last_24_hour',
+            'all_trx',
+            'common_count_profit_referrals',
+            'common_count_profit_reinvest'
+        ));
+    }
 }

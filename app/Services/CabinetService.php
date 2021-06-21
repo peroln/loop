@@ -15,6 +15,9 @@ use PhpParser\Builder;
 
 class CabinetService
 {
+    /**
+     * @return array
+     */
     public function mainInfoCabinet(): array
     {
         $all_wallets                = Wallet::whereNotin('id', [1])->get();
@@ -22,6 +25,18 @@ class CabinetService
         $users_invited_last_24_hour = $all_wallets->whereBetween('created_at', [now()->subDay(), now()])->where('id', '!=', 1)->count();
         $all_trx                    = $all_wallets->sum('amount_transfers');
         return [$all_count, $users_invited_last_24_hour, $all_trx];
+    }
+
+    /**
+     * @return array
+     */
+    public function mainAdminInfo(): array
+    {
+        [$all_count, $users_invited_last_24_hour, $all_trx] = $this->mainInfoCabinet();
+        $all_wallets = Wallet::whereNotin('id', [1])->get();
+        $common_count_profit_referrals = $all_wallets->sum('profit_referrals');
+        $common_count_profit_reinvest = $all_wallets->sum('profit_reinvest');
+        return [$all_count, $users_invited_last_24_hour, $all_trx, $common_count_profit_referrals,$common_count_profit_reinvest];
     }
 
     /**

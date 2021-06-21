@@ -33,6 +33,16 @@ class CabinetController
     /**
      * @return JsonResponse
      */
+    public function mainAdminInformation(): JsonResponse
+    {
+        [$all_count, $users_invited_last_24_hour, $all_trx] = $this->cabinetService->mainInfoCabinet();
+
+        return response()->json(compact('all_count', 'users_invited_last_24_hour', 'all_trx'));
+    }
+
+    /**
+     * @return JsonResponse
+     */
     public function leagueRating(LeagueRatingRequest $request): JsonResponse
     {
         return response()->json($this->cabinetService->RatingLeague($request->input('period', 'month')));

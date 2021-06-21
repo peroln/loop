@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\CreatePlatformRequest;
+use App\Http\Resources\Service\PlatformLevelResource;
 use App\Http\Resources\Service\PlatformResource;
 use App\Http\Resources\Service\ReactivationResource;
 use App\Models\Service\Platform;
+use App\Models\Service\PlatformLevel;
 use App\Models\Wallet;
 use App\Services\PlatformHandlerService;
 use Illuminate\Http\Request;
@@ -78,7 +80,12 @@ class PlatformController extends Controller
         //
     }
 
-    public function platformUsersInfo(Wallet $wallet)
+    /**
+     * @param  Wallet  $wallet
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function platformUsersInfo(Wallet $wallet): AnonymousResourceCollection
     {
         return PlatformResource::collection($wallet->platforms()->orderBy('id')->get());
     }
@@ -86,5 +93,13 @@ class PlatformController extends Controller
     public function platformReactivationUsersInfo(Wallet $wallet)
     {
         return ReactivationResource::collection($wallet->reactivations);
+    }
+
+    /**
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getLastCompletePlatforms(): AnonymousResourceCollection
+    {
+        return PlatformLevelResource::collection(PlatformLevel::all());
     }
 }

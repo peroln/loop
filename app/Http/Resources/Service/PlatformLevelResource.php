@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Service;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class PlatformLevelResource extends JsonResource
 {
@@ -21,7 +22,10 @@ class PlatformLevelResource extends JsonResource
             'cost_activation'            => $this->cost_activation,
             'cost_gaz'                   => $this->cost_gaz,
             'count_platform_subscribers' => $this->count_platform_subscribers,
-            'league' => $this->league->name
+            'league' => $this->league->name,
+            'last_filled_platform' => $this->when(Auth::guard('admins')->check(), function(){
+                return $this->getLastFilledPlatform();
+            })
 
         ];
     }

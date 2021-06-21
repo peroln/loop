@@ -87,4 +87,8 @@ class Platform extends Model
         }
         return null;
     }
+    public function scopeFilled($query)
+    {
+        return $query->whereActive(0);
+    }
 }

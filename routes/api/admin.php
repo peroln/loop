@@ -10,4 +10,5 @@ Route::get('get-qr-code', [\App\Http\Controllers\Admin\Auth\AuthController::clas
 Route::get('test', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'test']);
 Route::get('users', [\App\Http\Controllers\User\UserController::class, 'indexAdmin'])->middleware(['auth:admins']);
 Route::get('common-info', [\App\Http\Controllers\User\UserController::class, 'getCommonInfo'])->middleware(['auth:admins']);
+Route::get('last-platforms', [\App\Http\Controllers\Service\PlatformController::class, 'getLastCompletePlatforms'])->middleware(['auth:admins']);
 

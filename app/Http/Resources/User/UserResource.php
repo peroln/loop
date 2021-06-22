@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'contract_user_id' => $this->contract_user_id,
             'user_name' => $this->user_name,
             'avatar' => $this->avatar,
+            'email' => $this->email,
             'blocked_faq' => $this->blocked_faq,
             'language' => $this->language->shortcode,
             'this_referral' => $this->this_referral,

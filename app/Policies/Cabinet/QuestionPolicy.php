@@ -3,25 +3,31 @@
 namespace App\Policies\Cabinet;
 
 use App\Models\Cabinet\Question;
+use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Database\Eloquent\Model;
 
 class QuestionPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * @param  Wallet  $wallet
-     *
+     * @param  Model|null  $model
      *
      * @return bool
      */
-    public function before(?Wallet $wallet)
+    public function before(?Model $model)
     {
-        if($wallet?->user?->role_id === 1){
-            return true;
+        if ($model && get_class($model) === User::class) {
+            if ($model->role_id === 1) {
+                return true;
+            }
+        } else if ($model && get_class($model) === Wallet::class) {
+            if ($model->user->role_id === 1) {
+                return true;
+            }
         }
-
     }
 
     /**

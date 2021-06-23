@@ -7,21 +7,27 @@ use App\Http\Requests\Common\ArticleCreateRequest;
 use App\Http\Requests\Common\ArticleUpdateRequest;
 use App\Http\Resources\Common\ArticleResource;
 use App\Models\Common\Article;
-use Illuminate\Http\Request;
+use App\Models\User;
+use App\Services\ArticleService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+
 class ArticleController extends Controller
 {
-    public function __construct()
+    private ArticleService $articleService;
+
+    public function __construct(ArticleService $articleService)
     {
         $this->authorizeResource(Article::class, 'article');
+//        $this->middleware('auth:admins')->except('show');
+        $this->articleService = $articleService;
     }
 
     /**
      * @return AnonymousResourceCollection
      */
-    public function index(): AnonymousResourceCollection
+    public function index(User $user): AnonymousResourceCollection
     {
         return ArticleResource::collection(Article::all());
     }
@@ -34,8 +40,8 @@ class ArticleController extends Controller
      */
     public function store(ArticleCreateRequest $request, Article $article): ArticleResource
     {
-        $article->fill($request->validated());
-        $article->save();
+        $article = $this->articleService->storeResource($request, $article);
+
         return new ArticleResource($article);
     }
 
@@ -57,8 +63,8 @@ class ArticleController extends Controller
      */
     public function update(ArticleUpdateRequest $request, Article $article): ArticleResource
     {
-        $article->fill($request->validated());
-        $article->save();
+        $article = $this->articleService->updateResource($request, $article);
+
         return new ArticleResource($article);
     }
 

@@ -9,6 +9,8 @@ use App\Http\Requests\Cabinet\QuestionUpdateRequest;
 use App\Models\Cabinet\Content;
 use App\Models\Cabinet\Question;
 use App\Models\Language;
+use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +29,11 @@ class QuestionService
         DB::beginTransaction();
         try {
             $question = new Question();
-            $question->user_id = $request->user()->user_id;
+            $user = $request->user();
+            $question->user_id = match (get_class($user)) {
+                User::class => $user->id,
+                Wallet::class => $user->user_id
+            };
             $question->save();
             foreach ($request->input('content') as $content_params) {
                 $content = new Content([

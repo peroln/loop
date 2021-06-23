@@ -25,7 +25,10 @@ class ArticleCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'content' => 'required|string'
+            'content'                      => 'required|array',
+            'content.*.text'               => ['required', 'string', 'unique:contents,text'],
+            'content.*.language_shortcode' => 'required|string|exists:languages,shortcode',
+            'content.*.title'            => 'required|string',
         ];
     }
 }

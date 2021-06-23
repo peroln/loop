@@ -21,7 +21,6 @@ class QuestionController extends Controller
 
     public function __construct(QuestionService $questionService)
     {
-        $this->middleware('auth:wallet')->except('index', 'show');
         $this->authorizeResource(Question::class, 'question');
         $this->questionService = $questionService;
     }

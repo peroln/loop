@@ -10,6 +10,7 @@ use App\Models\Cabinet\Answer;
 use App\Models\Wallet;
 use App\Services\AnswerService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AnswerController extends Controller
@@ -21,16 +22,16 @@ class AnswerController extends Controller
     public function __construct(AnswerService $answerService)
     {
         $this->answerService = $answerService;
-        $this->middleware('auth:wallet')->except(['index', 'show']);
+//        $this->middleware('auth:wallet')->except(['index', 'show']);
         $this->authorizeResource(Answer::class, 'answer');
     }
 
     /**
      * @return AnonymousResourceCollection
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return AnswerResource::collection(Answer::all());
+        return AnswerResource::collection(Answer::paginate($request->input('per_page')));
     }
 
     /**

@@ -3,25 +3,34 @@
 namespace App\Policies\Cabinet;
 
 use App\Models\Cabinet\Answer;
+use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class AnswerPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * @param  Wallet  $wallet
+     * @param  Model|null  $model
      *
      * @return bool
      */
-    public function before(?Wallet $wallet)
+    public function before(?Model $model)
     {
-        if($wallet?->user?->role_id === 1){
-            return true;
+        if ($model && get_class($model) === User::class) {
+            if ($model->role_id === 1) {
+                return true;
+            }
+        } else if ($model && get_class($model) === Wallet::class) {
+            if ($model->user->role_id === 1) {
+                return true;
+            }
         }
-
     }
+
     /**
      * Determine whether the user can view any models.
      *
@@ -69,7 +78,7 @@ class AnswerPolicy
      */
     public function update(Wallet $wallet, Answer $answer)
     {
-        if($wallet->user->blackList()->exists()){
+        if ($wallet->user->blackList()->exists()) {
             return false;
         };
         return $wallet->user_id === $answer->user_id;
@@ -85,7 +94,7 @@ class AnswerPolicy
      */
     public function delete(Wallet $wallet, Answer $answer)
     {
-        if($wallet->user->blackList()->exists()){
+        if ($wallet->user->blackList()->exists()) {
             return false;
         };
         return $wallet->user_id === $answer->user_id;

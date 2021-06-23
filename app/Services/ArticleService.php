@@ -4,50 +4,37 @@
 namespace App\Services;
 
 
-use App\Http\Requests\Cabinet\AnswerStoreRequest;
-use App\Http\Requests\Cabinet\AnswerUpdateRequest;
-use App\Models\Cabinet\Answer;
+use App\Http\Requests\Cabinet\QuestionUpdateRequest;
+use App\Http\Requests\Common\ArticleCreateRequest;
+use App\Http\Requests\Common\ArticleUpdateRequest;
 use App\Models\Cabinet\Content;
+use App\Models\Cabinet\Question;
+use App\Models\Common\Article;
 use App\Models\Language;
-use App\Models\User;
-use App\Models\Wallet;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class AnswerService
+class ArticleService
 {
-    /**
-     * @param  AnswerStoreRequest  $request
-     *
-     * @return Answer
-     * @throws \Throwable
-     */
-    public function storeResource(AnswerStoreRequest $request): Answer|\Throwable
+    public function storeResource(ArticleCreateRequest $request, Article $article): Article|\Throwable
     {
         DB::beginTransaction();
         try {
-            $answer = new Answer();
-            $answer->fill($request->only(['question_id']));
-            $user = $request->user();
-
-            $answer->user_id = match (get_class($user)) {
-                User::class => $user->id,
-                Wallet::class => $user->user_id
-            };
-            $answer->save();
+            $article->user_id = $request->user()->id;
+            $article->save();
             foreach ($request->input('content') as $content_params) {
                 $content = new Content([
                     'text'        => Arr::get($content_params, 'text'),
                     'language_id' => Language::where('shortcode', Arr::get($content_params, 'language_shortcode'))->firstOrFail()->id,
+                    'subject' => Arr::get($content_params, 'title'),
                 ]);
-                $answer->contents()->save($content);
+                $article->contents()->save($content);
             }
 
-            $answer->refresh();
+            $article->refresh();
             DB::commit();
-            return $answer;
+            return $article;
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error($e->getMessage());
@@ -57,30 +44,32 @@ class AnswerService
     }
 
     /**
-     * @param  AnswerUpdateRequest  $request
-     * @param  Answer               $answer
+     * @param  ArticleUpdateRequest  $request
+     * @param  Article               $article
      *
-     * @return Answer
+     * @return Article|\Throwable
      * @throws \Throwable
      */
-    public function updateResource(AnswerUpdateRequest $request, Answer $answer): Answer|\Throwable
+    public function updateResource(ArticleUpdateRequest $request, Article $article): Article|\Throwable
     {
         DB::beginTransaction();
         try {
+
             if ($request->has('content')) {
                 foreach ($request->input('content') as $content_params) {
-                    $content       = $answer->contents()->where('language_id',
+                    $content       = $article->contents()->where('language_id',
                         Language::where('shortcode',
                             Arr::get($content_params, 'language_shortcode'))
                             ->firstOrFail()->id)
                         ->firstOrNew();
                     $content->text = Arr::get($content_params, 'text');
-                    $answer->contents()->save($content);
+                    $content->subject = Arr::get($content_params, 'title');
+                    $article->contents()->save($content);
                 }
             }
+            $article->refresh();
             DB::commit();
-            $answer->refresh();
-            return $answer;
+            return $article;
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error($e->getMessage());

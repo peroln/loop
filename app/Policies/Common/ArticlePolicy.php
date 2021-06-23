@@ -6,6 +6,7 @@ use App\Models\Common\Article;
 use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class ArticlePolicy
@@ -13,11 +14,29 @@ class ArticlePolicy
     use HandlesAuthorization;
 
     /**
+     * @param  Model|null  $model
+     *
+     * @return bool
+     */
+    public function before(?Model $model)
+    {
+        if ($model && get_class($model) === User::class) {
+            if ($model->role_id === 1) {
+                return true;
+            }
+        } else if ($model && get_class($model) === Wallet::class) {
+            if ($model->user->role_id === 1) {
+                return true;
+            }
+        }
+    }
+
+    /**
      * @param  User  $user
      *
      * @return bool
      */
-    public function viewAny(User $user)
+    public function viewAny(?Model $model)
     {
         return  true;
     }
@@ -28,7 +47,7 @@ class ArticlePolicy
      *
      * @return bool
      */
-    public function view(User $user, Article $article)
+    public function view( Article $article, ?Model $model)
     {
         return true;
     }
@@ -38,9 +57,9 @@ class ArticlePolicy
      *
      * @return bool
      */
-    public function create(User $user)
+    public function create(?Model $model,)
     {
-        return $user->role_id === 1;
+        return $model?->role_id === 1;
     }
 
     /**
@@ -49,9 +68,9 @@ class ArticlePolicy
      *
      * @return bool
      */
-    public function update(User $user, Article $article)
+    public function update(Article $article, ?Model $model)
     {
-        return $user->role_id === 1;
+        return $model?->role_id === 1;
     }
 
     /**
@@ -60,25 +79,9 @@ class ArticlePolicy
      *
      * @return bool
      */
-    public function delete(User $user, Article $article)
+    public function delete(Article $article, ?Model $model)
     {
-        return $user->role_id === 1;
+        return $model?->role_id === 1;
     }
 
-    /**
-     * eturn mixed
-     */
-    public function restore(User $user, Article $article)
-    {
-        //
-    }
-
-    /**
-     * @param  User     $user
-     * @param  Article  $article
-     */
-    public function forceDelete(User $user, Article $article)
-    {
-        //
-    }
 }

@@ -25,7 +25,10 @@ class ArticleUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'content' => ['required','string']
+            'content'                      => 'required|array',
+            'content.*.text'               => 'required|string',
+            'content.*.language_shortcode' => 'required|string|exists:languages,shortcode',
+            'content.*.title'              => 'required|string',
         ];
     }
 }

@@ -27,23 +27,11 @@ class QuestionStoreRequest extends FormRequest
      */
     public function rules()
     {
-        Log::info('hello');
         return [
-//            'user_id' => 'required|integer|exists:users,id',
-            'content' => 'required|array',
-            'content.*.text'    => ['required','string', 'unique:contents,text'],
+            'content'                      => 'required|array',
+            'content.*.text'               => ['required', 'string', 'unique:contents,text'],
             'content.*.language_shortcode' => 'required|string|exists:languages,shortcode',
-            'content.*.subject' => 'required|string',
+            'content.*.subject'            => 'required|string',
         ];
     }
-
-/*    public function prepareForValidation()
-    {
-        if($this->has('user_id')){
-            $this->merge([
-                'user_id' => User::where('contract_user_id', $this->user_id)->first()?->id,
-            ]);
-        }
-
-    }*/
 }

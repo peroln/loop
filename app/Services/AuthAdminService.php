@@ -103,7 +103,7 @@ class AuthAdminService
             if (!$user->google2fa) {
                 return $this->createQRCode($user, $request->input('qr_size', 400));
             } else {
-                return response()->json(['error' => 'You cannot do this'], 401);
+                return response()->json(['error' => 'You cannot do this'], 403);
             }
         }
         if ($request->isMethod('post')) {
@@ -114,7 +114,7 @@ class AuthAdminService
                         $user->save();
                         return response()->json('2FA is turn off');
                     } else {
-                        return response()->json(['error' => 'Secret code is invalid'], 401);
+                        return response()->json(['error' => 'Secret code is invalid'], 422);
                     }
                 } else {
                     if ($this->login2FA($user->google2fa_secret, $request->input('secret'))) {
@@ -122,15 +122,15 @@ class AuthAdminService
                         $user->save();
                         return $this->getRegisterUserToken($user);
                     } else {
-                        return response()->json(['error' => 'Secret code is invalid'], 401);
+                        return response()->json(['error' => 'Secret code is invalid'], 422);
                     }
                 }
 
             } else {
-                return response()->json(['error' => 'Secret code is required'], 401);
+                return response()->json(['error' => 'Secret code is required'], 422);
             }
         }
-        return response()->json(['error' => 'Invalid condition'], 401);
+        return response()->json(['error' => 'Invalid condition'], 403);
 
     }
 

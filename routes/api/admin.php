@@ -9,6 +9,7 @@ Route::match(['get', 'post'], 'switcher-2fa', [\App\Http\Controllers\Admin\Auth\
 Route::get('get-qr-code', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'getQRCode']);
 Route::get('test', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'test']);
 Route::post('refresh', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'refresh']);
+Route::post('logout', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'logout']);
 
 Route::middleware(['auth:admins'])->group(function () {
     Route::apiResource('videos', 'VideoController');

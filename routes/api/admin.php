@@ -8,6 +8,7 @@ Route::post('registration', [\App\Http\Controllers\Admin\Auth\RegistrationContro
 Route::match(['get', 'post'], 'switcher-2fa', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'switcher2FA']);
 Route::get('get-qr-code', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'getQRCode']);
 Route::get('test', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'test']);
+Route::post('refresh', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'refresh']);
 
 Route::middleware(['auth:admins'])->group(function () {
     Route::apiResource('videos', 'VideoController');

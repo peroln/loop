@@ -90,5 +90,12 @@ class AuthController extends Controller
             'expires_in'   => $this->getExpiresTime(),
         ]);
     }
+    /**
+     * @return int
+     */
+    private function getExpiresTime(): int
+    {
+        return auth()->guard('admins')->factory()->getTTL() * 60 * 1000;
+    }
 
 }

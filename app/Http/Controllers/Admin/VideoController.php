@@ -11,6 +11,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class VideoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:admins')->except('show');
+    }
+
     /**
      * @return AnonymousResourceCollection
      */

@@ -10,9 +10,9 @@ Route::get('get-qr-code', [\App\Http\Controllers\Admin\Auth\AuthController::clas
 Route::get('test', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'test']);
 Route::post('refresh', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'refresh']);
 Route::post('logout', [\App\Http\Controllers\Admin\Auth\AuthController::class, 'logout']);
+Route::apiResource('videos', 'VideoController');
 
 Route::middleware(['auth:admins'])->group(function () {
-    Route::apiResource('videos', 'VideoController');
     Route::get('users', [\App\Http\Controllers\User\UserController::class, 'indexAdmin']);
     Route::get('common-info', [\App\Http\Controllers\User\UserController::class, 'getCommonInfo']);
     Route::get('last-platforms', [\App\Http\Controllers\Service\PlatformController::class, 'getLastCompletePlatforms']);

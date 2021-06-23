@@ -19,7 +19,7 @@ class QuestionPolicy
     public function before(?Wallet $wallet)
     {
         if($wallet){
-            return $wallet->user()->role_id === 1;
+            return $wallet->user->role_id === 1;
         }
 
     }

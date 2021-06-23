@@ -30,33 +30,27 @@ class BlackListController extends Controller
      *
      * @return BlackListResource
      */
-    public function store(BlackListStoreRequest $request): BlackListResource
+    public function store(BlackListStoreRequest $request, BlackList $blackList): BlackListResource
     {
-        $black_list = BlackList::create($request->validated());
-        return new BlackListResource($black_list);
+        dd('store');
+        $blackList->fill($request->validated());
+        $blackList->save();
+        return new BlackListResource($blackList);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     *
-     * @return \Illuminate\Http\Response
+     * @param  BlackList  $blackList
      */
-    public function show($id)
+    public function show(BlackList $blackList)
     {
         //
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
-     *
-     * @return \Illuminate\Http\Response
+     * @param  Request    $request
+     * @param  BlackList  $blackList
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, BlackList $blackList)
     {
         //
     }

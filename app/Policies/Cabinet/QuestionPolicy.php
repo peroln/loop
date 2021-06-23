@@ -11,12 +11,26 @@ class QuestionPolicy
     use HandlesAuthorization;
 
     /**
+     * @param  Wallet  $wallet
+     *
+     *
+     * @return bool
+     */
+    public function before(?Wallet $wallet)
+    {
+        if($wallet){
+            return $wallet->user()->role_id === 1;
+        }
+
+    }
+
+    /**
      * Determine whether the user can view any models.
      *
      *
      * @return bool
      */
-    public function viewAny(): bool
+    public function viewAny(?Wallet $wallet): bool
     {
         return true;
     }
@@ -24,7 +38,7 @@ class QuestionPolicy
     /**
      * @return bool
      */
-    public function view()
+    public function view(?Wallet $wallet)
     {
         return true;
     }

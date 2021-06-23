@@ -3,6 +3,7 @@
 namespace App\Policies\Cabinet;
 
 use App\Models\Cabinet\BlackList;
+use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -11,72 +12,60 @@ class BlackListPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
+     * @param  User  $user
      *
-     * @param  \App\Models\Wallet  $wallet
-     * @return mixed
+     * @return bool
      */
-    public function viewAny(Wallet $wallet)
+    public function viewAny(User $user)
     {
-        return true;
+        return $user->role_id === 1;
     }
 
     /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\Wallet  $wallet
-     * @param  \App\Models\Cabinet\BlackList  $blackList
-     * @return mixed
+     * @param  User       $user
+     * @param  BlackList  $blackList
      */
-    public function view(Wallet $wallet, BlackList $blackList)
+    public function view(User $user, BlackList $blackList)
     {
-        //
+       return $user->role_id === 1;
     }
 
     /**
-     * Determine whether the user can create models.
+     * @param  User  $user
      *
-     * @param  \App\Models\Wallet  $wallet
-     * @return mixed
+     * @return bool
      */
-    public function create(Wallet $wallet)
+    public function create(User $user)
     {
-        return true;
+        return $user->role_id === 1;
     }
 
 
     /**
-     * Determine whether the user can delete the model.
+     * @param  User       $user
+     * @param  BlackList  $blackList
      *
-     * @param  \App\Models\Wallet  $wallet
-     * @param  \App\Models\Cabinet\BlackList  $blackList
-     * @return mixed
+     * @return bool
      */
-    public function delete(Wallet $wallet, BlackList $blackList)
+    public function delete(User $user, BlackList $blackList)
     {
-        return true;
+        return $user->role_id === 1;
     }
 
     /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\Wallet  $wallet
-     * @param  \App\Models\Cabinet\BlackList  $blackList
-     * @return mixed
+     * @param  User       $user
+     * @param  BlackList  $blackList
      */
-    public function restore(Wallet $wallet, BlackList $blackList)
+    public function restore(User $user, BlackList $blackList)
     {
 
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\Wallet  $wallet
-     * @param  \App\Models\Cabinet\BlackList  $blackList
-     * @return mixed
+     * @param  User       $user
+     * @param  BlackList  $blackList
      */
-    public function forceDelete(Wallet $wallet, BlackList $blackList)
+    public function forceDelete(User $user, BlackList $blackList)
     {
 
 

@@ -11,13 +11,25 @@ class AnswerPolicy
     use HandlesAuthorization;
 
     /**
+     * @param  Wallet  $wallet
+     *
+     * @return bool
+     */
+    public function before(?Wallet $wallet)
+    {
+        if($wallet){
+            return $wallet->user()->role_id === 1;
+        }
+
+    }
+    /**
      * Determine whether the user can view any models.
      *
      * @param  \App\Models\Wallet  $wallet
      *
      * @return mixed
      */
-    public function viewAny(Wallet $wallet)
+    public function viewAny(?Wallet $wallet)
     {
         return true;
     }
@@ -30,7 +42,7 @@ class AnswerPolicy
      *
      * @return mixed
      */
-    public function view(Wallet $wallet, Answer $answer)
+    public function view(?Wallet $wallet, Answer $answer)
     {
         return true;
     }

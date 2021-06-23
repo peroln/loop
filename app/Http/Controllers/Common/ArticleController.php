@@ -15,8 +15,7 @@ class ArticleController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:admins')->except('index', 'show');
-        //        $this->authorizeResource(Article::class, 'article');
+        $this->authorizeResource(Article::class, 'article');
     }
 
     /**

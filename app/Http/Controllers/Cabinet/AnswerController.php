@@ -7,6 +7,7 @@ use App\Http\Requests\Cabinet\AnswerStoreRequest;
 use App\Http\Requests\Cabinet\AnswerUpdateRequest;
 use App\Http\Resources\Cabinet\AnswerResource;
 use App\Models\Cabinet\Answer;
+use App\Models\Wallet;
 use App\Services\AnswerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -19,9 +20,9 @@ class AnswerController extends Controller
 
     public function __construct(AnswerService $answerService)
     {
-        $this->middleware('auth:wallet')->except(['index','show']);
         $this->answerService = $answerService;
-        //        $this->authorizeResource(Answer::class, 'answer');
+        $this->middleware('auth:wallet')->except(['index', 'show']);
+        $this->authorizeResource(Answer::class, 'answer');
     }
 
     /**
@@ -39,7 +40,6 @@ class AnswerController extends Controller
      */
     public function store(AnswerStoreRequest $request): AnswerResource
     {
-        $this->authorize('create', Answer::class);
         $answer = $this->answerService->storeResource($request);
         return new AnswerResource($answer);
     }
@@ -49,9 +49,9 @@ class AnswerController extends Controller
      *
      * @return AnswerResource
      */
-    public function show(int $id): AnswerResource
+    public function show(Answer $answer): AnswerResource
     {
-        return new AnswerResource(Answer::findOrFail($id));
+        return new AnswerResource($answer);
     }
 
     /**
@@ -62,7 +62,6 @@ class AnswerController extends Controller
      */
     public function update(AnswerUpdateRequest $request, Answer $answer): AnswerResource
     {
-        $this->authorize('update', $answer);
         $answer = $this->answerService->updateResource($request, $answer);
         return new AnswerResource($answer);
     }
@@ -74,7 +73,6 @@ class AnswerController extends Controller
      */
     public function destroy(Answer $answer): JsonResponse
     {
-        $this->authorize('delete', $answer);
         $answer->delete();
         return response()->json('The model was deleted successfully');
     }

@@ -13,57 +13,52 @@ class ArticlePolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
+     * @param  User  $user
      *
-     * @param  \App\Models\Wallet  $wallet
-     * @return mixed
+     * @return bool
      */
-    public function viewAny()
+    public function viewAny(User $user)
     {
         return  true;
     }
 
     /**
-     * Determine whether the user can view the model.
+     * @param  User     $user
+     * @param  Article  $article
      *
-     * @param  \App\Models\Wallet  $wallet
-     * @param  \App\Models\Common\Article  $article
-     * @return mixed
+     * @return bool
      */
-    public function view(Wallet $wallet, Article $article)
+    public function view(User $user, Article $article)
     {
-        //
+        return true;
     }
 
     /**
-     * Determine whether the user can create models.
+     * @param  User  $user
      *
-     * @param  \App\Models\Wallet  $wallet
-     * @return mixed
+     * @return bool
      */
-    public function create(Wallet $wallet)
+    public function create(User $user)
     {
-        //
+        return $user->role_id === 1;
     }
 
     /**
-     * Determine whether the user can update the model.
+     * @param  User     $user
+     * @param  Article  $article
      *
-     * @param  \App\Models\Wallet  $wallet
-     * @param  \App\Models\Common\Article  $article
-     * @return mixed
+     * @return bool
      */
-    public function update(Wallet $wallet, Article $article)
+    public function update(User $user, Article $article)
     {
-        //
+        return $user->role_id === 1;
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * @param  User     $user
+     * @param  Article  $article
      *
-     * @param  \App\Models\Wallet  $wallet
-     * @param  \App\Models\Common\Article  $article
-     * @return mixed
+     * @return bool
      */
     public function delete(User $user, Article $article)
     {
@@ -71,25 +66,18 @@ class ArticlePolicy
     }
 
     /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\Wallet  $wallet
-     * @param  \App\Models\Common\Article  $article
-     * @return mixed
+     * eturn mixed
      */
-    public function restore(Wallet $wallet, Article $article)
+    public function restore(User $user, Article $article)
     {
         //
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\Wallet  $wallet
-     * @param  \App\Models\Common\Article  $article
-     * @return mixed
+     * @param  User     $user
+     * @param  Article  $article
      */
-    public function forceDelete(Wallet $wallet, Article $article)
+    public function forceDelete(User $user, Article $article)
     {
         //
     }

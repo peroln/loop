@@ -21,9 +21,8 @@ class QuestionController extends Controller
 
     public function __construct(QuestionService $questionService)
     {
-        //        $this->authorizeResource(Question::class, 'question');
-        $this->middleware('auth:wallet')->except(['index', 'show']);
-
+        $this->middleware('auth:wallet')->except('index', 'show');
+        $this->authorizeResource(Question::class, 'question');
         $this->questionService = $questionService;
     }
 
@@ -42,7 +41,6 @@ class QuestionController extends Controller
             if ($request->has('search')) {
                 $q->where('text', 'ILIKE', '%' . $request->input('search') . '%');
             }
-
         })
             ->paginate($request->input('count', 15)));
     }
@@ -54,10 +52,8 @@ class QuestionController extends Controller
      */
     public function store(QuestionStoreRequest $request): QuestionResource
     {
-        $this->authorize('create', Question::class);
         $question = $this->questionService->storeResource($request);
         return new QuestionResource($question);
-
     }
 
     /**
@@ -65,9 +61,9 @@ class QuestionController extends Controller
      *
      * @return QuestionResource
      */
-    public function show(int $id): QuestionResource
+    public function show(Question $question): QuestionResource
     {
-        return new QuestionResource(Question::findOrFail($id));
+        return new QuestionResource($question);
     }
 
     /**
@@ -78,7 +74,6 @@ class QuestionController extends Controller
      */
     public function update(QuestionUpdateRequest $request, Question $question): QuestionResource
     {
-        $this->authorize('update', $question);
         $question = $this->questionService->updateResource($request, $question);
         return new QuestionResource($question);
     }
@@ -90,7 +85,6 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question): JsonResponse
     {
-        $this->authorize('delete', $question);
         $question->delete();
         return response()->json('The model was deleted successfully');
     }
